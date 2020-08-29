@@ -28,7 +28,8 @@ Apply the plugin:
 
 ``` groovy
 plugins {
-  id "com.parmet.buf" version "<version>"
+  // Note: not available yet
+  id 'com.parmet.buf' version '<version>'
 }
 ```
 
@@ -37,7 +38,7 @@ or
 ``` groovy
 buildscript {
   dependencies {
-    classpath 'com.parmet.buf:buf-gradle-plugin:<version>'
+    classpath 'com.parmet:buf-gradle-plugin:<version>'
   }
 }
 
