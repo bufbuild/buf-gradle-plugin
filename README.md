@@ -1,5 +1,8 @@
 # buf-gradle-plugin
 
+[![Maven Central](https://img.shields.io/maven-central/v/com.parmet/buf-gradle-plugin)](https://search.maven.org/artifact/com.parmet/buf-gradle-plugin)
+[![Gradle Portal](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/com/parmet/buf-gradle-plugin/maven-metadata.xml.svg?label=gradle-portal&color=yellowgreen)](https://plugins.gradle.org/plugin/com.parmet.buf)
+
 Integration for [Buf](https://github.com/bufbuild/buf) with the
 [protobuf-gradle-plugin](https://github.com/google/protobuf-gradle-plugin).
 
