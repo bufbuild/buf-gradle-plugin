@@ -52,11 +52,13 @@ class BufPlugin : Plugin<Project> {
             project.tasks.named("bufImageBuild").dependsOn("extractIncludeProto")
         }
 
-        project.configure<PublishingExtension> {
-            publications {
-                create<MavenPublication>("bufbuildImage") {
-                    artifactId = "${project.name}-bufbuild"
-                    artifact(project.file("${project.buildDir}/$bufBuildImage"))
+        if (ext.publishSchema) {
+            project.configure<PublishingExtension> {
+                publications {
+                    create<MavenPublication>("bufbuildImage") {
+                        artifactId = "${project.name}-bufbuild"
+                        artifact(project.file("${project.buildDir}/$bufBuildImage"))
+                    }
                 }
             }
         }
