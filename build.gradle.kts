@@ -1,57 +1,34 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import com.gradle.publish.PublishTask.GRADLE_PUBLISH_KEY
+import com.gradle.publish.PublishTask.GRADLE_PUBLISH_SECRET
 
 plugins {
     `java-gradle-plugin`
-    kotlin("jvm") version "1.3.72"
     id("com.gradle.plugin-publish") version "0.11.0"
     id("org.gradle.kotlin.kotlin-dsl.base") version "1.3.6"
-    `maven-publish`
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        allWarningsAsErrors = true
-        jvmTarget = "1.8"
-    }
+kotlinDslPluginOptions {
+    experimentalWarning.set(false)
 }
 
-configure<JavaPluginExtension> {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    implementation(gradleApi())
+allprojects {
+    configureLinting()
 }
 
 group = "com.parmet"
-description = "Buf plugin for Gradle"
-
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = project.group.toString()
-            artifactId = "buf-gradle-plugin"
-            version = project.version.toString()
-
-            from(components["java"])
-        }
-    }
-}
+configurePublishing()
+configureStagingRepoTasks()
+configureKotlin()
 
 gradlePlugin {
-    setAutomatedPublishing(true)
+    isAutomatedPublishing = false
 
     plugins {
         create("buf") {
             id = "com.parmet.buf"
             implementationClass = "com.parmet.buf.gradle.BufPlugin"
-            displayName = "Buf Gradle Plugin"
-            description = project.description
+            displayName = ProjectInfo.name
+            description = ProjectInfo.description
         }
     }
 }
@@ -60,12 +37,17 @@ pluginBundle {
     mavenCoordinates {
         group = project.group.toString()
     }
-    website = "https://github.com/andrewparmet/buf-gradle-plugin"
-    vcsUrl = "https://github.com/andrewparmet/buf-gradle-plugin"
-    description = project.description
+    website = ProjectInfo.url
+    vcsUrl = ProjectInfo.url
+    description = ProjectInfo.description
     tags = listOf("protobuf", "kotlin", "buf")
 }
 
+ext[GRADLE_PUBLISH_KEY] = System.getenv("GRADLE_PORTAL_PUBLISH_KEY")
+ext[GRADLE_PUBLISH_SECRET] = System.getenv("GRADLE_PORTAL_PUBLISH_SECRET")
+
 tasks.named("publishPlugins") {
-    enabled = !version.toString().endsWith("-SNAPSHOT")
+    enabled = isRelease()
 }
+
+fun Project.isRelease() = !version.toString().endsWith("-SNAPSHOT")
