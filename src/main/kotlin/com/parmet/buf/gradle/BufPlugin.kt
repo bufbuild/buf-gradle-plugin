@@ -23,15 +23,7 @@ class BufPlugin : Plugin<Project> {
     private fun Project.configureCheckLint() {
         tasks.register<Exec>("bufCheckLint") {
             group = "check"
-            commandLine("docker")
-            setArgs(
-                listOf(
-                    "run",
-                    "--volume", "$projectDir:/workspace",
-                    "--workdir", "/workspace",
-                    "bufbuild/buf", "check", "lint"
-                )
-            )
+            bufTask("check", "lint")
         }
 
         afterEvaluate {
@@ -44,15 +36,12 @@ class BufPlugin : Plugin<Project> {
         val bufBuildImage = "bufbuild/image.json"
 
         tasks.register<Exec>("bufImageBuild") {
-            commandLine("docker")
             file("$buildDir/bufbuild").mkdirs()
-            setArgs(
-                listOf(
-                    "run",
-                    "--volume", "$projectDir:/workspace",
-                    "--workdir", "/workspace",
-                    "bufbuild/buf", "image", "build", "--output", "$$relativeBuildDir/$bufBuildImage"
-                )
+            bufTask(
+                "image",
+                "build",
+                "--output",
+                "$relativeBuildDir/$bufBuildImage"
             )
         }
 
@@ -91,15 +80,11 @@ class BufPlugin : Plugin<Project> {
         tasks.register<Exec>("bufCheckBreaking") {
             group = "check"
             enabled = ext.previousVersion != null
-            commandLine("docker")
-            setArgs(
-                listOf(
-                    "run",
-                    "--volume", "$projectDir:/workspace",
-                    "--workdir", "/workspace",
-                    "bufbuild/buf", "check", "breaking",
-                    "--against-input", "$relativeBuildDir/$bufbuildBreaking/$name-bufbuild-${ext.previousVersion}.json"
-                )
+            bufTask(
+                "check",
+                "breaking",
+                "--against-input",
+                "$relativeBuildDir/$bufbuildBreaking/$name-bufbuild-${ext.previousVersion}.json"
             )
         }
 
@@ -109,6 +94,19 @@ class BufPlugin : Plugin<Project> {
         }
     }
 }
+
+private fun Exec.bufTask(vararg args: String) {
+    commandLine("docker")
+    setArgs(project.baseDockerArgs + args)
+}
+
+private val Project.baseDockerArgs
+    get() = listOf(
+        "run",
+        "--volume", "$projectDir:/workspace",
+        "--workdir", "/workspace",
+        "bufbuild/buf"
+    )
 
 private fun TaskProvider<*>.dependsOn(obj: Any) {
     configure { dependsOn(obj) }
