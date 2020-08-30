@@ -22,6 +22,7 @@ class BufPlugin : Plugin<Project> {
 
     private fun Project.configureCheckLint() {
         tasks.register<Exec>("bufCheckLint") {
+            group = "check"
             commandLine("docker")
             setArgs(
                 listOf(
@@ -88,6 +89,7 @@ class BufPlugin : Plugin<Project> {
         }
 
         tasks.register<Exec>("bufCheckBreaking") {
+            group = "check"
             enabled = ext.previousVersion != null
             commandLine("docker")
             setArgs(
