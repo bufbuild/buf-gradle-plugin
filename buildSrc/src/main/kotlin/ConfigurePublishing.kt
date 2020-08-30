@@ -101,7 +101,7 @@ fun Project.configurePublishing() {
 
     configure<PublishingExtension> {
         publications {
-            create<MavenPublication>("sources") {
+            create<MavenPublication>("main") {
                 from(components.getByName("java"))
                 artifact(tasks.getByName("javadocJar"))
 
@@ -118,7 +118,7 @@ fun Project.configurePublishing() {
         configure<SigningExtension> {
             useInMemoryPgpKeys(Pgp.key, Pgp.password)
 
-            project.the<PublishingExtension>().publications.withType<MavenPublication> {
+            the<PublishingExtension>().publications.withType<MavenPublication> {
                 standardPom()
                 sign(this)
             }
