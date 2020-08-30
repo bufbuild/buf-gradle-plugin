@@ -15,93 +15,102 @@ import org.gradle.kotlin.dsl.register
 class BufPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         val ext = project.extensions.create<BufExtension>("buf")
+        project.configureCheckLint()
+        project.configureImageBuild(ext)
+        project.configureCheckBreaking(ext)
+    }
 
-        project.tasks.register<Exec>("bufCheckLint") {
+    private fun Project.configureCheckLint() {
+        tasks.register<Exec>("bufCheckLint") {
             commandLine("docker")
             setArgs(
                 listOf(
                     "run",
-                    "--volume", "${project.projectDir}:/workspace",
+                    "--volume", "$projectDir:/workspace",
                     "--workdir", "/workspace",
                     "bufbuild/buf", "check", "lint"
                 )
             )
         }
 
-        project.afterEvaluate {
-            project.tasks.named("bufCheckLint").dependsOn("extractIncludeProto")
-            project.tasks.named("check").dependsOn("bufCheckLint")
+        afterEvaluate {
+            tasks.named("bufCheckLint").dependsOn("extractIncludeProto")
+            tasks.named("check").dependsOn("bufCheckLint")
         }
+    }
 
+    private fun Project.configureImageBuild(ext: BufExtension) {
         val bufBuildImage = "bufbuild/image.json"
 
-        project.tasks.register<Exec>("bufImageBuild") {
+        tasks.register<Exec>("bufImageBuild") {
             commandLine("docker")
-            project.file("${project.buildDir}/bufbuild").mkdirs()
+            file("$buildDir/bufbuild").mkdirs()
             setArgs(
                 listOf(
                     "run",
-                    "--volume", "${project.projectDir}:/workspace",
+                    "--volume", "$projectDir:/workspace",
                     "--workdir", "/workspace",
-                    "bufbuild/buf", "image", "build", "--output", "$${project.relativeBuildDir}/$bufBuildImage"
+                    "bufbuild/buf", "image", "build", "--output", "$$relativeBuildDir/$bufBuildImage"
                 )
             )
         }
 
-        project.afterEvaluate {
-            project.tasks.named("bufImageBuild").dependsOn("extractIncludeProto")
+        afterEvaluate {
+            tasks.named("bufImageBuild").dependsOn("extractIncludeProto")
         }
 
         if (ext.publishSchema) {
-            project.configure<PublishingExtension> {
+            configure<PublishingExtension> {
                 publications {
                     create<MavenPublication>("bufbuildImage") {
-                        artifactId = "${project.name}-bufbuild"
-                        artifact(project.file("${project.buildDir}/$bufBuildImage"))
+                        artifactId = "$name-bufbuild"
+                        artifact(file("$buildDir/$bufBuildImage"))
                     }
                 }
             }
         }
+    }
 
+    private fun Project.configureCheckBreaking(ext: BufExtension) {
         val bufbuildBreaking = "bufbuild/breaking"
 
-        project.configurations.create("bufCheckBreaking")
-        project.dependencies {
+        configurations.create("bufCheckBreaking")
+        dependencies {
             if (ext.previousVersion != null) {
-                add("bufCheckBreaking", "${project.group}:${project.name}-bufbuild:${ext.previousVersion}")
+                add("bufCheckBreaking", "$group:$name-bufbuild:${ext.previousVersion}")
             }
         }
 
-        project.tasks.register<Copy>("bufCheckBreakingExtract") {
+        tasks.register<Copy>("bufCheckBreakingExtract") {
             enabled = ext.previousVersion != null
-            from(project.configurations.getByName("bufCheckBreaking").files)
-            into(project.file("${project.buildDir}/$bufbuildBreaking"))
+            from(configurations.getByName("bufCheckBreaking").files)
+            into(file("$buildDir/$bufbuildBreaking"))
         }
 
-        project.tasks.register<Exec>("bufCheckBreaking") {
+        tasks.register<Exec>("bufCheckBreaking") {
             enabled = ext.previousVersion != null
             commandLine("docker")
             setArgs(
                 listOf(
                     "run",
-                    "--volume", "${project.projectDir}:/workspace",
+                    "--volume", "$projectDir:/workspace",
                     "--workdir", "/workspace",
                     "bufbuild/buf", "check", "breaking",
-                    "--against-input", "${project.relativeBuildDir}/$bufbuildBreaking/${project.name}-bufbuild-${ext.previousVersion}.json"
+                    "--against-input", "$relativeBuildDir/$bufbuildBreaking/$name-bufbuild-${ext.previousVersion}.json"
                 )
             )
         }
 
-        project.afterEvaluate {
-            project.tasks.named("bufCheckBreaking").dependsOn("extractIncludeProto")
-            project.tasks.named("check").dependsOn("bufCheckBreaking")
+        afterEvaluate {
+            tasks.named("bufCheckBreaking").dependsOn("extractIncludeProto")
+            tasks.named("check").dependsOn("bufCheckBreaking")
         }
     }
 }
 
-fun TaskProvider<*>.dependsOn(obj: Any) {
+private fun TaskProvider<*>.dependsOn(obj: Any) {
     configure { dependsOn(obj) }
 }
 
-val Project.relativeBuildDir
+private val Project.relativeBuildDir
     get() = buildDir.absolutePath.substringAfterLast("/")

@@ -49,5 +49,3 @@ ext[GRADLE_PUBLISH_SECRET] = System.getenv("GRADLE_PORTAL_PUBLISH_SECRET")
 tasks.named("publishPlugins") {
     enabled = isRelease()
 }
-
-fun Project.isRelease() = !version.toString().endsWith("-SNAPSHOT")
