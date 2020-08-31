@@ -130,7 +130,7 @@ fun Project.configurePublishing() {
 
         dependsOn(
             tasks.withType<PublishToMavenRepository>()
-                .matching { repositoryIs(it, "integration") }
+                .matching { it.repositoryIs("integration") }
         )
     }
 
@@ -141,14 +141,14 @@ fun Project.configurePublishing() {
         if (enabled) {
             dependsOn(
                 tasks.withType<PublishToMavenRepository>()
-                    .matching { repositoryIs(it, "remote") }
+                    .matching { it.repositoryIs("remote") }
             )
         }
     }
 }
 
-fun Project.repositoryIs(task: PublishToMavenRepository, name: String) =
-    task.repository == the<PublishingExtension>().repositories.getByName(name)
+fun PublishToMavenRepository.repositoryIs(name: String) =
+    repository == project.the<PublishingExtension>().repositories.getByName(name)
 
 fun Project.configureStagingRepoTasks() {
     if (isRelease()) {

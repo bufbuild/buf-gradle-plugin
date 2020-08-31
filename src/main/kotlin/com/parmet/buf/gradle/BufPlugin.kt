@@ -1,5 +1,6 @@
 package com.parmet.buf.gradle
 
+import com.parmet.buf.gradle.BufPlugin.Companion.BUF_IMAGE_PUBLICATION_NAME
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaBasePlugin
@@ -62,6 +63,7 @@ class BufPlugin : Plugin<Project> {
                         val artifactId = artifactId
                         val version = version
 
+                        // hack
                         if (name != BUF_IMAGE_PUBLICATION_NAME) {
                             create<MavenPublication>(BUF_IMAGE_PUBLICATION_NAME) {
                                 this.groupId = groupId
@@ -86,10 +88,8 @@ class BufPlugin : Plugin<Project> {
             dependencies {
                 afterEvaluate {
                     if (ext.previousVersion != null) {
-                        the<PublishingExtension>().publications {
-                            named<MavenPublication>(BUF_IMAGE_PUBLICATION_NAME) {
-                                add(BUF_CHECK_BREAKING_CONFIGURATION_NAME, "$groupId:$artifactId:${ext.previousVersion}")
-                            }
+                        withBufPublication {
+                            add(BUF_CHECK_BREAKING_CONFIGURATION_NAME, "$groupId:$artifactId:${ext.previousVersion}")
                         }
                     }
                 }
@@ -104,17 +104,14 @@ class BufPlugin : Plugin<Project> {
         // hack
         var artifactName: String? = null
         afterEvaluate {
-            the<PublishingExtension>().publications {
-                named<MavenPublication>(BUF_IMAGE_PUBLICATION_NAME) {
-                    artifactName = artifactId
-                }
+            withBufPublication {
+                artifactName = artifactId
             }
         }
 
         tasks.register<Exec>(BUF_CHECK_BREAKING_TASK_NAME) {
             group = JavaBasePlugin.CHECK_TASK_NAME
             enabled = ext.previousVersion != null
-
             bufTask(
                 "check",
                 "breaking",
@@ -163,3 +160,13 @@ private fun TaskProvider<*>.dependsOn(obj: Any) {
 
 private val Project.relativeBuildDir
     get() = buildDir.absolutePath.substringAfterLast("/")
+
+private fun Project.withBufPublication(
+    configuration: MavenPublication.() -> Unit
+) {
+    the<PublishingExtension>().publications {
+        named<MavenPublication>(BUF_IMAGE_PUBLICATION_NAME) {
+            configuration()
+        }
+    }
+}
