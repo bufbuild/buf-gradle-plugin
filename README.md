@@ -27,6 +27,14 @@ lint:
     - DEFAULT
 ```
 
+Alternatively you can specify a configuration file location, for example to share a config file between subprojects:
+
+``` groovy
+buf {
+    configFileLocation = rootProject.file("buf.yaml")
+}
+```
+
 Apply the plugin:
 
 ``` groovy
