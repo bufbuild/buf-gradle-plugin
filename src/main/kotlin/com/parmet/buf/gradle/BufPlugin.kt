@@ -15,19 +15,20 @@ import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.the
 import org.gradle.kotlin.dsl.withType
+import java.io.File
 
 class BufPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         val ext = project.extensions.create<BufExtension>("buf")
-        project.configureCheckLint()
+        project.configureCheckLint(ext)
         project.configureImageBuild(ext)
         project.configureCheckBreaking(ext)
     }
 
-    private fun Project.configureCheckLint() {
+    private fun Project.configureCheckLint(ext: BufExtension) {
         tasks.register<Exec>(BUF_CHECK_LINT_TASK_NAME) {
             group = JavaBasePlugin.CHECK_TASK_NAME
-            bufTask("check", "lint")
+            bufTask(ext.configFileLocation, "check", "lint")
         }
 
         afterEvaluate {
@@ -44,6 +45,7 @@ class BufPlugin : Plugin<Project> {
                 file("$buildDir/$BUF_BUILD_DIR").mkdirs()
             }
             bufTask(
+                ext.configFileLocation,
                 "image",
                 "build",
                 "--output",
@@ -113,6 +115,7 @@ class BufPlugin : Plugin<Project> {
             group = JavaBasePlugin.CHECK_TASK_NAME
             enabled = ext.previousVersion != null
             bufTask(
+                ext.configFileLocation,
                 "check",
                 "breaking",
                 "--against-input",
@@ -141,9 +144,17 @@ class BufPlugin : Plugin<Project> {
     }
 }
 
-private fun Exec.bufTask(vararg args: String) {
+private fun Exec.bufTask(config: File?, vararg args: String) {
     commandLine("docker")
-    setArgs(project.baseDockerArgs + args)
+    setArgs(
+        project.baseDockerArgs +
+            args +
+            if (config != null) {
+                listOf("--input-config", config.readText())
+            } else {
+                emptyList()
+            }
+    )
 }
 
 private val Project.baseDockerArgs
