@@ -27,13 +27,7 @@ lint:
     - DEFAULT
 ```
 
-Alternatively you can specify a configuration file location, for example to share a config file between subprojects:
-
-``` groovy
-buf {
-    configFileLocation = rootProject.file("buf.yaml")
-}
-```
+See [below](#configuration) for alternative methods of configuration.
 
 Apply the plugin:
 
@@ -60,8 +54,60 @@ When applied the plugin creates two useful tasks:
 - `bufCheckBreaking` checks protobuf against a previous version for
 backwards-incompatible changes.
 
+### Configuration
+
+Alternatively to a `buf.yaml` file in the project directory you can specify the
+location of `buf.yaml` by configuring the extension: 
+
+``` groovy
+buf {
+    configFileLocation = rootProject.file("buf.yaml")
+}
+```
+
+Or you can share a Buf configuration across projects and specify it via the
+dedicated `buf` configuration:
+
+``` groovy
+dependencies {
+    buf("com.parmet:shared-buf-configuration:0.1.0"
+}
+```
+
+As an example to create this artifact, set up a project `shared-buf-configuration`:
+
+```
+shared-buf-configuration % tree
+.
+├── build.gradle.kts
+└── buf.yaml
+``` 
+
+``` kotlin
+// build.gradle.kts
+
+plugins {
+    `maven-publish`
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("bufconfig") {
+            groupId = "com.parmet"
+            artifactId = "shared-buf-configuration"
+            version = "0.1.0"
+            artifact(file("buf.yaml"))
+        }
+    }
+}
+```
+
+#### `bufCheckLint`
+
 `bufCheckLint` is configured solely through `buf.yaml` and follows Buf's
 standard CLI behavior.
+
+#### `bufCheckBreaking`
 
 `bufCheckBreaking` is more complicated since it requires a previous version of
 the protobuf schema to validate the current version. Buf's built-in Git

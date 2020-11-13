@@ -1,6 +1,8 @@
 package com.parmet.buf.gradle
 
+import com.parmet.buf.gradle.BufPlugin.Companion.BUF_CONFIGURATION_NAME
 import com.parmet.buf.gradle.BufPlugin.Companion.BUF_IMAGE_PUBLICATION_NAME
+import java.io.File
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaBasePlugin
@@ -15,11 +17,11 @@ import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.the
 import org.gradle.kotlin.dsl.withType
-import java.io.File
 
 class BufPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         val ext = project.extensions.create<BufExtension>("buf")
+        project.configurations.create(BUF_CONFIGURATION_NAME)
         project.configureCheckLint(ext)
         project.configureImageBuild(ext)
         project.configureCheckBreaking(ext)
@@ -28,7 +30,7 @@ class BufPlugin : Plugin<Project> {
     private fun Project.configureCheckLint(ext: BufExtension) {
         tasks.register<Exec>(BUF_CHECK_LINT_TASK_NAME) {
             group = JavaBasePlugin.CHECK_TASK_NAME
-            bufTask(ext.configFileLocation, "check", "lint")
+            bufTask(ext, "check", "lint")
         }
 
         afterEvaluate {
@@ -45,7 +47,7 @@ class BufPlugin : Plugin<Project> {
                 file("$buildDir/$BUF_BUILD_DIR").mkdirs()
             }
             bufTask(
-                ext.configFileLocation,
+                ext,
                 "image",
                 "build",
                 "--output",
@@ -87,15 +89,15 @@ class BufPlugin : Plugin<Project> {
         val bufbuildBreaking = "$BUF_BUILD_DIR/breaking"
 
         configurations.create(BUF_CHECK_BREAKING_CONFIGURATION_NAME)
-            dependencies {
-                afterEvaluate {
-                    if (ext.previousVersion != null) {
-                        withBufPublication {
-                            add(BUF_CHECK_BREAKING_CONFIGURATION_NAME, "$groupId:$artifactId:${ext.previousVersion}")
-                        }
+        dependencies {
+            afterEvaluate {
+                if (ext.previousVersion != null) {
+                    withBufPublication {
+                        add(BUF_CHECK_BREAKING_CONFIGURATION_NAME, "$groupId:$artifactId:${ext.previousVersion}")
                     }
                 }
             }
+        }
 
         tasks.register<Copy>(BUF_CHECK_BREAKING_EXTRACT_TASK_NAME) {
             enabled = ext.previousVersion != null
@@ -115,7 +117,7 @@ class BufPlugin : Plugin<Project> {
             group = JavaBasePlugin.CHECK_TASK_NAME
             enabled = ext.previousVersion != null
             bufTask(
-                ext.configFileLocation,
+                ext,
                 "check",
                 "breaking",
                 "--against-input",
@@ -139,23 +141,39 @@ class BufPlugin : Plugin<Project> {
         const val BUF_CHECK_LINT_TASK_NAME = "bufCheckLint"
 
         const val BUF_CHECK_BREAKING_CONFIGURATION_NAME = "bufCheckBreaking"
+        const val BUF_CONFIGURATION_NAME = "buf"
         const val BUF_IMAGE_PUBLICATION_NAME = "bufbuild"
         const val BUF_BUILD_DIR = "bufbuild"
     }
 }
 
-private fun Exec.bufTask(config: File?, vararg args: String) {
+private fun Exec.bufTask(ext: BufExtension, vararg args: String) {
     commandLine("docker")
+    val config = project.resolveConfig(ext)
     setArgs(
         project.baseDockerArgs +
             args +
             if (config != null) {
+                logger.trace("Using buf config from $config")
                 listOf("--input-config", config.readText())
             } else {
+                logger.trace("Using buf config from default location if it exists (project directory)")
                 emptyList()
             }
     )
 }
+
+private fun Project.resolveConfig(ext: BufExtension): File? =
+    configurations.getByName(BUF_CONFIGURATION_NAME).files.let {
+        if (it.isNotEmpty()) {
+            require(it.size == 1) {
+                "Buf lint configuration should only have one file; had $it"
+            }
+            it.single()
+        } else {
+            ext.configFileLocation
+        }
+    }
 
 private val Project.baseDockerArgs
     get() = listOf(
