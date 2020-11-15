@@ -61,7 +61,7 @@ location of `buf.yaml` by configuring the extension:
 
 ``` groovy
 buf {
-    configFileLocation = rootProject.file("buf.yaml")
+  configFileLocation = rootProject.file("buf.yaml")
 }
 ```
 
@@ -70,7 +70,7 @@ dedicated `buf` configuration:
 
 ``` groovy
 dependencies {
-    buf("com.parmet:shared-buf-configuration:0.1.0"
+  buf("com.parmet:shared-buf-configuration:0.1.0")
 }
 ```
 
@@ -87,18 +87,18 @@ shared-buf-configuration % tree
 // build.gradle.kts
 
 plugins {
-    `maven-publish`
+  `maven-publish`
 }
 
 publishing {
-    publications {
-        create<MavenPublication>("bufconfig") {
-            groupId = "com.parmet"
-            artifactId = "shared-buf-configuration"
-            version = "0.1.0"
-            artifact(file("buf.yaml"))
-        }
+  publications {
+    create<MavenPublication>("bufconfig") {
+      groupId = "com.parmet"
+      artifactId = "shared-buf-configuration"
+      version = "0.1.0"
+      artifact(file("buf.yaml"))
     }
+  }
 }
 ```
 
