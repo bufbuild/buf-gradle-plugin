@@ -30,7 +30,7 @@ class BufPlugin : Plugin<Project> {
     private fun Project.configureCheckLint(ext: BufExtension) {
         tasks.register<Exec>(BUF_CHECK_LINT_TASK_NAME) {
             group = JavaBasePlugin.CHECK_TASK_NAME
-            bufTask(ext, "check", "lint")
+            bufTask(TaskType.CHECK, ext, "check", "lint")
         }
 
         afterEvaluate {
@@ -47,6 +47,7 @@ class BufPlugin : Plugin<Project> {
                 file("$buildDir/$BUF_BUILD_DIR").mkdirs()
             }
             bufTask(
+                TaskType.BUILD,
                 ext,
                 "image",
                 "build",
@@ -117,6 +118,7 @@ class BufPlugin : Plugin<Project> {
             group = JavaBasePlugin.CHECK_TASK_NAME
             enabled = ext.previousVersion != null
             bufTask(
+                TaskType.CHECK,
                 ext,
                 "check",
                 "breaking",
@@ -147,21 +149,29 @@ class BufPlugin : Plugin<Project> {
     }
 }
 
-private fun Exec.bufTask(ext: BufExtension, vararg args: String) {
+private fun Exec.bufTask(taskType: TaskType, ext: BufExtension, vararg args: String) {
     commandLine("docker")
-    val config = project.resolveConfig(ext)
-    setArgs(
-        project.baseDockerArgs +
-            args +
-            if (config != null) {
-                logger.trace("Using buf config from $config")
-                listOf("--input-config", config.readText())
-            } else {
-                logger.trace("Using buf config from default location if it exists (project directory)")
-                emptyList()
-            }
-    )
+    setArgs(project.baseDockerArgs + args + bufTaskConfigOption(ext, taskType))
 }
+
+private enum class TaskType { CHECK, BUILD }
+
+private fun Exec.bufTaskConfigOption(ext: BufExtension, taskType: TaskType) =
+    project.resolveConfig(ext).let {
+        if (it != null) {
+            logger.trace("Using buf config from $it")
+            listOf(
+                when (taskType) {
+                    TaskType.CHECK -> "--input-config"
+                    TaskType.BUILD -> "--source-config"
+                },
+                it.readText()
+            )
+        } else {
+            logger.trace("Using buf config from default location if it exists (project directory)")
+            emptyList()
+        }
+    }
 
 private fun Project.resolveConfig(ext: BufExtension): File? =
     configurations.getByName(BUF_CONFIGURATION_NAME).files.let {
