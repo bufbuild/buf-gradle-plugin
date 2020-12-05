@@ -1,8 +1,8 @@
 package com.parmet.buf.gradle
 
 import com.parmet.buf.gradle.BufPlugin.Companion.BUF_CONFIGURATION_NAME
-import com.parmet.buf.gradle.BufPlugin.Companion.BUF_IMAGE_PUBLICATION_NAME
 import java.io.File
+import java.util.concurrent.atomic.AtomicReference
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaBasePlugin
@@ -13,7 +13,6 @@ import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.the
 import org.gradle.kotlin.dsl.withType
@@ -23,8 +22,8 @@ class BufPlugin : Plugin<Project> {
         val ext = project.extensions.create<BufExtension>("buf")
         project.configurations.create(BUF_CONFIGURATION_NAME)
         project.configureCheckLint(ext)
-        project.configureImageBuild(ext)
-        project.configureCheckBreaking(ext)
+        val imageArtifactDetails = project.configureImageBuild(ext)
+        project.configureCheckBreaking(ext, imageArtifactDetails)
     }
 
     private fun Project.configureCheckLint(ext: BufExtension) {
@@ -39,7 +38,19 @@ class BufPlugin : Plugin<Project> {
         }
     }
 
-    private fun Project.configureImageBuild(ext: BufExtension) {
+    private class ArtifactDetails(
+        val groupId: String,
+        val artifactId: String
+    ) {
+        override fun toString() =
+            "$groupId:$artifactId"
+    }
+
+    /**
+     * Returns a box that will contains the artifact details for a built image,
+     * whether or not it will actually be published.
+     */
+    private fun Project.configureImageBuild(ext: BufExtension): AtomicReference<ArtifactDetails> {
         val bufBuildImage = "$BUF_BUILD_DIR/image.json"
 
         tasks.register<Exec>(BUF_IMAGE_BUILD_TASK_NAME) {
@@ -60,19 +71,27 @@ class BufPlugin : Plugin<Project> {
             tasks.named(BUF_IMAGE_BUILD_TASK_NAME).dependsOn(EXTRACT_INCLUDE_PROTO_TASK_NAME)
         }
 
+        val box = AtomicReference<ArtifactDetails>()
+
         afterEvaluate {
-            if (ext.publishSchema) {
+            if (ext.publishSchema || ext.previousVersion != null) {
+                // Assumes the maven-publish plugin has been applied. To break
+                // that assumption this plugin would have to allow manual
+                // specification of the buf image artifact details.
                 the<PublishingExtension>().publications {
                     withType<MavenPublication> {
                         val groupId = groupId
                         val artifactId = artifactId
                         val version = version
 
+                        val bufArtifactName = "$artifactId-$BUF_IMAGE_PUBLICATION_NAME"
+                        box.set(ArtifactDetails(groupId, bufArtifactName))
+
                         // hack
                         if (name != BUF_IMAGE_PUBLICATION_NAME) {
                             create<MavenPublication>(BUF_IMAGE_PUBLICATION_NAME) {
                                 this.groupId = groupId
-                                this.artifactId = "$artifactId-$BUF_IMAGE_PUBLICATION_NAME"
+                                this.artifactId = bufArtifactName
                                 this.version = version
 
                                 artifact(file("$buildDir/$bufBuildImage")) {
@@ -84,18 +103,21 @@ class BufPlugin : Plugin<Project> {
                 }
             }
         }
+
+        return box
     }
 
-    private fun Project.configureCheckBreaking(ext: BufExtension) {
+    private fun Project.configureCheckBreaking(
+        ext: BufExtension,
+        artifactDetails: AtomicReference<ArtifactDetails>
+    ) {
         val bufbuildBreaking = "$BUF_BUILD_DIR/breaking"
 
         configurations.create(BUF_CHECK_BREAKING_CONFIGURATION_NAME)
         dependencies {
             afterEvaluate {
                 if (ext.previousVersion != null) {
-                    withBufPublication {
-                        add(BUF_CHECK_BREAKING_CONFIGURATION_NAME, "$groupId:$artifactId:${ext.previousVersion}")
-                    }
+                    add(BUF_CHECK_BREAKING_CONFIGURATION_NAME, "$artifactDetails:${ext.previousVersion}")
                 }
             }
         }
@@ -104,14 +126,6 @@ class BufPlugin : Plugin<Project> {
             enabled = ext.previousVersion != null
             from(configurations.getByName(BUF_CHECK_BREAKING_CONFIGURATION_NAME).files)
             into(file("$buildDir/$bufbuildBreaking"))
-        }
-
-        // hack
-        var artifactName: String? = null
-        afterEvaluate {
-            withBufPublication {
-                artifactName = artifactId
-            }
         }
 
         tasks.register<Exec>(BUF_CHECK_BREAKING_TASK_NAME) {
@@ -123,7 +137,7 @@ class BufPlugin : Plugin<Project> {
                 "check",
                 "breaking",
                 "--against-input",
-                "$relativeBuildDir/$bufbuildBreaking/$artifactName-${ext.previousVersion}.json"
+                "$relativeBuildDir/$bufbuildBreaking/${artifactDetails.get().artifactId}-${ext.previousVersion}.json"
             )
         }
 
@@ -199,13 +213,3 @@ private fun TaskProvider<*>.dependsOn(obj: Any) {
 
 private val Project.relativeBuildDir
     get() = buildDir.absolutePath.substringAfterLast("/")
-
-private fun Project.withBufPublication(
-    configuration: MavenPublication.() -> Unit
-) {
-    the<PublishingExtension>().publications {
-        named<MavenPublication>(BUF_IMAGE_PUBLICATION_NAME) {
-            configuration()
-        }
-    }
-}
