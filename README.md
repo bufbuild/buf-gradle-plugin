@@ -13,12 +13,13 @@ Create a Buf configuration file in the project directory:
 ``` yaml
 # buf.yaml
 
+version: v1beta1
 build:
   roots:
     - src/main/proto
 
     # The protobuf-gradle-plugin extracts and merges protobuf dependencies to
-    # `build/extracted-include-protos`, so we tell Buf where to find them.
+    # `build/extracted-include-protos`, so tell Buf where to find them.
     - build/extracted-include-protos/main
 lint:
   ignore:
@@ -31,22 +32,22 @@ See [below](#configuration) for alternative methods of configuration.
 
 Apply the plugin:
 
-``` groovy
+``` kotlin
 plugins {
-  id 'com.parmet.buf' version '<version>'
+    id("com.parmet.buf") version "<version>"
 }
 ```
 
 or
 
-``` groovy
+``` kotlin
 buildscript {
-  dependencies {
-    classpath 'com.parmet:buf-gradle-plugin:<version>'
-  }
+    dependencies {
+        classpath("com.parmet:buf-gradle-plugin:<version>")
+    }
 }
 
-apply plugin: 'com.parmet.buf'
+apply(plugin = "com.parmet.buf")
 ```
 
 When applied the plugin creates two useful tasks:
@@ -56,21 +57,21 @@ backwards-incompatible changes.
 
 ### Configuration
 
-Alternatively to a `buf.yaml` file in the project directory you can specify the
-location of `buf.yaml` by configuring the extension: 
+As an alternative to a `buf.yaml` file in the project directory you can specify
+the location of `buf.yaml` by configuring the extension: 
 
-``` groovy
+``` kotlin
 buf {
-  configFileLocation = rootProject.file("buf.yaml")
+    configFileLocation = rootProject.file("buf.yaml")
 }
 ```
 
 Or you can share a Buf configuration across projects and specify it via the
 dedicated `buf` configuration:
 
-``` groovy
+``` kotlin
 dependencies {
-  buf("com.parmet:shared-buf-configuration:0.1.0")
+    buf("com.parmet:shared-buf-configuration:0.1.0")
 }
 ```
 
@@ -87,18 +88,18 @@ shared-buf-configuration % tree
 // build.gradle.kts
 
 plugins {
-  `maven-publish`
+    `maven-publish`
 }
 
 publishing {
-  publications {
-    create<MavenPublication>("bufconfig") {
-      groupId = "com.parmet"
-      artifactId = "shared-buf-configuration"
-      version = "0.1.0"
-      artifact(file("buf.yaml"))
+    publications {
+        create<MavenPublication>("bufconfig") {
+            groupId = "com.parmet"
+            artifactId = "shared-buf-configuration"
+            version = "0.1.0"
+            artifact(file("buf.yaml"))
+        }
     }
-  }
 }
 ```
 
@@ -123,21 +124,21 @@ that Maven artifact as its input for validation.
 For example, first publish the project with `publishSchema` set to `true` and
 version `0.1.0`:
 
-``` groovy
+``` kotlin
 buf {
-  publishSchema = true
-  // previousVersion = null (default)
+    publishSchema = true
+    // previousVersion = null (default)
 }
 ```
 
 Then configure the plugin to check against that version:
 
-```groovy
+``` kotlin
 buf {
-  // continue to publish schema
-  publishSchema = true
+    // continue to publish schema
+    publishSchema = true
 
-  previousVersion = "0.1.0"
+    previousVersion = "0.1.0"
 }
 ```
 
@@ -147,6 +148,17 @@ version `0.1.0`:
 ```
 > Task :bufCheckBreaking FAILED
 src/main/proto/parmet/service/test/test.proto:9:1:Previously present field "1" with name "test_content" on message "TestMessage" was deleted.
+```
+
+### Additional Configuration
+
+The version of Buf used can be configured using the `toolVersion` property on
+the extension:
+
+``` kotlin
+buf {
+    toolVersion = "0.36.0"
+}
 ```
 
 ### Prerequisites

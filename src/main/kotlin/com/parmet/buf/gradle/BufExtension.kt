@@ -6,5 +6,5 @@ open class BufExtension {
     var configFileLocation: File? = null
     var publishSchema = false
     var previousVersion: String? = null
-    var bufVersion: String = "0.36.0"
+    var toolVersion: String = "0.36.0"
 }

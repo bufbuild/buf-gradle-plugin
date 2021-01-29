@@ -193,7 +193,7 @@ private fun Project.baseDockerArgs(ext: BufExtension) =
         "run",
         "--volume", "$projectDir:/workspace",
         "--workdir", "/workspace",
-        "bufbuild/buf:${ext.bufVersion}"
+        "bufbuild/buf:${ext.toolVersion}"
     )
 
 private fun TaskProvider<*>.dependsOn(obj: Any) {
