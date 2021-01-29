@@ -21,7 +21,7 @@ configureStagingRepoTasks()
 configureKotlin()
 
 gradlePlugin {
-    isAutomatedPublishing = false
+    isAutomatedPublishing = true
 
     plugins {
         create("buf") {

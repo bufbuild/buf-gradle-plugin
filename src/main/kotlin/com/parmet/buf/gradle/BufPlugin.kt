@@ -29,7 +29,7 @@ class BufPlugin : Plugin<Project> {
     private fun Project.configureCheckLint(ext: BufExtension) {
         tasks.register<Exec>(BUF_CHECK_LINT_TASK_NAME) {
             group = JavaBasePlugin.CHECK_TASK_NAME
-            bufTask(TaskType.CHECK, ext, "check", "lint")
+            bufTask(ext, "check", "lint")
         }
 
         afterEvaluate {
@@ -58,9 +58,7 @@ class BufPlugin : Plugin<Project> {
                 file("$buildDir/$BUF_BUILD_DIR").mkdirs()
             }
             bufTask(
-                TaskType.BUILD,
                 ext,
-                "image",
                 "build",
                 "--output",
                 "$relativeBuildDir/$bufBuildImage"
@@ -132,7 +130,6 @@ class BufPlugin : Plugin<Project> {
             group = JavaBasePlugin.CHECK_TASK_NAME
             enabled = ext.previousVersion != null
             bufTask(
-                TaskType.CHECK,
                 ext,
                 "check",
                 "breaking",
@@ -163,24 +160,16 @@ class BufPlugin : Plugin<Project> {
     }
 }
 
-private fun Exec.bufTask(taskType: TaskType, ext: BufExtension, vararg args: String) {
+private fun Exec.bufTask(ext: BufExtension, vararg args: String) {
     commandLine("docker")
-    setArgs(project.baseDockerArgs + args + bufTaskConfigOption(ext, taskType))
+    setArgs(project.baseDockerArgs(ext) + args + bufTaskConfigOption(ext))
 }
 
-private enum class TaskType { CHECK, BUILD }
-
-private fun Exec.bufTaskConfigOption(ext: BufExtension, taskType: TaskType) =
+private fun Exec.bufTaskConfigOption(ext: BufExtension) =
     project.resolveConfig(ext).let {
         if (it != null) {
             logger.trace("Using buf config from $it")
-            listOf(
-                when (taskType) {
-                    TaskType.CHECK -> "--input-config"
-                    TaskType.BUILD -> "--source-config"
-                },
-                it.readText()
-            )
+            listOf("--config", it.readText())
         } else {
             logger.trace("Using buf config from default location if it exists (project directory)")
             emptyList()
@@ -199,12 +188,12 @@ private fun Project.resolveConfig(ext: BufExtension): File? =
         }
     }
 
-private val Project.baseDockerArgs
-    get() = listOf(
+private fun Project.baseDockerArgs(ext: BufExtension) =
+    listOf(
         "run",
         "--volume", "$projectDir:/workspace",
         "--workdir", "/workspace",
-        "bufbuild/buf"
+        "bufbuild/buf:${ext.bufVersion}"
     )
 
 private fun TaskProvider<*>.dependsOn(obj: Any) {
