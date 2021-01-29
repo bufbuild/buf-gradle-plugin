@@ -21,12 +21,12 @@ class BufPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         val ext = project.extensions.create<BufExtension>("buf")
         project.configurations.create(BUF_CONFIGURATION_NAME)
-        project.configureCheckLint(ext)
-        val imageArtifactDetails = project.configureImageBuild(ext)
-        project.configureCheckBreaking(ext, imageArtifactDetails)
+        project.configureLint(ext)
+        val imageArtifactDetails = project.configureBuild(ext)
+        project.configureBreaking(ext, imageArtifactDetails)
     }
 
-    private fun Project.configureCheckLint(ext: BufExtension) {
+    private fun Project.configureLint(ext: BufExtension) {
         tasks.register<Exec>(BUF_LINT_TASK_NAME) {
             group = JavaBasePlugin.CHECK_TASK_NAME
             bufTask(ext, "lint")
@@ -50,10 +50,10 @@ class BufPlugin : Plugin<Project> {
      * Returns a box that will contains the artifact details for a built image,
      * whether or not it will actually be published.
      */
-    private fun Project.configureImageBuild(ext: BufExtension): AtomicReference<ArtifactDetails> {
+    private fun Project.configureBuild(ext: BufExtension): AtomicReference<ArtifactDetails> {
         val bufBuildImage = "$BUF_BUILD_DIR/image.json"
 
-        tasks.register<Exec>(BUF_IMAGE_TASK_NAME) {
+        tasks.register<Exec>(BUF_BUILD_TASK_NAME) {
             doFirst {
                 file("$buildDir/$BUF_BUILD_DIR").mkdirs()
             }
@@ -66,7 +66,7 @@ class BufPlugin : Plugin<Project> {
         }
 
         afterEvaluate {
-            tasks.named(BUF_IMAGE_TASK_NAME).dependsOn(EXTRACT_INCLUDE_PROTO_TASK_NAME)
+            tasks.named(BUF_BUILD_TASK_NAME).dependsOn(EXTRACT_INCLUDE_PROTO_TASK_NAME)
         }
 
         val box = AtomicReference<ArtifactDetails>()
@@ -93,7 +93,7 @@ class BufPlugin : Plugin<Project> {
                                 this.version = version
 
                                 artifact(file("$buildDir/$bufBuildImage")) {
-                                    builtBy(tasks.named(BUF_IMAGE_TASK_NAME))
+                                    builtBy(tasks.named(BUF_BUILD_TASK_NAME))
                                 }
                             }
                         }
@@ -105,7 +105,7 @@ class BufPlugin : Plugin<Project> {
         return box
     }
 
-    private fun Project.configureCheckBreaking(
+    private fun Project.configureBreaking(
         ext: BufExtension,
         artifactDetails: AtomicReference<ArtifactDetails>
     ) {
@@ -147,7 +147,7 @@ class BufPlugin : Plugin<Project> {
     companion object {
         private const val EXTRACT_INCLUDE_PROTO_TASK_NAME = "extractIncludeProto"
 
-        const val BUF_IMAGE_TASK_NAME = "bufImage"
+        const val BUF_BUILD_TASK_NAME = "bufBuild"
         const val BUF_BREAKING_EXTRACT_TASK_NAME = "bufBreakingExtract"
         const val BUF_BREAKING_TASK_NAME = "bufBreaking"
         const val BUF_LINT_TASK_NAME = "bufLint"
