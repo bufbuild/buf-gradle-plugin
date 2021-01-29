@@ -27,14 +27,14 @@ class BufPlugin : Plugin<Project> {
     }
 
     private fun Project.configureCheckLint(ext: BufExtension) {
-        tasks.register<Exec>(BUF_CHECK_LINT_TASK_NAME) {
+        tasks.register<Exec>(BUF_LINT_TASK_NAME) {
             group = JavaBasePlugin.CHECK_TASK_NAME
-            bufTask(ext, "check", "lint")
+            bufTask(ext, "lint")
         }
 
         afterEvaluate {
-            tasks.named(BUF_CHECK_LINT_TASK_NAME).dependsOn(EXTRACT_INCLUDE_PROTO_TASK_NAME)
-            tasks.named(JavaBasePlugin.CHECK_TASK_NAME).dependsOn(BUF_CHECK_LINT_TASK_NAME)
+            tasks.named(BUF_LINT_TASK_NAME).dependsOn(EXTRACT_INCLUDE_PROTO_TASK_NAME)
+            tasks.named(JavaBasePlugin.CHECK_TASK_NAME).dependsOn(BUF_LINT_TASK_NAME)
         }
     }
 
@@ -53,7 +53,7 @@ class BufPlugin : Plugin<Project> {
     private fun Project.configureImageBuild(ext: BufExtension): AtomicReference<ArtifactDetails> {
         val bufBuildImage = "$BUF_BUILD_DIR/image.json"
 
-        tasks.register<Exec>(BUF_IMAGE_BUILD_TASK_NAME) {
+        tasks.register<Exec>(BUF_IMAGE_TASK_NAME) {
             doFirst {
                 file("$buildDir/$BUF_BUILD_DIR").mkdirs()
             }
@@ -66,7 +66,7 @@ class BufPlugin : Plugin<Project> {
         }
 
         afterEvaluate {
-            tasks.named(BUF_IMAGE_BUILD_TASK_NAME).dependsOn(EXTRACT_INCLUDE_PROTO_TASK_NAME)
+            tasks.named(BUF_IMAGE_TASK_NAME).dependsOn(EXTRACT_INCLUDE_PROTO_TASK_NAME)
         }
 
         val box = AtomicReference<ArtifactDetails>()
@@ -93,7 +93,7 @@ class BufPlugin : Plugin<Project> {
                                 this.version = version
 
                                 artifact(file("$buildDir/$bufBuildImage")) {
-                                    builtBy(tasks.named(BUF_IMAGE_BUILD_TASK_NAME))
+                                    builtBy(tasks.named(BUF_IMAGE_TASK_NAME))
                                 }
                             }
                         }
@@ -111,49 +111,48 @@ class BufPlugin : Plugin<Project> {
     ) {
         val bufbuildBreaking = "$BUF_BUILD_DIR/breaking"
 
-        configurations.create(BUF_CHECK_BREAKING_CONFIGURATION_NAME)
+        configurations.create(BUF_BREAKING_CONFIGURATION_NAME)
         dependencies {
             afterEvaluate {
                 if (ext.previousVersion != null) {
-                    add(BUF_CHECK_BREAKING_CONFIGURATION_NAME, "$artifactDetails:${ext.previousVersion}")
+                    add(BUF_BREAKING_CONFIGURATION_NAME, "$artifactDetails:${ext.previousVersion}")
                 }
             }
         }
 
-        tasks.register<Copy>(BUF_CHECK_BREAKING_EXTRACT_TASK_NAME) {
+        tasks.register<Copy>(BUF_BREAKING_EXTRACT_TASK_NAME) {
             enabled = ext.previousVersion != null
-            from(configurations.getByName(BUF_CHECK_BREAKING_CONFIGURATION_NAME).files)
+            from(configurations.getByName(BUF_BREAKING_CONFIGURATION_NAME).files)
             into(file("$buildDir/$bufbuildBreaking"))
         }
 
-        tasks.register<Exec>(BUF_CHECK_BREAKING_TASK_NAME) {
+        tasks.register<Exec>(BUF_BREAKING_TASK_NAME) {
             group = JavaBasePlugin.CHECK_TASK_NAME
             enabled = ext.previousVersion != null
             bufTask(
                 ext,
-                "check",
                 "breaking",
-                "--against-input",
+                "--against",
                 "$relativeBuildDir/$bufbuildBreaking/${artifactDetails.get().artifactId}-${ext.previousVersion}.json"
             )
         }
 
         afterEvaluate {
-            tasks.named(BUF_CHECK_BREAKING_TASK_NAME).dependsOn(BUF_CHECK_BREAKING_EXTRACT_TASK_NAME)
-            tasks.named(BUF_CHECK_BREAKING_TASK_NAME).dependsOn(EXTRACT_INCLUDE_PROTO_TASK_NAME)
-            tasks.named(JavaBasePlugin.CHECK_TASK_NAME).dependsOn(BUF_CHECK_BREAKING_TASK_NAME)
+            tasks.named(BUF_BREAKING_TASK_NAME).dependsOn(BUF_BREAKING_EXTRACT_TASK_NAME)
+            tasks.named(BUF_BREAKING_TASK_NAME).dependsOn(EXTRACT_INCLUDE_PROTO_TASK_NAME)
+            tasks.named(JavaBasePlugin.CHECK_TASK_NAME).dependsOn(BUF_BREAKING_TASK_NAME)
         }
     }
 
     companion object {
         private const val EXTRACT_INCLUDE_PROTO_TASK_NAME = "extractIncludeProto"
 
-        const val BUF_IMAGE_BUILD_TASK_NAME = "bufImageBuild"
-        const val BUF_CHECK_BREAKING_EXTRACT_TASK_NAME = "bufCheckBreakingExtract"
-        const val BUF_CHECK_BREAKING_TASK_NAME = "bufCheckBreaking"
-        const val BUF_CHECK_LINT_TASK_NAME = "bufCheckLint"
+        const val BUF_IMAGE_TASK_NAME = "bufImage"
+        const val BUF_BREAKING_EXTRACT_TASK_NAME = "bufBreakingExtract"
+        const val BUF_BREAKING_TASK_NAME = "bufBreaking"
+        const val BUF_LINT_TASK_NAME = "bufLint"
 
-        const val BUF_CHECK_BREAKING_CONFIGURATION_NAME = "bufCheckBreaking"
+        const val BUF_BREAKING_CONFIGURATION_NAME = "bufBreaking"
         const val BUF_CONFIGURATION_NAME = "buf"
         const val BUF_IMAGE_PUBLICATION_NAME = "bufbuild"
         const val BUF_BUILD_DIR = "bufbuild"

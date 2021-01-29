@@ -51,8 +51,8 @@ apply(plugin = "com.parmet.buf")
 ```
 
 When applied the plugin creates two useful tasks:
-- `bufCheckLint` lints protobuf code
-- `bufCheckBreaking` checks protobuf against a previous version for
+- `bufLint` lints protobuf code
+- `bufBreaking` checks protobuf against a previous version for
 backwards-incompatible changes.
 
 ### Configuration
@@ -103,14 +103,14 @@ publishing {
 }
 ```
 
-#### `bufCheckLint`
+#### `bufLint`
 
-`bufCheckLint` is configured solely through `buf.yaml` and follows Buf's
+`bufLint` is configured solely through `buf.yaml` and follows Buf's
 standard CLI behavior.
 
-#### `bufCheckBreaking`
+#### `bufBreaking`
 
-`bufCheckBreaking` is more complicated since it requires a previous version of
+`bufBreaking` is more complicated since it requires a previous version of
 the protobuf schema to validate the current version. Buf's built-in Git
 integration isn't quite enough since it requires a buildable protobuf source set
 and the `protobuf-gradle-plugin`'s merge step typically targets the project
@@ -146,7 +146,7 @@ The plugin will run Buf checking the project's current schema against
 version `0.1.0`:
 
 ```
-> Task :bufCheckBreaking FAILED
+> Task :bufBreaking FAILED
 src/main/proto/parmet/service/test/test.proto:9:1:Previously present field "1" with name "test_content" on message "TestMessage" was deleted.
 ```
 
