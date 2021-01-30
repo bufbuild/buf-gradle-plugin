@@ -3,7 +3,6 @@ package com.parmet.buf.gradle
 import java.io.File
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.Copy
@@ -14,6 +13,7 @@ import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.the
 import org.gradle.kotlin.dsl.withType
+import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
 
 class BufPlugin : Plugin<Project> {
     override fun apply(project: Project) {
@@ -37,11 +37,11 @@ class BufPlugin : Plugin<Project> {
         tasks.register<Exec>(BUF_LINT_TASK_NAME) {
             dependsOn(EXTRACT_INCLUDE_PROTO_TASK_NAME)
 
-            group = JavaBasePlugin.CHECK_TASK_NAME
+            group = CHECK_TASK_NAME
             bufTask(ext, "lint")
         }
 
-        tasks.named(JavaBasePlugin.CHECK_TASK_NAME).dependsOn(BUF_LINT_TASK_NAME)
+        tasks.named(CHECK_TASK_NAME).dependsOn(BUF_LINT_TASK_NAME)
     }
 
     private fun Project.getArtifactDetails(ext: BufExtension): ArtifactDetails? =
@@ -97,10 +97,7 @@ class BufPlugin : Plugin<Project> {
 
         configurations.create(BUF_BREAKING_CONFIGURATION_NAME)
         dependencies {
-            add(
-                BUF_BREAKING_CONFIGURATION_NAME,
-                "${artifactDetails.groupId}:${artifactDetails.artifactId}:${ext.previousVersion}"
-            )
+            add(BUF_BREAKING_CONFIGURATION_NAME, "${artifactDetails.groupAndArtifact()}:${ext.previousVersion}")
         }
 
         tasks.register<Copy>(BUF_BREAKING_EXTRACT_TASK_NAME) {
@@ -112,7 +109,7 @@ class BufPlugin : Plugin<Project> {
             dependsOn(BUF_BREAKING_EXTRACT_TASK_NAME)
             dependsOn(EXTRACT_INCLUDE_PROTO_TASK_NAME)
 
-            group = JavaBasePlugin.CHECK_TASK_NAME
+            group = CHECK_TASK_NAME
             bufTask(
                 ext,
                 "breaking",
@@ -121,7 +118,7 @@ class BufPlugin : Plugin<Project> {
             )
         }
 
-        tasks.named(JavaBasePlugin.CHECK_TASK_NAME).dependsOn(BUF_BREAKING_TASK_NAME)
+        tasks.named(CHECK_TASK_NAME).dependsOn(BUF_BREAKING_TASK_NAME)
     }
 
     private fun Exec.bufTask(ext: BufExtension, vararg args: String) {
