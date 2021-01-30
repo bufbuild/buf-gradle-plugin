@@ -20,4 +20,7 @@ class ArtifactDetails(
     var groupId: String? = null,
     var artifactId: String? = null,
     var version: String? = null
-)
+) {
+    internal fun groupAndArtifact() =
+        "$groupId:$artifactId"
+}

@@ -1,6 +1,5 @@
 package com.parmet.buf.gradle
 
-import com.parmet.buf.gradle.BufPlugin.Companion.BUF_CONFIGURATION_NAME
 import java.io.File
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -20,26 +19,29 @@ class BufPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         val ext = project.extensions.create<BufExtension>("buf")
         project.configurations.create(BUF_CONFIGURATION_NAME)
-        project.configureLint(ext)
 
         project.afterEvaluate {
+            project.configureLint(ext)
             project.getArtifactDetails(ext)?.let {
-                project.configureBuild(ext, it)
-                project.configureBreaking(ext, it)
+                if (ext.publishSchema) {
+                    project.configureBuild(ext, it)
+                }
+                if (ext.previousVersion != null) {
+                    project.configureBreaking(ext, it)
+                }
             }
         }
     }
 
     private fun Project.configureLint(ext: BufExtension) {
         tasks.register<Exec>(BUF_LINT_TASK_NAME) {
+            dependsOn(EXTRACT_INCLUDE_PROTO_TASK_NAME)
+
             group = JavaBasePlugin.CHECK_TASK_NAME
             bufTask(ext, "lint")
         }
 
-        afterEvaluate {
-            tasks.named(BUF_LINT_TASK_NAME).dependsOn(EXTRACT_INCLUDE_PROTO_TASK_NAME)
-            tasks.named(JavaBasePlugin.CHECK_TASK_NAME).dependsOn(BUF_LINT_TASK_NAME)
-        }
+        tasks.named(JavaBasePlugin.CHECK_TASK_NAME).dependsOn(BUF_LINT_TASK_NAME)
     }
 
     private fun Project.getArtifactDetails(ext: BufExtension): ArtifactDetails? =
@@ -64,54 +66,53 @@ class BufPlugin : Plugin<Project> {
         }
 
     private fun Project.configureBuild(ext: BufExtension, artifactDetails: ArtifactDetails) {
+        logger.info("Publishing buf schema image to ${artifactDetails.groupAndArtifact()}:${artifactDetails.version}")
+
         val bufBuildImage = "$BUF_BUILD_DIR/image.json"
 
         tasks.register<Exec>(BUF_BUILD_TASK_NAME) {
-            doFirst {
-                file("$buildDir/$BUF_BUILD_DIR").mkdirs()
-            }
+            dependsOn(EXTRACT_INCLUDE_PROTO_TASK_NAME)
+
+            doFirst { file("$buildDir/$BUF_BUILD_DIR").mkdirs() }
             bufTask(ext, "build", "--output", "$relativeBuildDir/$bufBuildImage")
         }
 
-        tasks.named(BUF_BUILD_TASK_NAME).dependsOn(EXTRACT_INCLUDE_PROTO_TASK_NAME)
+        the<PublishingExtension>().publications {
+            create<MavenPublication>(BUF_IMAGE_PUBLICATION_NAME) {
+                groupId = artifactDetails.groupId
+                artifactId = artifactDetails.artifactId
+                version = artifactDetails.version
 
-        if (ext.publishSchema) {
-            the<PublishingExtension>().publications {
-                create<MavenPublication>(BUF_IMAGE_PUBLICATION_NAME) {
-                    groupId = artifactDetails.groupId
-                    artifactId = artifactDetails.artifactId
-                    version = artifactDetails.version
-
-                    artifact(file("$buildDir/$bufBuildImage")) {
-                        builtBy(tasks.named(BUF_BUILD_TASK_NAME))
-                    }
+                artifact(file("$buildDir/$bufBuildImage")) {
+                    builtBy(tasks.named(BUF_BUILD_TASK_NAME))
                 }
             }
         }
     }
 
     private fun Project.configureBreaking(ext: BufExtension, artifactDetails: ArtifactDetails) {
+        logger.info("Resolving buf schema image from ${artifactDetails.groupAndArtifact()}:${ext.previousVersion}")
+
         val bufbuildBreaking = "$BUF_BUILD_DIR/breaking"
 
         configurations.create(BUF_BREAKING_CONFIGURATION_NAME)
         dependencies {
-            if (ext.previousVersion != null) {
-                add(
-                    BUF_BREAKING_CONFIGURATION_NAME,
-                    "${artifactDetails.groupId}:${artifactDetails.artifactId}:${ext.previousVersion}"
-                )
-            }
+            add(
+                BUF_BREAKING_CONFIGURATION_NAME,
+                "${artifactDetails.groupId}:${artifactDetails.artifactId}:${ext.previousVersion}"
+            )
         }
 
         tasks.register<Copy>(BUF_BREAKING_EXTRACT_TASK_NAME) {
-            enabled = ext.previousVersion != null
             from(configurations.getByName(BUF_BREAKING_CONFIGURATION_NAME).files)
             into(file("$buildDir/$bufbuildBreaking"))
         }
 
         tasks.register<Exec>(BUF_BREAKING_TASK_NAME) {
+            dependsOn(BUF_BREAKING_EXTRACT_TASK_NAME)
+            dependsOn(EXTRACT_INCLUDE_PROTO_TASK_NAME)
+
             group = JavaBasePlugin.CHECK_TASK_NAME
-            enabled = ext.previousVersion != null
             bufTask(
                 ext,
                 "breaking",
@@ -120,10 +121,36 @@ class BufPlugin : Plugin<Project> {
             )
         }
 
-        tasks.named(BUF_BREAKING_TASK_NAME).dependsOn(BUF_BREAKING_EXTRACT_TASK_NAME)
-        tasks.named(BUF_BREAKING_TASK_NAME).dependsOn(EXTRACT_INCLUDE_PROTO_TASK_NAME)
         tasks.named(JavaBasePlugin.CHECK_TASK_NAME).dependsOn(BUF_BREAKING_TASK_NAME)
     }
+
+    private fun Exec.bufTask(ext: BufExtension, vararg args: String) {
+        commandLine("docker")
+        setArgs(project.baseDockerArgs(ext) + args + bufTaskConfigOption(ext))
+    }
+
+    private fun Exec.bufTaskConfigOption(ext: BufExtension) =
+        project.resolveConfig(ext).let {
+            if (it != null) {
+                logger.info("Using buf config from $it")
+                listOf("--config", it.readText())
+            } else {
+                logger.info("Using buf config from default location if it exists (project directory)")
+                emptyList()
+            }
+        }
+
+    private fun Project.resolveConfig(ext: BufExtension): File? =
+        configurations.getByName(BUF_CONFIGURATION_NAME).files.let {
+            if (it.isNotEmpty()) {
+                require(it.size == 1) {
+                    "Buf lint configuration should only have one file; had $it"
+                }
+                it.single()
+            } else {
+                ext.configFileLocation
+            }
+        }
 
     companion object {
         private const val EXTRACT_INCLUDE_PROTO_TASK_NAME = "extractIncludeProto"
@@ -139,34 +166,6 @@ class BufPlugin : Plugin<Project> {
         const val BUF_BUILD_DIR = "bufbuild"
     }
 }
-
-private fun Exec.bufTask(ext: BufExtension, vararg args: String) {
-    commandLine("docker")
-    setArgs(project.baseDockerArgs(ext) + args + bufTaskConfigOption(ext))
-}
-
-private fun Exec.bufTaskConfigOption(ext: BufExtension) =
-    project.resolveConfig(ext).let {
-        if (it != null) {
-            logger.trace("Using buf config from $it")
-            listOf("--config", it.readText())
-        } else {
-            logger.trace("Using buf config from default location if it exists (project directory)")
-            emptyList()
-        }
-    }
-
-private fun Project.resolveConfig(ext: BufExtension): File? =
-    configurations.getByName(BUF_CONFIGURATION_NAME).files.let {
-        if (it.isNotEmpty()) {
-            require(it.size == 1) {
-                "Buf lint configuration should only have one file; had $it"
-            }
-            it.single()
-        } else {
-            ext.configFileLocation
-        }
-    }
 
 private fun Project.baseDockerArgs(ext: BufExtension) =
     listOf(
