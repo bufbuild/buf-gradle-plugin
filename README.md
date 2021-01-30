@@ -152,12 +152,11 @@ src/main/proto/parmet/service/test/test.proto:9:1:Previously present field "1" w
 
 By default the published image artifact will infer its details from an existing
 Maven publication if one exists. If one doesn't exist, you have more than one,
-or you'd like to specify the details yourself, you can configure them yourself:
+or you'd like to specify the details yourself, you can configure them:
 
 ``` kotlin
 buf {
     publishSchema = true
-    previousVersion = "0.1.0"
     
     imageArtifact {
         groupId = rootProject.group.toString()
