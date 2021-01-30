@@ -49,3 +49,12 @@ ext[GRADLE_PUBLISH_SECRET] = System.getenv("GRADLE_PORTAL_PUBLISH_SECRET")
 tasks.named("publishPlugins") {
     enabled = isRelease()
 }
+
+dependencies {
+    testImplementation("org.junit.jupiter:junit-jupiter:5.7.0")
+    testImplementation("com.google.truth:truth:1.1")
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
