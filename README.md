@@ -150,6 +150,23 @@ version `0.1.0`:
 src/main/proto/parmet/service/test/test.proto:9:1:Previously present field "1" with name "test_content" on message "TestMessage" was deleted.
 ```
 
+By default the published image artifact will infer its details from an existing
+Maven publication if one exists. If one doesn't exist, you have more than one,
+or you'd like to specify the details yourself, you can configure them yourself:
+
+``` kotlin
+buf {
+    publishSchema = true
+    previousVersion = "0.1.0"
+    
+    imageArtifact {
+        groupId = rootProject.group.toString()
+        artifactId = "custom-artifact-id"
+        version = rootProject.version.toString()
+    }
+}
+```
+
 ### Additional Configuration
 
 The version of Buf used can be configured using the `toolVersion` property on
