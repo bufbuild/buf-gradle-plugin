@@ -72,11 +72,6 @@ fun Project.configurePublishing() {
 
     configure<PublishingExtension> {
         repositories {
-            maven {
-                name = "integration"
-                setUrl("${project.rootProject.buildDir}/repos/integration")
-            }
-
             if (isRelease()) {
                 maven {
                     name = "remote"
@@ -123,15 +118,6 @@ fun Project.configurePublishing() {
                 sign(this)
             }
         }
-    }
-
-    tasks.register("publishToIntegrationRepository") {
-        group = "publishing"
-
-        dependsOn(
-            tasks.withType<PublishToMavenRepository>()
-                .matching { it.repositoryIs("integration") }
-        )
     }
 
     tasks.register("publishToRemote") {
