@@ -22,4 +22,4 @@ jobs:
           java-version: 11
 
       - name: Build
-        run: ./gradlew build
+        run: ./gradlew build --info
