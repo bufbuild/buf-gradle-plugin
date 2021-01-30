@@ -10,6 +10,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: publication
 
     steps:
       - uses: actions/checkout@v2
@@ -24,10 +25,3 @@ jobs:
       - name: Publish
         if: github.event.base_ref == 'refs/heads/master'
         run: ./gradlew publishToRemote closeAndReleaseRepository publishPlugins -Dorg.gradle.internal.http.socketTimeout=120000 -Dorg.gradle.internal.network.retry.max.attempts=1 -Dorg.gradle.internal.publish.checksums.insecure=true
-        env:
-          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-          PGP_KEY: ${{ secrets.PGP_KEY }}
-          PGP_PASSWORD: ${{ secrets.PGP_PASSWORD }}
-          GRADLE_PORTAL_PUBLISH_KEY: ${{ secrets.GRADLE_PORTAL_PUBLISH_KEY }}
-          GRADLE_PORTAL_PUBLISH_SECRET: ${{ secrets.GRADLE_PORTAL_PUBLISH_SECRET }}
