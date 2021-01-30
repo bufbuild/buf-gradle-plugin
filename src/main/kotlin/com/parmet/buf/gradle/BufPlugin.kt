@@ -81,12 +81,7 @@ class BufPlugin : Plugin<Project> {
             doFirst {
                 file("$buildDir/$BUF_BUILD_DIR").mkdirs()
             }
-            bufTask(
-                ext,
-                "build",
-                "--output",
-                "$relativeBuildDir/$bufBuildImage"
-            )
+            bufTask(ext, "build", "--output", "$relativeBuildDir/$bufBuildImage")
         }
 
         afterEvaluate {
