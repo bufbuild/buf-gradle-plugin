@@ -49,25 +49,23 @@ class BufPlugin : Plugin<Project> {
 
         afterEvaluate {
             if (ext.publishSchema || ext.previousVersion != null) {
-                the<PublishingExtension>().publications {
-                    val publications = withType<MavenPublication>()
-                    val artifactDetails = ext.imageArtifactDetails
-                        ?: publications.singleOrNull()?.let {
-                            ArtifactDetails(
-                                it.groupId,
-                                "${it.artifactId}-$BUF_IMAGE_PUBLICATION_NAME",
-                                it.version
-                            )
-                        } ?: error(
-                            "Unable to determine image artifact details and schema publication or " +
-                                "compatibility check was requested; no image publication details " +
-                                "were provided and there was not exactly one publication from which " +
-                                "to infer them (found ${publications.size}). Either configure the " +
-                                "plugin with imageArtifact() or configure a publication."
+                val publications = the<PublishingExtension>().publications.withType<MavenPublication>()
+                val artifactDetails = ext.imageArtifactDetails
+                    ?: publications.singleOrNull()?.let {
+                        ArtifactDetails(
+                            it.groupId,
+                            "${it.artifactId}-$BUF_IMAGE_PUBLICATION_NAME",
+                            it.version
                         )
+                    } ?: error(
+                        "Unable to determine image artifact details and schema publication or " +
+                            "compatibility check was requested; no image publication details " +
+                            "were provided and there was not exactly one publication from which " +
+                            "to infer them (found ${publications.size}). Either configure the " +
+                            "plugin with imageArtifact() or configure a publication."
+                    )
 
-                    box.set(artifactDetails)
-                }
+                box.set(artifactDetails)
             }
         }
 
