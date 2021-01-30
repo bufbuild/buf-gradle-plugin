@@ -35,7 +35,8 @@ jobs:
         
       - name: Collate unit test results
         if: always()
-        run: mkdir -p test-results/junit/ \
+        run: |
+          mkdir -p test-results/junit/
           find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/test-results/junit/ \;
 
       - name: Publish unit test results
