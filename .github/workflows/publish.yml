@@ -23,5 +23,4 @@ jobs:
           java-version: 11
 
       - name: Publish
-        if: github.event.base_ref == 'refs/heads/master'
         run: ./gradlew publishToRemote closeAndReleaseRepository publishPlugins -Dorg.gradle.internal.http.socketTimeout=120000 -Dorg.gradle.internal.network.retry.max.attempts=1 -Dorg.gradle.internal.publish.checksums.insecure=true
