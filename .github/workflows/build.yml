@@ -32,6 +32,10 @@ jobs:
 
       - name: Build
         run: ./gradlew build --info
+        
+      - name: Collate unit test results
+        run: mkdir -p test-results/junit/ \
+          find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/test-results/junit/ \;
 
       - name: Publish unit test results
         uses: EnricoMi/publish-unit-test-result-action@v1.6
@@ -39,3 +43,4 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           files: test-results/**/*.xml
+          comment_on_pr: false
