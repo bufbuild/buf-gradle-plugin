@@ -32,3 +32,11 @@ jobs:
 
       - name: Build
         run: ./gradlew build --info
+        
+      - name: Publish unit test results
+        uses: EnricoMi/publish-unit-test-result-action@v1.6
+        if: always()
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          files: "**/test-results/**/*.xml"
+          comment_on_pr: false
