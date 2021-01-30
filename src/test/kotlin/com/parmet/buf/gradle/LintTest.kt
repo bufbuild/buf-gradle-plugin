@@ -43,7 +43,7 @@ class LintTest : AbstractBufIntegrationTest() {
                 """.trimIndent()
             )
 
-        val result = checkRunner(projectDir).buildAndFail()
+        val result = checkRunner(projectDir).build()
 
         assertThat(result.task(":$BUF_LINT_TASK_NAME")?.outcome).isEqualTo(FAILED)
         assertThat(result.output).contains("must be within a directory \"parmet/buf/test/v1\"")
