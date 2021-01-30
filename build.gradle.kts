@@ -3,7 +3,7 @@ import com.gradle.publish.PublishTask.GRADLE_PUBLISH_SECRET
 
 plugins {
     `java-gradle-plugin`
-    id("com.gradle.plugin-publish") version "0.11.0"
+    id("com.gradle.plugin-publish") version "0.12.0"
     id("org.gradle.kotlin.kotlin-dsl.base") version "1.3.6"
 }
 

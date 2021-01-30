@@ -4,7 +4,6 @@ import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.repositories
 import org.gradle.kotlin.dsl.withType
-import org.jetbrains.kotlin.config.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 fun Project.configureKotlin() {
@@ -15,7 +14,7 @@ fun Project.configureKotlin() {
     tasks.withType<KotlinCompile> {
         kotlinOptions {
             allWarningsAsErrors = true
-            jvmTarget = JvmTarget.JVM_1_8.description
+            jvmTarget = JavaVersion.VERSION_1_8.toString()
         }
     }
 
