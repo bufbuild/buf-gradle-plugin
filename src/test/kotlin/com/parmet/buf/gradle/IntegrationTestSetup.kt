@@ -18,13 +18,24 @@ package com.parmet.buf.gradle
 import java.io.File
 import org.gradle.testkit.runner.GradleRunner
 
+class WrappedRunner(
+    private val delegate: GradleRunner
+) {
+    fun build() =
+        delegate.build().also { println(it.output) }
+
+    fun buildAndFail() =
+        delegate.buildAndFail().also { println(it.output) }
+}
+
 fun checkRunner(projectDir: File) =
     GradleRunner.create()
         .withProjectDir(projectDir)
         .withArguments("check")
         .withPluginClasspath()
+        .let { WrappedRunner(it) }
 
-fun buildGradle() =
+fun buildGradle(additionalConfig: String? = null) =
     """
         plugins { 
           id 'java'
@@ -41,6 +52,8 @@ fun buildGradle() =
         }
         
         compileJava.enabled = false
+        
+        ${additionalConfig ?: ""}
     """.trimIndent()
 
 fun bufYaml() =
@@ -55,4 +68,13 @@ fun bufYaml() =
             - google
           use:
             - DEFAULT
+    """.trimIndent()
+
+fun basicProtoFile() =
+    """
+        syntax = "proto3";
+
+        package parmet.buf.test.v1;
+
+        message BasicMessage {}
     """.trimIndent()
