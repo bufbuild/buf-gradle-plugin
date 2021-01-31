@@ -58,3 +58,15 @@ fun basicProtoFile() =
 
         message BasicMessage {}
     """.trimIndent()
+
+fun localRepo() =
+    """
+        publishing {
+          repositories {
+            maven {
+              url 'build/repos/test'
+              name = 'test'
+            }
+          }
+        }
+    """.trimIndent()

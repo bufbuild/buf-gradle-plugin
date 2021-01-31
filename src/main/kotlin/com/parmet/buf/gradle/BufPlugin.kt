@@ -66,7 +66,7 @@ class BufPlugin : Plugin<Project> {
                 ?: publications.singleOrNull()?.let {
                     ArtifactDetails(
                         it.groupId,
-                        "${it.artifactId}-$BUF_IMAGE_PUBLICATION_NAME",
+                        "${it.artifactId}-bufbuild",
                         it.version
                     )
                 } ?: error(

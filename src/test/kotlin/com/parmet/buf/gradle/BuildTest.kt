@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test
 
 class BuildTest : AbstractBufIntegrationTest() {
     @Test
-    fun `publishing schema with explicit artifact details`() {
+    fun `build image with explicit artifact details`() {
         buildFile.writeText(
             buildGradle(
                 """
@@ -44,7 +44,7 @@ class BuildTest : AbstractBufIntegrationTest() {
     }
 
     @Test
-    fun `publishing schema with inferred artifact details`() {
+    fun `build image with inferred artifact details`() {
         buildFile.writeText(
             buildGradle(
                 """
@@ -72,7 +72,7 @@ class BuildTest : AbstractBufIntegrationTest() {
     }
 
     @Test
-    fun `publishing schema with no artifact details should fail`() {
+    fun `build image with no artifact details should fail`() {
         buildFile.writeText(
             buildGradle(
                 """
@@ -93,7 +93,7 @@ class BuildTest : AbstractBufIntegrationTest() {
     }
 
     @Test
-    fun `publishing schema with two publications should fail`() {
+    fun `build image with two publications should fail`() {
         buildFile.writeText(
             buildGradle(
                 """
@@ -132,7 +132,7 @@ class BuildTest : AbstractBufIntegrationTest() {
     }
 
     @Test
-    fun `publishing schema with two publications should succeed if details are provided explicitly`() {
+    fun `build image with two publications should succeed if details are provided explicitly`() {
         buildFile.writeText(
             buildGradle(
                 """
