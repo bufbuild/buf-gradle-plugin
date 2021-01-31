@@ -26,19 +26,11 @@ class PublishTest : AbstractBufIntegrationTest() {
         buildFile.writeText(
             buildGradle(
                 """
-                    apply plugin: 'maven-publish'
+                    $publishSchema
                     
-                    publishing { ${localRepo()} }
+                    publishing { $localRepo }
                     
-                    buf {
-                      publishSchema = true
-
-                      imageArtifact {
-                        groupId = 'foo'
-                        artifactId = 'bar'
-                        version = '2319'
-                      }
-                    }
+                    $imageArtifact
                 """.trimIndent()
             )
         )
@@ -51,23 +43,12 @@ class PublishTest : AbstractBufIntegrationTest() {
         buildFile.writeText(
             buildGradle(
                 """
-                    apply plugin: 'maven-publish'
-                    
-                    publishing { ${localRepo()} }
+                    $publishSchema
                     
                     publishing {
-                      publications {
-                        maven(MavenPublication) {
-                          groupId = 'foo'
-                          artifactId = 'bar'
-                          version = '2319'
-                          from components.java
-                        }
-                      }
-                    }
-                    
-                    buf {
-                      publishSchema = true
+                      $localRepo
+                      
+                      $publication
                     }
                 """.trimIndent()
             )

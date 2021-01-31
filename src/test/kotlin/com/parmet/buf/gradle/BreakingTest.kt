@@ -28,7 +28,7 @@ class BreakingTest : AbstractBufIntegrationTest() {
         buildFile.writeText(
             buildGradle(
                 """
-                    ${localRepo()}
+                    $localRepo
                     
                     buf {
                       previousVersion = '2319'
@@ -55,19 +55,11 @@ class BreakingTest : AbstractBufIntegrationTest() {
         buildFile.writeText(
             buildGradle(
                 """
-                    apply plugin: 'maven-publish'
+                    $publishSchema
                     
-                    publishing { ${localRepo()} }
+                    publishing { $localRepo }
                     
-                    buf {
-                      publishSchema = true
-
-                      imageArtifact {
-                        groupId = 'foo'
-                        artifactId = 'bar'
-                        version = '2319'
-                      }
-                    }
+                    $imageArtifact
                 """.trimIndent()
             )
         )

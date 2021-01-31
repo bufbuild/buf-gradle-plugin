@@ -15,7 +15,7 @@
 
 package com.parmet.buf.gradle
 
-fun buildGradle(additionalConfig: String? = null) =
+fun buildGradle(additionalConfig: String = "") =
     """
         plugins { 
           id 'java'
@@ -33,7 +33,7 @@ fun buildGradle(additionalConfig: String? = null) =
         
         compileJava.enabled = false
         
-        ${additionalConfig ?: ""}
+        $additionalConfig
     """.trimIndent()
 
 fun bufYaml() =
@@ -59,12 +59,47 @@ fun basicProtoFile(messageName: String = "BasicMessage") =
         message $messageName {}
     """.trimIndent()
 
-fun localRepo() =
+val localRepo =
     """
         repositories {
           maven {
             url 'build/repos/test'
             name = 'test'
           }
+        }
+    """.trimIndent()
+
+val imageArtifact =
+    """
+        buf {
+          imageArtifact {
+            groupId = 'foo'
+            artifactId = 'bar'
+            version = '2319'
+          }
+        }
+    """
+
+val publication = publication("maven")
+val publication2 = publication("maven2")
+
+private fun publication(name: String) =
+    """
+        publications {
+          $name(MavenPublication) {
+            groupId = 'foo'
+            artifactId = 'bar'
+            version = '2319'
+            from components.java
+          }
+        }
+    """.trimIndent()
+
+val publishSchema =
+    """
+        apply plugin: 'maven-publish'
+
+        buf {
+          publishSchema = true
         }
     """.trimIndent()

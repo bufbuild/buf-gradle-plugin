@@ -26,17 +26,9 @@ class BuildTest : AbstractBufIntegrationTest() {
         buildFile.writeText(
             buildGradle(
                 """
-                    apply plugin: 'maven-publish'
+                    $publishSchema
                     
-                    buf {
-                      publishSchema = true
-
-                      imageArtifact {
-                        groupId = 'foo'
-                        artifactId = 'bar'
-                        version = '2319'
-                      }
-                    }
+                    $imageArtifact
                 """.trimIndent()
             )
         )
@@ -49,21 +41,10 @@ class BuildTest : AbstractBufIntegrationTest() {
         buildFile.writeText(
             buildGradle(
                 """
-                    apply plugin: 'maven-publish'
+                    $publishSchema
                     
                     publishing {
-                      publications {
-                        maven(MavenPublication) {
-                          groupId = 'foo'
-                          artifactId = 'bar'
-                          version = '2319'
-                          from components.java
-                        }
-                      }
-                    }
-                    
-                    buf {
-                      publishSchema = true
+                      $publication
                     }
                 """.trimIndent()
             )
@@ -74,17 +55,7 @@ class BuildTest : AbstractBufIntegrationTest() {
 
     @Test
     fun `build image with no artifact details should fail`() {
-        buildFile.writeText(
-            buildGradle(
-                """
-                    apply plugin: 'maven-publish'
-                    
-                    buf {
-                      publishSchema = true
-                    }
-                """.trimIndent()
-            )
-        )
+        buildFile.writeText(buildGradle(publishSchema))
 
         prepareProject()
 
@@ -98,28 +69,12 @@ class BuildTest : AbstractBufIntegrationTest() {
         buildFile.writeText(
             buildGradle(
                 """
-                    apply plugin: 'maven-publish'
+                    $publishSchema
                     
                     publishing {
-                      publications {
-                        maven(MavenPublication) {
-                          groupId = 'foo'
-                          artifactId = 'bar'
-                          version = '2319'
-                          from components.java
-                        }
-                        
-                        maven2(MavenPublication) {
-                          groupId = 'foo2'
-                          artifactId = 'bar2'
-                          version = '2319'
-                          from components.java
-                        }
-                      }
-                    }
-                    
-                    buf {
-                      publishSchema = true
+                      $publication
+                      
+                      $publication2
                     }
                 """.trimIndent()
             )
@@ -137,35 +92,15 @@ class BuildTest : AbstractBufIntegrationTest() {
         buildFile.writeText(
             buildGradle(
                 """
-                    apply plugin: 'maven-publish'
+                    $publishSchema
                     
                     publishing {
-                      publications {
-                        maven(MavenPublication) {
-                          groupId = 'foo'
-                          artifactId = 'bar'
-                          version = '2319'
-                          from components.java
-                        }
-                        
-                        maven2(MavenPublication) {
-                          groupId = 'foo2'
-                          artifactId = 'bar2'
-                          version = '2319'
-                          from components.java
-                        }
-                      }
+                      $publication
+                      
+                      $publication2
                     }
                     
-                    buf {
-                      publishSchema = true
-
-                      imageArtifact {
-                        groupId = 'foo'
-                        artifactId = 'bar'
-                        version = '2319'
-                      }
-                    }
+                    $imageArtifact
                 """.trimIndent()
             )
         )
