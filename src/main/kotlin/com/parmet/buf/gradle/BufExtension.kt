@@ -27,7 +27,7 @@ open class BufExtension {
     internal var imageArtifactDetails: ArtifactDetails? = null
 
     fun imageArtifact(configure: Action<ArtifactDetails>) {
-        imageArtifactDetails = ArtifactDetails().apply(configure::execute)
+        imageArtifactDetails = (imageArtifactDetails ?: ArtifactDetails()).apply(configure::execute)
     }
 }
 
