@@ -75,13 +75,15 @@ class BufPlugin : Plugin<Project> {
             }
 
         return if (ext.publishSchema || ext.previousVersion != null) {
-            ext.imageArtifactDetails ?: inferredDetails as? ArtifactDetails ?: error(
-                "Unable to determine image artifact details and schema publication or " +
-                    "compatibility check was requested; no image publication details " +
-                    "were provided and there was not exactly one publication from which " +
-                    "to infer them (found ${inferredDetails ?: 0}). Either configure the " +
-                    "plugin with imageArtifact() or configure a publication."
-            )
+            checkNotNull(ext.imageArtifactDetails ?: inferredDetails as? ArtifactDetails) {
+                """
+                    Unable to determine image artifact details and schema publication or
+                    compatibility check was requested; no image publication details
+                    were provided and there was not exactly one publication from which
+                    to infer them (found ${inferredDetails ?: 0}). Either configure the
+                    plugin with imageArtifact() or configure a publication.
+                """.trimIndent().replace('\n', ' ')
+            }
         } else {
             null
         }
@@ -162,10 +164,12 @@ class BufPlugin : Plugin<Project> {
     private fun Project.resolveConfig(ext: BufExtension): File? =
         configurations.getByName(BUF_CONFIGURATION_NAME).let {
             if (it.dependencies.isNotEmpty()) {
-                if (ext.configFileLocation != null) {
-                    error("Buf lint configuration specified with a config file location and a dependency; pick one.")
+                check(ext.configFileLocation == null) {
+                    "Buf lint configuration specified with a config file location and a dependency; pick one."
                 }
-                it.files.singleOrNull() ?: error("Buf lint configuration should have exactly one file; had ${it.files}.")
+                checkNotNull(it.files.singleOrNull()) {
+                    "Buf lint configuration should have exactly one file; had ${it.files}."
+                }
             } else {
                 ext.configFileLocation
             }
