@@ -16,6 +16,7 @@
 package com.parmet.buf.gradle
 
 import java.io.File
+import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.io.TempDir
 
@@ -37,4 +38,29 @@ abstract class AbstractBufIntegrationTest {
 
         settingsFile.writeText("rootProject.name = 'testing'")
     }
+
+    class WrappedRunner(
+        private val delegate: GradleRunner
+    ) {
+        fun withArguments(vararg args: String) =
+            WrappedRunner(delegate.withArguments(args.toList() + "--info"))
+
+        fun build() =
+            delegate.build().also { println(it.output) }
+
+        fun buildAndFail() =
+            delegate.buildAndFail().also { println(it.output) }
+    }
+
+    fun gradleRunner() =
+        GradleRunner.create()
+            .withProjectDir(projectDir)
+            .withPluginClasspath()
+            .let { WrappedRunner(it) }
+
+    fun checkRunner() =
+        gradleRunner().withArguments("check")
+
+    fun publishRunner() =
+        gradleRunner().withArguments("publish")
 }

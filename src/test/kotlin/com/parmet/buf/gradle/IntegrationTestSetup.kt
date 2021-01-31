@@ -15,16 +15,7 @@
 
 package com.parmet.buf.gradle
 
-import java.io.File
-import org.gradle.testkit.runner.GradleRunner
-
-fun checkRunner(projectDir: File) =
-    GradleRunner.create()
-        .withProjectDir(projectDir)
-        .withArguments("check")
-        .withPluginClasspath()
-
-fun buildGradle() =
+fun buildGradle(additionalConfig: String? = null) =
     """
         plugins { 
           id 'java'
@@ -41,6 +32,8 @@ fun buildGradle() =
         }
         
         compileJava.enabled = false
+        
+        ${additionalConfig ?: ""}
     """.trimIndent()
 
 fun bufYaml() =
@@ -55,4 +48,23 @@ fun bufYaml() =
             - google
           use:
             - DEFAULT
+    """.trimIndent()
+
+fun basicProtoFile(messageName: String = "BasicMessage") =
+    """
+        syntax = "proto3";
+
+        package parmet.buf.test.v1;
+
+        message $messageName {}
+    """.trimIndent()
+
+fun localRepo() =
+    """
+        repositories {
+          maven {
+            url 'build/repos/test'
+            name = 'test'
+          }
+        }
     """.trimIndent()

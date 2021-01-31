@@ -59,26 +59,33 @@ class BufPlugin : Plugin<Project> {
         tasks.named(CHECK_TASK_NAME).dependsOn(BUF_LINT_TASK_NAME)
     }
 
-    private fun Project.getArtifactDetails(ext: BufExtension): ArtifactDetails? =
-        if (ext.publishSchema || ext.previousVersion != null) {
-            val publications = the<PublishingExtension>().publications.withType<MavenPublication>()
-            ext.imageArtifactDetails
-                ?: publications.singleOrNull()?.let {
+    private fun Project.getArtifactDetails(ext: BufExtension): ArtifactDetails? {
+        val inferredDetails =
+            if (ext.publishSchema) {
+                val publications = the<PublishingExtension>().publications.withType<MavenPublication>()
+                publications.singleOrNull()?.let {
                     ArtifactDetails(
                         it.groupId,
-                        "${it.artifactId}-$BUF_IMAGE_PUBLICATION_NAME",
+                        "${it.artifactId}-bufbuild",
                         it.version
                     )
-                } ?: error(
-                    "Unable to determine image artifact details and schema publication or " +
-                        "compatibility check was requested; no image publication details " +
-                        "were provided and there was not exactly one publication from which " +
-                        "to infer them (found ${publications.size}). Either configure the " +
-                        "plugin with imageArtifact() or configure a publication."
-                )
+                } ?: publications.size
+            } else {
+                null
+            }
+
+        return if (ext.publishSchema || ext.previousVersion != null) {
+            ext.imageArtifactDetails ?: inferredDetails as? ArtifactDetails ?: error(
+                "Unable to determine image artifact details and schema publication or " +
+                    "compatibility check was requested; no image publication details " +
+                    "were provided and there was not exactly one publication from which " +
+                    "to infer them (found ${inferredDetails ?: 0}). Either configure the " +
+                    "plugin with imageArtifact() or configure a publication."
+            )
         } else {
             null
         }
+    }
 
     private fun Project.configureBuild(ext: BufExtension, artifactDetails: ArtifactDetails) {
         logger.info("Publishing buf schema image to ${artifactDetails.groupAndArtifact()}:${artifactDetails.version}")
@@ -153,12 +160,9 @@ class BufPlugin : Plugin<Project> {
         }
 
     private fun Project.resolveConfig(ext: BufExtension): File? =
-        configurations.getByName(BUF_CONFIGURATION_NAME).files.let {
-            if (it.isNotEmpty()) {
-                require(it.size == 1) {
-                    "Buf lint configuration should only have one file; had $it"
-                }
-                it.single()
+        configurations.getByName(BUF_CONFIGURATION_NAME).let {
+            if (it.dependencies.isNotEmpty()) {
+                it.files.singleOrNull() ?: error("Buf lint configuration should have exactly one file; had ${it.files}")
             } else {
                 ext.configFileLocation
             }
