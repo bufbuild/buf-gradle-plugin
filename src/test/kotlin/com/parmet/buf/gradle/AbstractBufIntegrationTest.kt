@@ -43,7 +43,7 @@ abstract class AbstractBufIntegrationTest {
         private val delegate: GradleRunner
     ) {
         fun withArguments(vararg args: String) =
-            WrappedRunner(delegate.withArguments(*args))
+            WrappedRunner(delegate.withArguments(args.toList() + "--info"))
 
         fun build() =
             delegate.build().also { println(it.output) }
@@ -57,4 +57,10 @@ abstract class AbstractBufIntegrationTest {
             .withProjectDir(projectDir)
             .withPluginClasspath()
             .let { WrappedRunner(it) }
+
+    fun checkRunner() =
+        gradleRunner().withArguments("check")
+
+    fun publishRunner() =
+        gradleRunner().withArguments("publish")
 }

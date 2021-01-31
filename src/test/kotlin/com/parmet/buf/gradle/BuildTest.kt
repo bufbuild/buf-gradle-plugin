@@ -31,9 +31,9 @@ class BuildTest : AbstractBufIntegrationTest() {
                     buf {
                       publishSchema = true
                       imageArtifact {
-                        groupId = "foo"
-                        artifactId = "bar"
-                        version = "2319"
+                        groupId = 'foo'
+                        artifactId = 'bar'
+                        version = '2319'
                       }
                     }
                 """.trimIndent()
@@ -159,9 +159,9 @@ class BuildTest : AbstractBufIntegrationTest() {
                     buf {
                       publishSchema = true
                       imageArtifact {
-                        groupId = "foo"
-                        artifactId = "bar"
-                        version = "2319"
+                        groupId = 'foo'
+                        artifactId = 'bar'
+                        version = '2319'
                       }
                     }
                 """.trimIndent()
@@ -188,5 +188,5 @@ class BuildTest : AbstractBufIntegrationTest() {
     }
 
     private fun buildRunner() =
-        gradleRunner().withArguments("bufBuild")
+        gradleRunner().withArguments(":bufBuild")
 }

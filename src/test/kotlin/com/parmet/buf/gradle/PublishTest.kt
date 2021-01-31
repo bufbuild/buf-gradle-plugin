@@ -28,14 +28,14 @@ class PublishTest : AbstractBufIntegrationTest() {
                 """
                     apply plugin: 'maven-publish'
                     
-                    ${localRepo()}
+                    publishing { ${localRepo()} }
                     
                     buf {
                       publishSchema = true
                       imageArtifact {
-                        groupId = "foo"
-                        artifactId = "bar"
-                        version = "2319"
+                        groupId = 'foo'
+                        artifactId = 'bar'
+                        version = '2319'
                       }
                     }
                 """.trimIndent()
@@ -52,7 +52,7 @@ class PublishTest : AbstractBufIntegrationTest() {
                 """
                     apply plugin: 'maven-publish'
                     
-                    ${localRepo()}
+                    publishing { ${localRepo()} }
                     
                     publishing {
                       publications {
@@ -89,7 +89,4 @@ class PublishTest : AbstractBufIntegrationTest() {
 
         assertThat(publishedImage.toFile().readText()).isEqualTo(builtImage.toFile().readText())
     }
-
-    private fun publishRunner() =
-        gradleRunner().withArguments("compileJava", "publish", "--info")
 }

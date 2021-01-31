@@ -50,23 +50,21 @@ fun bufYaml() =
             - DEFAULT
     """.trimIndent()
 
-fun basicProtoFile() =
+fun basicProtoFile(messageName: String = "BasicMessage") =
     """
         syntax = "proto3";
 
         package parmet.buf.test.v1;
 
-        message BasicMessage {}
+        message $messageName {}
     """.trimIndent()
 
 fun localRepo() =
     """
-        publishing {
-          repositories {
-            maven {
-              url 'build/repos/test'
-              name = 'test'
-            }
+        repositories {
+          maven {
+            url 'build/repos/test'
+            name = 'test'
           }
         }
     """.trimIndent()
