@@ -179,5 +179,5 @@ buf {
 
 ### Prerequisites
 
-The plugin delegates calls to the latest Buf Docker image. It requires
+The plugin delegates calls to a Buf Docker image. It requires
 Docker to be installed wherever it is run.
