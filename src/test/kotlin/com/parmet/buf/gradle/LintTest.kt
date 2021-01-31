@@ -31,7 +31,7 @@ class LintTest : AbstractBufIntegrationTest() {
             .newFile("test.proto")
             .writeText(basicProtoFile())
 
-        assertThat(checkRunner(projectDir).build().task(":check")?.outcome).isEqualTo(SUCCESS)
+        assertThat(checkRunner().build().task(":check")?.outcome).isEqualTo(SUCCESS)
     }
 
     @Test
@@ -60,7 +60,7 @@ class LintTest : AbstractBufIntegrationTest() {
             )
         )
 
-        assertThat(checkRunner(projectDir).build().task(":check")?.outcome).isEqualTo(SUCCESS)
+        assertThat(checkRunner().build().task(":check")?.outcome).isEqualTo(SUCCESS)
     }
 
     @Test
@@ -79,7 +79,7 @@ class LintTest : AbstractBufIntegrationTest() {
             )
         )
 
-        assertThat(checkRunner(projectDir).build().task(":check")?.outcome).isEqualTo(SUCCESS)
+        assertThat(checkRunner().build().task(":check")?.outcome).isEqualTo(SUCCESS)
     }
 
     @Test
@@ -100,7 +100,7 @@ class LintTest : AbstractBufIntegrationTest() {
             )
         )
 
-        val result = checkRunner(projectDir).buildAndFail()
+        val result = checkRunner().buildAndFail()
         assertThat(result.output).contains("Buf lint configuration should have exactly one file")
         assertThat(result.output).contains("buf-1.yaml")
         assertThat(result.output).contains("buf-2.yaml")
@@ -122,7 +122,7 @@ class LintTest : AbstractBufIntegrationTest() {
             )
         )
 
-        val result = checkRunner(projectDir).buildAndFail()
+        val result = checkRunner().buildAndFail()
         assertThat(result.output).contains("Buf lint configuration should have exactly one file")
         assertThat(result.output).contains("had []")
     }
@@ -140,8 +140,11 @@ class LintTest : AbstractBufIntegrationTest() {
     }
 
     private fun assertLocationFailure() {
-        val result = checkRunner(projectDir).buildAndFail()
+        val result = checkRunner().buildAndFail()
         assertThat(result.task(":$BUF_LINT_TASK_NAME")?.outcome).isEqualTo(FAILED)
         assertThat(result.output).contains("must be within a directory \"parmet/buf/test/v1\"")
     }
+
+    private fun checkRunner() =
+        gradleRunner().withArguments("check")
 }
