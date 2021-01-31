@@ -32,10 +32,10 @@ class BreakingTest : AbstractBufIntegrationTest() {
                     
                     buf {
                       previousVersion = '2319'
+
                       imageArtifact {
                         groupId = 'foo'
                         artifactId = 'bar'
-                        version = '2320'
                       }
                     }
                 """.trimIndent()
@@ -61,6 +61,7 @@ class BreakingTest : AbstractBufIntegrationTest() {
                     
                     buf {
                       publishSchema = true
+
                       imageArtifact {
                         groupId = 'foo'
                         artifactId = 'bar'

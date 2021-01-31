@@ -30,6 +30,7 @@ class BuildTest : AbstractBufIntegrationTest() {
                     
                     buf {
                       publishSchema = true
+
                       imageArtifact {
                         groupId = 'foo'
                         artifactId = 'bar'
@@ -158,6 +159,7 @@ class BuildTest : AbstractBufIntegrationTest() {
                     
                     buf {
                       publishSchema = true
+
                       imageArtifact {
                         groupId = 'foo'
                         artifactId = 'bar'

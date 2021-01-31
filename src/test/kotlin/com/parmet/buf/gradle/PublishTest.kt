@@ -32,6 +32,7 @@ class PublishTest : AbstractBufIntegrationTest() {
                     
                     buf {
                       publishSchema = true
+
                       imageArtifact {
                         groupId = 'foo'
                         artifactId = 'bar'
