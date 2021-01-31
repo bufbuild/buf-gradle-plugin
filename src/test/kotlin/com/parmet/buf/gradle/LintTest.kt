@@ -128,7 +128,7 @@ class LintTest : AbstractBufIntegrationTest() {
 
     @Test
     fun `linting with a file and dependency config override fails`() {
-        setUpWithFailure()
+        writeProto()
 
         projectDir.newFolder("subdir").newFile("buf.yaml").writeText(bufYaml())
 
