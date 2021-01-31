@@ -126,6 +126,30 @@ class LintTest : AbstractBufIntegrationTest() {
         assertThat(result.output).contains("had []")
     }
 
+    @Test
+    fun `linting with a file and dependency config override fails`() {
+        setUpWithFailure()
+
+        projectDir.newFolder("subdir").newFile("buf.yaml").writeText(bufYaml())
+
+        buildFile.writeText(
+            buildGradle(
+                """
+                    buf {
+                      configFileLocation = project.file("subdir/buf.yaml")
+                    }
+
+                    dependencies {
+                      buf(fileTree('subdir') { include '*.yaml' })
+                    }
+                """.trimIndent()
+            )
+        )
+
+        val result = checkRunner().buildAndFail()
+        assertThat(result.output).contains("config file location and a dependency; pick one")
+    }
+
     private fun setUpWithFailure() {
         buildFile.writeText(buildGradle())
         writeProto()

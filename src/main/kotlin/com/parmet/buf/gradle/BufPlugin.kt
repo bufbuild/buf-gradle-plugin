@@ -162,7 +162,10 @@ class BufPlugin : Plugin<Project> {
     private fun Project.resolveConfig(ext: BufExtension): File? =
         configurations.getByName(BUF_CONFIGURATION_NAME).let {
             if (it.dependencies.isNotEmpty()) {
-                it.files.singleOrNull() ?: error("Buf lint configuration should have exactly one file; had ${it.files}")
+                if (ext.configFileLocation != null) {
+                    error("Buf lint configuration specified with a config file location and a dependency; pick one.")
+                }
+                it.files.singleOrNull() ?: error("Buf lint configuration should have exactly one file; had ${it.files}.")
             } else {
                 ext.configFileLocation
             }
