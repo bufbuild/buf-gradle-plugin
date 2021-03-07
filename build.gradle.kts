@@ -18,7 +18,7 @@ import com.gradle.publish.PublishTask.GRADLE_PUBLISH_SECRET
 
 plugins {
     `java-gradle-plugin`
-    id("com.gradle.plugin-publish") version "0.12.0"
+    id("com.gradle.plugin-publish") version "0.13.0"
     id("org.gradle.kotlin.kotlin-dsl.base") version "1.3.6"
 }
 
@@ -66,8 +66,8 @@ tasks.named("publishPlugins") {
 }
 
 dependencies {
-    testImplementation("org.junit.jupiter:junit-jupiter:5.7.0")
-    testImplementation("com.google.truth:truth:1.1")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
+    testImplementation("com.google.truth:truth:1.1.2")
 }
 
 tasks.withType<Test> {
