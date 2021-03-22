@@ -18,8 +18,8 @@ import com.gradle.publish.PublishTask.GRADLE_PUBLISH_SECRET
 
 plugins {
     `java-gradle-plugin`
+    `kotlin-dsl`
     id("com.gradle.plugin-publish") version "0.13.0"
-    id("org.gradle.kotlin.kotlin-dsl.base") version "1.3.6"
 }
 
 kotlinDslPluginOptions {
