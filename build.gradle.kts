@@ -24,8 +24,9 @@ repositories {
 plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
-    id("com.gradle.plugin-publish") version "0.14.0"
     kotlin("jvm")
+    id("com.gradle.plugin-publish") version "0.14.0"
+    id("com.diffplug.spotless") version "5.14.0"
 }
 
 kotlinDslPluginOptions {
@@ -33,7 +34,16 @@ kotlinDslPluginOptions {
 }
 
 allprojects {
-    configureLinting()
+    spotless {
+        kotlin {
+            ktlint()
+            target("**/*.kt")
+        }
+
+        kotlinGradle {
+            ktlint()
+        }
+    }
 }
 
 group = "com.parmet"
@@ -84,6 +94,6 @@ tasks {
 }
 
 dependencies {
-    testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.7.2")
     testImplementation("com.google.truth:truth:1.1.2")
 }
