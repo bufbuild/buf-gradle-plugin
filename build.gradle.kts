@@ -25,7 +25,7 @@ plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
     kotlin("jvm")
-    id("com.gradle.plugin-publish") version "0.14.0"
+    id("com.gradle.plugin-publish") version "0.15.0"
     id("com.diffplug.spotless") version "5.14.0"
 }
 
@@ -95,5 +95,5 @@ tasks {
 
 dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.7.2")
-    testImplementation("com.google.truth:truth:1.1.2")
+    testImplementation("com.google.truth:truth:1.1.3")
 }
