@@ -15,11 +15,18 @@
 
 import com.gradle.publish.PublishTask.GRADLE_PUBLISH_KEY
 import com.gradle.publish.PublishTask.GRADLE_PUBLISH_SECRET
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+repositories {
+    gradlePluginPortal()
+}
 
 plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
-    id("com.gradle.plugin-publish") version "0.13.0"
+    kotlin("jvm")
+    id("com.gradle.plugin-publish") version "0.15.0"
+    id("com.diffplug.spotless") version "5.14.0"
 }
 
 kotlinDslPluginOptions {
@@ -27,13 +34,21 @@ kotlinDslPluginOptions {
 }
 
 allprojects {
-    configureLinting()
+    spotless {
+        kotlin {
+            ktlint()
+            target("**/*.kt")
+        }
+
+        kotlinGradle {
+            ktlint()
+        }
+    }
 }
 
 group = "com.parmet"
 configurePublishing()
 configureStagingRepoTasks()
-configureKotlin()
 
 gradlePlugin {
     isAutomatedPublishing = false
@@ -61,15 +76,24 @@ pluginBundle {
 ext[GRADLE_PUBLISH_KEY] = System.getenv("GRADLE_PORTAL_PUBLISH_KEY")
 ext[GRADLE_PUBLISH_SECRET] = System.getenv("GRADLE_PORTAL_PUBLISH_SECRET")
 
-tasks.named("publishPlugins") {
-    enabled = isRelease()
+tasks {
+    named("publishPlugins") {
+        enabled = isRelease()
+    }
+
+    withType<Test> {
+        useJUnitPlatform()
+    }
+
+    withType<KotlinCompile> {
+        kotlinOptions {
+            allWarningsAsErrors = true
+            jvmTarget = JavaVersion.VERSION_1_8.toString()
+        }
+    }
 }
 
 dependencies {
-    testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
-    testImplementation("com.google.truth:truth:1.1.2")
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
+    testImplementation("org.junit.jupiter:junit-jupiter:5.7.2")
+    testImplementation("com.google.truth:truth:1.1.3")
 }

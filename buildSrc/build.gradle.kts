@@ -19,11 +19,9 @@ plugins {
 
 repositories {
     gradlePluginPortal()
-    mavenCentral()
 }
 
 dependencies {
-    implementation("com.diffplug.spotless:spotless-plugin-gradle:5.11.0")
     implementation("io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.30.0")
     implementation(kotlin("gradle-plugin"))
 }
