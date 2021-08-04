@@ -26,11 +26,7 @@ plugins {
     `kotlin-dsl`
     kotlin("jvm")
     id("com.gradle.plugin-publish") version "0.15.0"
-    id("com.diffplug.spotless") version "5.14.0"
-}
-
-kotlinDslPluginOptions {
-    experimentalWarning.set(false)
+    id("com.diffplug.spotless") version "5.14.2"
 }
 
 allprojects {

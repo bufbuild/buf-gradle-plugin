@@ -20,14 +20,14 @@ fun buildGradle(additionalConfig: String = "") =
         plugins { 
           id 'java'
           id 'com.parmet.buf'
-          id 'com.google.protobuf' version '0.8.14'
+          id 'com.google.protobuf' version '0.8.17'
         }
         
         repositories { mavenCentral() }
         
         protobuf {
           protoc {
-            artifact = 'com.google.protobuf:protoc:3.14.0'
+            artifact = 'com.google.protobuf:protoc:3.17.3'
           }
         }
         
