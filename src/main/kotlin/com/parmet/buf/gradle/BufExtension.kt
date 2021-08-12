@@ -22,7 +22,7 @@ open class BufExtension {
     var configFileLocation: File? = null
     var publishSchema = false
     var previousVersion: String? = null
-    var toolVersion: String = "0.48.2"
+    var toolVersion: String = "0.49.0"
 
     internal var imageArtifactDetails: ArtifactDetails? = null
 
