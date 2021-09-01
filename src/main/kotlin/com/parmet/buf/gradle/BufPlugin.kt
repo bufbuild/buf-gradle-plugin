@@ -94,7 +94,6 @@ class BufPlugin : Plugin<Project> {
         logger.info("Publishing buf schema image to ${artifactDetails.groupAndArtifact()}:${artifactDetails.version}")
 
         tasks.register<Exec>(BUF_BUILD_TASK_NAME) {
-            doFirst { file("$buildDir/$BUF_BUILD_DIR").mkdirs() }
             bufTask(ext, "build", "--output", BUF_BUILD_PUBLICATION_FILENAME)
         }
 
@@ -104,7 +103,7 @@ class BufPlugin : Plugin<Project> {
                 artifactId = artifactDetails.artifactId
                 version = artifactDetails.version
 
-                artifact(file("$buildDir/$BUF_BUILD_DIR/$BUF_BUILD_PUBLICATION_FILENAME")) {
+                artifact(file("$bufbuildDir/$BUF_BUILD_PUBLICATION_FILENAME")) {
                     builtBy(tasks.named(BUF_BUILD_TASK_NAME))
                 }
             }
@@ -121,7 +120,7 @@ class BufPlugin : Plugin<Project> {
 
         tasks.register<Copy>(BUF_BREAKING_EXTRACT_TASK_NAME) {
             from(configurations.getByName(BUF_BREAKING_CONFIGURATION_NAME).files)
-            into(file("$buildDir/$BUF_BUILD_DIR/$BREAKING_DIR"))
+            into(file("$bufbuildDir/$BREAKING_DIR"))
         }
 
         tasks.register<Exec>(BUF_BREAKING_TASK_NAME) {
@@ -149,11 +148,10 @@ class BufPlugin : Plugin<Project> {
 
     private fun Project.configureWriteWorkspaceYaml() {
         tasks.register(WRITE_WORKSPACE_YAML_TASK_NAME) {
-            val dest = "$buildDir/$BUF_BUILD_DIR"
-            outputs.dir(dest)
+            outputs.dir(bufbuildDir)
             doLast {
-                File(dest).mkdirs()
-                File("$dest/buf.work.yaml").writeText(
+                File(bufbuildDir).mkdirs()
+                File("$bufbuildDir/buf.work.yaml").writeText(
                     """
                         version: v1
                         directories:
@@ -169,7 +167,7 @@ class BufPlugin : Plugin<Project> {
             dependsOn(EXTRACT_INCLUDE_PROTO_TASK_NAME)
 
             from("src/main/proto", "build/extracted-include-protos/main")
-            into("${project.buildDir}/$BUF_BUILD_DIR/$WORKSPACE_DIR")
+            into("${project.bufbuildDir}/$WORKSPACE_DIR")
         }
     }
 
@@ -223,7 +221,7 @@ class BufPlugin : Plugin<Project> {
 private fun Project.baseDockerArgs(ext: BufExtension) =
     listOf(
         "run",
-        "--volume", "$buildDir/$BUF_BUILD_DIR:/workspace",
+        "--volume", "$bufbuildDir:/workspace",
         "--workdir", "/workspace",
         "bufbuild/buf:${ext.toolVersion}"
     )
@@ -232,5 +230,5 @@ private fun TaskProvider<*>.dependsOn(obj: Any) {
     configure { dependsOn(obj) }
 }
 
-private val Project.relativeBuildDir
-    get() = buildDir.absolutePath.substringAfterLast(File.separator)
+private val Project.bufbuildDir
+    get() = "$buildDir/$BUF_BUILD_DIR"
