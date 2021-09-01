@@ -151,13 +151,19 @@ class LintTest : AbstractBufIntegrationTest() {
     }
 
     private fun setUpWithFailure() {
+        println("Setting up failing buf run")
         buildFile.writeText(buildGradle())
-        writeProto()
+        writeProto("extra-path")
         assertLocationFailure()
+        protoDir.walkTopDown().forEach { it.delete() }
+        println("Setting up Gradle clean")
+        gradleRunner().withArguments("clean").build()
+        println("Finished executing failed buf run")
+        writeProto()
     }
 
-    private fun writeProto() {
-        protoDir.newFolder("parmet", "buf", "test", "v1")
+    private fun writeProto(extraPath: String? = null) {
+        protoDir.newFolder(*listOfNotNull(extraPath, "parmet", "buf", "test", "v1").toTypedArray())
             .newFile("test.proto")
             .writeText(basicProtoFile())
     }

@@ -13,20 +13,17 @@ Create a Buf configuration file in the project directory:
 ``` yaml
 # buf.yaml
 
-version: v1beta1
-build:
-  roots:
-    - src/main/proto
-
-    # The protobuf-gradle-plugin extracts and merges protobuf dependencies to
-    # `build/extracted-include-protos`, so tell Buf where to find them.
-    - build/extracted-include-protos/main
+version: v1
 lint:
   ignore:
     - google
   use:
     - DEFAULT
 ```
+
+This plugin assumes that all protobuf source is in the `src/main/proto` directory. It works with an implicit Buf
+workspace that includes `src/main/proto` and the `include` dependencies that the protobuf-gradle-plugin extracts into
+`"${project.buildDir}/extracted-include-protos"`. 
 
 See [below](#configuration) for alternative methods of configuration.
 
@@ -173,7 +170,7 @@ the extension:
 
 ``` kotlin
 buf {
-    toolVersion = "0.52.0"
+    toolVersion = "0.54.1"
 }
 ```
 
