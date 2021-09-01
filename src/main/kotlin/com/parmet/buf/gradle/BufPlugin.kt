@@ -16,7 +16,6 @@
 package com.parmet.buf.gradle
 
 import com.parmet.buf.gradle.BufPlugin.Companion.BUF_BUILD_DIR
-import com.parmet.buf.gradle.BufPlugin.Companion.WORKSPACE_DIR
 import java.io.File
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -38,6 +37,7 @@ class BufPlugin : Plugin<Project> {
         project.configurations.create(BUF_CONFIGURATION_NAME)
 
         project.afterEvaluate {
+            project.configureWriteWorkspaceYaml()
             project.configureCopyProtoToWorkspace()
             project.configureLint(ext)
             project.getArtifactDetails(ext)?.let {
@@ -93,11 +93,9 @@ class BufPlugin : Plugin<Project> {
     private fun Project.configureBuild(ext: BufExtension, artifactDetails: ArtifactDetails) {
         logger.info("Publishing buf schema image to ${artifactDetails.groupAndArtifact()}:${artifactDetails.version}")
 
-        val bufBuildImage = "$BUF_BUILD_DIR/image.json"
-
         tasks.register<Exec>(BUF_BUILD_TASK_NAME) {
             doFirst { file("$buildDir/$BUF_BUILD_DIR").mkdirs() }
-            bufTask(ext, "build", "--output", "$relativeBuildDir/$bufBuildImage")
+            bufTask(ext, "build", "--output", BUF_BUILD_PUBLICATION_FILENAME)
         }
 
         the<PublishingExtension>().publications {
@@ -106,7 +104,7 @@ class BufPlugin : Plugin<Project> {
                 artifactId = artifactDetails.artifactId
                 version = artifactDetails.version
 
-                artifact(file("$buildDir/$bufBuildImage")) {
+                artifact(file("$buildDir/$BUF_BUILD_DIR/$BUF_BUILD_PUBLICATION_FILENAME")) {
                     builtBy(tasks.named(BUF_BUILD_TASK_NAME))
                 }
             }
@@ -116,8 +114,6 @@ class BufPlugin : Plugin<Project> {
     private fun Project.configureBreaking(ext: BufExtension, artifactDetails: ArtifactDetails) {
         logger.info("Resolving buf schema image from ${artifactDetails.groupAndArtifact()}:${ext.previousVersion}")
 
-        val bufbuildBreaking = "$BUF_BUILD_DIR/breaking"
-
         configurations.create(BUF_BREAKING_CONFIGURATION_NAME)
         dependencies {
             add(BUF_BREAKING_CONFIGURATION_NAME, "${artifactDetails.groupAndArtifact()}:${ext.previousVersion}")
@@ -125,7 +121,7 @@ class BufPlugin : Plugin<Project> {
 
         tasks.register<Copy>(BUF_BREAKING_EXTRACT_TASK_NAME) {
             from(configurations.getByName(BUF_BREAKING_CONFIGURATION_NAME).files)
-            into(file("$buildDir/$bufbuildBreaking"))
+            into(file("$buildDir/$BUF_BUILD_DIR/$BREAKING_DIR"))
         }
 
         tasks.register<Exec>(BUF_BREAKING_TASK_NAME) {
@@ -136,7 +132,7 @@ class BufPlugin : Plugin<Project> {
                 ext,
                 "breaking",
                 "--against",
-                "$relativeBuildDir/$bufbuildBreaking/${artifactDetails.artifactId}-${ext.previousVersion}.json"
+                "$BREAKING_DIR/${artifactDetails.artifactId}-${ext.previousVersion}.json"
             )
         }
 
@@ -145,9 +141,27 @@ class BufPlugin : Plugin<Project> {
 
     private fun Exec.bufTask(ext: BufExtension, vararg args: String) {
         dependsOn(COPY_PROTO_TO_WORKSPACE_TASK_NAME)
+        dependsOn(WRITE_WORKSPACE_YAML_TASK_NAME)
 
         commandLine("docker")
         setArgs(project.baseDockerArgs(ext) + args + bufTaskConfigOption(ext))
+    }
+
+    private fun Project.configureWriteWorkspaceYaml() {
+        tasks.register(WRITE_WORKSPACE_YAML_TASK_NAME) {
+            val dest = "$buildDir/$BUF_BUILD_DIR"
+            outputs.dir(dest)
+            doLast {
+                File(dest).mkdirs()
+                File("$dest/buf.work.yaml").writeText(
+                    """
+                        version: v1
+                        directories:
+                          - workspace
+                    """.trimIndent()
+                )
+            }
+        }
     }
 
     private fun Project.configureCopyProtoToWorkspace() {
@@ -191,21 +205,25 @@ class BufPlugin : Plugin<Project> {
         const val BUF_BREAKING_EXTRACT_TASK_NAME = "bufBreakingExtract"
         const val BUF_BREAKING_TASK_NAME = "bufBreaking"
         const val BUF_LINT_TASK_NAME = "bufLint"
+        const val WRITE_WORKSPACE_YAML_TASK_NAME = "writeWorkspaceYaml"
+        const val COPY_PROTO_TO_WORKSPACE_TASK_NAME = "copyProtoToWorkspace"
 
         const val BUF_BREAKING_CONFIGURATION_NAME = "bufBreaking"
         const val BUF_CONFIGURATION_NAME = "buf"
         const val BUF_IMAGE_PUBLICATION_NAME = "bufImagePublication"
-        const val BUF_BUILD_DIR = "bufbuild"
 
-        const val COPY_PROTO_TO_WORKSPACE_TASK_NAME = "copyProtoToWorkspace"
+        const val BUF_BUILD_DIR = "bufbuild"
+        const val BREAKING_DIR = "breaking"
         const val WORKSPACE_DIR = "workspace"
+
+        const val BUF_BUILD_PUBLICATION_FILENAME = "image.json"
     }
 }
 
 private fun Project.baseDockerArgs(ext: BufExtension) =
     listOf(
         "run",
-        "--volume", "$buildDir/$BUF_BUILD_DIR/$WORKSPACE_DIR:/workspace",
+        "--volume", "$buildDir/$BUF_BUILD_DIR:/workspace",
         "--workdir", "/workspace",
         "bufbuild/buf:${ext.toolVersion}"
     )
