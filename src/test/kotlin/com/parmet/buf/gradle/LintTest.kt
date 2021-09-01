@@ -16,7 +16,6 @@
 package com.parmet.buf.gradle
 
 import com.google.common.truth.Truth.assertThat
-import java.io.File
 import org.gradle.testkit.runner.TaskOutcome.FAILED
 import org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import org.junit.jupiter.api.Test
@@ -31,14 +30,7 @@ class LintTest : AbstractBufIntegrationTest() {
             .newFile("test.proto")
             .writeText(basicProtoFile())
 
-        try {
-            assertThat(checkRunner().build().task(":check")?.outcome).isEqualTo(SUCCESS)
-        } catch (t: Throwable) {
-            File(projectDir, "build").walkTopDown().forEach {
-                println(it)
-            }
-            throw t
-        }
+        assertThat(checkRunner().build().task(":check")?.outcome).isEqualTo(SUCCESS)
     }
 
     @Test
@@ -159,13 +151,19 @@ class LintTest : AbstractBufIntegrationTest() {
     }
 
     private fun setUpWithFailure() {
+        println("Setting up failing buf run")
         buildFile.writeText(buildGradle())
-        writeProto()
+        writeProto("extra-path")
         assertLocationFailure()
+        protoDir.walkTopDown().forEach { it.delete() }
+        println("Setting up Gradle clean")
+        gradleRunner().withArguments("clean").build()
+        println("Finished executing failed buf run")
+        writeProto()
     }
 
-    private fun writeProto() {
-        protoDir.newFolder("parmet", "buf", "test", "v1")
+    private fun writeProto(extraPath: String? = null) {
+        protoDir.newFolder(*listOfNotNull(extraPath, "parmet", "buf", "test", "v1").toTypedArray())
             .newFile("test.proto")
             .writeText(basicProtoFile())
     }
