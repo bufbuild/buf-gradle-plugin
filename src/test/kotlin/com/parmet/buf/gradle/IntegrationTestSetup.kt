@@ -38,11 +38,7 @@ fun buildGradle(additionalConfig: String = "") =
 
 fun bufYaml() =
     """
-        version: v1beta1
-        build:
-          roots:
-            - src/main/proto
-            - build/extracted-include-protos/main
+        version: v1
         lint:
           ignore:
             - google

@@ -16,6 +16,7 @@
 package com.parmet.buf.gradle
 
 import com.google.common.truth.Truth.assertThat
+import java.io.File
 import org.gradle.testkit.runner.TaskOutcome.FAILED
 import org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import org.junit.jupiter.api.Test
@@ -30,7 +31,14 @@ class LintTest : AbstractBufIntegrationTest() {
             .newFile("test.proto")
             .writeText(basicProtoFile())
 
-        assertThat(checkRunner().build().task(":check")?.outcome).isEqualTo(SUCCESS)
+        try {
+            assertThat(checkRunner().build().task(":check")?.outcome).isEqualTo(SUCCESS)
+        } catch (t: Throwable) {
+            File(projectDir, "build").walkTopDown().forEach {
+                println(it)
+            }
+            throw t
+        }
     }
 
     @Test

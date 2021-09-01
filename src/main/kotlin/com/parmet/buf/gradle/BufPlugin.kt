@@ -15,6 +15,8 @@
 
 package com.parmet.buf.gradle
 
+import com.parmet.buf.gradle.BufPlugin.Companion.BUF_BUILD_DIR
+import com.parmet.buf.gradle.BufPlugin.Companion.WORKSPACE_DIR
 import java.io.File
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -36,6 +38,7 @@ class BufPlugin : Plugin<Project> {
         project.configurations.create(BUF_CONFIGURATION_NAME)
 
         project.afterEvaluate {
+            project.configureCopyProtoToWorkspace()
             project.configureLint(ext)
             project.getArtifactDetails(ext)?.let {
                 if (ext.publishSchema) {
@@ -50,8 +53,6 @@ class BufPlugin : Plugin<Project> {
 
     private fun Project.configureLint(ext: BufExtension) {
         tasks.register<Exec>(BUF_LINT_TASK_NAME) {
-            dependsOn(EXTRACT_INCLUDE_PROTO_TASK_NAME)
-
             group = CHECK_TASK_NAME
             bufTask(ext, "lint")
         }
@@ -95,8 +96,6 @@ class BufPlugin : Plugin<Project> {
         val bufBuildImage = "$BUF_BUILD_DIR/image.json"
 
         tasks.register<Exec>(BUF_BUILD_TASK_NAME) {
-            dependsOn(EXTRACT_INCLUDE_PROTO_TASK_NAME)
-
             doFirst { file("$buildDir/$BUF_BUILD_DIR").mkdirs() }
             bufTask(ext, "build", "--output", "$relativeBuildDir/$bufBuildImage")
         }
@@ -131,7 +130,6 @@ class BufPlugin : Plugin<Project> {
 
         tasks.register<Exec>(BUF_BREAKING_TASK_NAME) {
             dependsOn(BUF_BREAKING_EXTRACT_TASK_NAME)
-            dependsOn(EXTRACT_INCLUDE_PROTO_TASK_NAME)
 
             group = CHECK_TASK_NAME
             bufTask(
@@ -146,8 +144,19 @@ class BufPlugin : Plugin<Project> {
     }
 
     private fun Exec.bufTask(ext: BufExtension, vararg args: String) {
+        dependsOn(COPY_PROTO_TO_WORKSPACE_TASK_NAME)
+
         commandLine("docker")
         setArgs(project.baseDockerArgs(ext) + args + bufTaskConfigOption(ext))
+    }
+
+    private fun Project.configureCopyProtoToWorkspace() {
+        tasks.register<Copy>(COPY_PROTO_TO_WORKSPACE_TASK_NAME) {
+            dependsOn(EXTRACT_INCLUDE_PROTO_TASK_NAME)
+
+            from("src/main/proto", "build/extracted-include-protos/main")
+            into("${project.buildDir}/$BUF_BUILD_DIR/$WORKSPACE_DIR")
+        }
     }
 
     private fun Exec.bufTaskConfigOption(ext: BufExtension) =
@@ -187,13 +196,16 @@ class BufPlugin : Plugin<Project> {
         const val BUF_CONFIGURATION_NAME = "buf"
         const val BUF_IMAGE_PUBLICATION_NAME = "bufImagePublication"
         const val BUF_BUILD_DIR = "bufbuild"
+
+        const val COPY_PROTO_TO_WORKSPACE_TASK_NAME = "copyProtoToWorkspace"
+        const val WORKSPACE_DIR = "workspace"
     }
 }
 
 private fun Project.baseDockerArgs(ext: BufExtension) =
     listOf(
         "run",
-        "--volume", "$projectDir:/workspace",
+        "--volume", "$buildDir/$BUF_BUILD_DIR/$WORKSPACE_DIR:/workspace",
         "--workdir", "/workspace",
         "bufbuild/buf:${ext.toolVersion}"
     )
