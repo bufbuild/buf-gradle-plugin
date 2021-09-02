@@ -47,7 +47,7 @@ configurePublishing()
 configureStagingRepoTasks()
 
 gradlePlugin {
-    isAutomatedPublishing = true
+    isAutomatedPublishing = false
 
     plugins {
         create("buf") {
