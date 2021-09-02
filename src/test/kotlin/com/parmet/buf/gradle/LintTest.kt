@@ -35,7 +35,6 @@ class LintTest : AbstractBufIntegrationTest() {
     @Test
     fun `linting a basic incorrect message with wrong location`() {
         buildFile.writeText(buildGradle())
-        configFile.writeText(bufYaml())
 
         protoDir.newFile("test.proto").writeText(basicProtoFile())
 
