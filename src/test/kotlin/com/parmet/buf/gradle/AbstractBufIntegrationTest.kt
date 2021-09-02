@@ -59,7 +59,7 @@ abstract class AbstractBufIntegrationTest {
             .let { WrappedRunner(it) }
 
     fun checkRunner() =
-        gradleRunner().withArguments("check")
+        gradleRunner().withArguments("check", "--info")
 
     fun publishRunner() =
         gradleRunner().withArguments("publish")
