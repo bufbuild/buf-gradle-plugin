@@ -64,7 +64,6 @@ class BreakingTest : AbstractBufIntegrationTest() {
             )
         )
 
-        configFile.writeText(bufYaml())
         val protoFile = protoDir.newFolder("parmet", "buf", "test", "v1").newFile("test.proto")
         protoFile.writeText(basicProtoFile())
         publishRunner().build()

@@ -109,8 +109,6 @@ class BuildTest : AbstractBufIntegrationTest() {
     }
 
     private fun prepareProject() {
-        configFile.writeText(bufYaml())
-
         protoDir.newFolder("parmet", "buf", "test", "v1")
             .newFile("test.proto")
             .writeText(basicProtoFile())

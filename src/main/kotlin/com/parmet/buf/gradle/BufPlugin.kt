@@ -177,8 +177,14 @@ class BufPlugin : Plugin<Project> {
                 logger.info("Using buf config from $it")
                 listOf("--config", it.readText())
             } else {
-                logger.info("Using buf config from default location if it exists (project directory)")
-                listOf("--config", project.file("buf.yaml").readText())
+                val configFile = project.file("buf.yaml")
+                if (configFile.exists()) {
+                    logger.info("Using buf config from default location (project directory)")
+                    listOf("--config", configFile.readText())
+                } else {
+                    logger.info("Using default buf config")
+                    emptyList()
+                }
             }
         }
 

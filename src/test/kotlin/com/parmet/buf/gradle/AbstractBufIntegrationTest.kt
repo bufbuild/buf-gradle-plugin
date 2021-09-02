@@ -31,10 +31,10 @@ abstract class AbstractBufIntegrationTest {
 
     @BeforeEach
     fun setup() {
-        settingsFile = projectDir.newFile("settings.gradle")
-        buildFile = projectDir.newFile("build.gradle")
+        settingsFile = File(projectDir, "settings.gradle")
+        buildFile = File(projectDir, "build.gradle")
         protoDir = projectDir.newFolder("src", "main", "proto")
-        configFile = projectDir.newFile("buf.yaml")
+        configFile = File(projectDir, "buf.yaml")
 
         settingsFile.writeText("rootProject.name = 'testing'")
     }
@@ -59,7 +59,7 @@ abstract class AbstractBufIntegrationTest {
             .let { WrappedRunner(it) }
 
     fun checkRunner() =
-        gradleRunner().withArguments("check")
+        gradleRunner().withArguments("check", "--info")
 
     fun publishRunner() =
         gradleRunner().withArguments("publish")

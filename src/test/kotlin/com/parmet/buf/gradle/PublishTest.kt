@@ -58,8 +58,6 @@ class PublishTest : AbstractBufIntegrationTest() {
     }
 
     private fun assertImagePublication(artifactId: String) {
-        configFile.writeText(bufYaml())
-
         protoDir.newFolder("parmet", "buf", "test", "v1")
             .newFile("test.proto")
             .writeText(basicProtoFile())
