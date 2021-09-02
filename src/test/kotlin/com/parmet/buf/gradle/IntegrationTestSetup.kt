@@ -36,7 +36,7 @@ fun buildGradle(additionalConfig: String = "") =
         $additionalConfig
     """.trimIndent()
 
-fun bufYaml() =
+fun bufYaml(except: String = "") =
     """
         version: v1
         lint:
@@ -44,6 +44,8 @@ fun bufYaml() =
             - google
           use:
             - DEFAULT
+          except:
+            - $except
     """.trimIndent()
 
 fun basicProtoFile(messageName: String = "BasicMessage") =

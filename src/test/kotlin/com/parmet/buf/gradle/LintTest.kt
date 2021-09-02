@@ -22,9 +22,8 @@ import org.junit.jupiter.api.Test
 
 class LintTest : AbstractBufIntegrationTest() {
     @Test
-    fun `linting a basic correct message`() {
+    fun `linting a basic correct message with default config`() {
         buildFile.writeText(buildGradle())
-        configFile.writeText(bufYaml())
 
         protoDir.newFolder("parmet", "buf", "test", "v1")
             .newFile("test.proto")
@@ -41,6 +40,18 @@ class LintTest : AbstractBufIntegrationTest() {
         protoDir.newFile("test.proto").writeText(basicProtoFile())
 
         assertLocationFailure()
+    }
+
+    @Test
+    fun `linting with a config in default location`() {
+        buildFile.writeText(buildGradle())
+        configFile.writeText(bufYaml(except = "PACKAGE_DIRECTORY_MATCH"))
+
+        protoDir.newFolder("parmet", "buf", "test")
+            .newFile("test.proto")
+            .writeText(basicProtoFile())
+
+        assertThat(checkRunner().build().task(":check")?.outcome).isEqualTo(SUCCESS)
     }
 
     @Test
