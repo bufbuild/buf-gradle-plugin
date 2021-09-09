@@ -3,8 +3,9 @@
 [![Maven Central](https://img.shields.io/badge/dynamic/xml?color=orange&label=maven-central&prefix=v&query=%2F%2Fmetadata%2Fversioning%2Flatest&url=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fcom%2Fparmet%2Fbuf-gradle-plugin%2Fmaven-metadata.xml)](https://search.maven.org/artifact/com.parmet/buf-gradle-plugin)
 [![Gradle Portal](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/com/parmet/buf-gradle-plugin/maven-metadata.xml.svg?label=gradle-portal&color=yellowgreen)](https://plugins.gradle.org/plugin/com.parmet.buf)
 
-Integration for [Buf](https://github.com/bufbuild/buf) with the
-[protobuf-gradle-plugin](https://github.com/google/protobuf-gradle-plugin).
+Gradle Plugin for [Buf](https://github.com/bufbuild/buf) `lint` and `build` and `breaking` (but not `buf generate`, yet).
+
+Goes well with the [protobuf-gradle-plugin](https://github.com/google/protobuf-gradle-plugin), which you would typically still use for code generation.
 
 ### Usage
 
