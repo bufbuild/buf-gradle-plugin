@@ -3,10 +3,16 @@
 [![Maven Central](https://img.shields.io/badge/dynamic/xml?color=orange&label=maven-central&prefix=v&query=%2F%2Fmetadata%2Fversioning%2Flatest&url=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fcom%2Fparmet%2Fbuf-gradle-plugin%2Fmaven-metadata.xml)](https://search.maven.org/artifact/com.parmet/buf-gradle-plugin)
 [![Gradle Portal](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/com/parmet/buf-gradle-plugin/maven-metadata.xml.svg?label=gradle-portal&color=yellowgreen)](https://plugins.gradle.org/plugin/com.parmet.buf)
 
-Integration for [Buf](https://github.com/bufbuild/buf) with the
+Linting and breakage-check integration for [Buf](https://github.com/bufbuild/buf) with the
 [protobuf-gradle-plugin](https://github.com/google/protobuf-gradle-plugin).
 
-### Usage
+Supports straightforward usage of `buf lint` and a self-contained integration between `buf build` and `buf breaking`.
+Does not integrate with `buf generate` as it assumes usage of the `protobuf-gradle-plugin` for dependency resolution
+and code generation.
+
+## Usage
+
+Make sure you have applied the `protobuf-gradle-plugin` to your project.
 
 Create a Buf configuration file in the project directory:
 
@@ -52,7 +58,7 @@ When applied the plugin creates two useful tasks:
 - `bufBreaking` checks protobuf against a previous version for
 backwards-incompatible changes.
 
-### Configuration
+## Configuration
 
 As an alternative to a `buf.yaml` file in the project directory you can specify
 the location of `buf.yaml` by configuring the extension: 
@@ -100,12 +106,12 @@ publishing {
 }
 ```
 
-#### `bufLint`
+### `bufLint`
 
 `bufLint` is configured solely through `buf.yaml` and follows Buf's
 standard CLI behavior.
 
-#### `bufBreaking`
+### `bufBreaking`
 
 `bufBreaking` is more complicated since it requires a previous version of
 the protobuf schema to validate the current version. Buf's built-in Git
@@ -163,7 +169,7 @@ buf {
 }
 ```
 
-### Additional Configuration
+## Additional Configuration
 
 The version of Buf used can be configured using the `toolVersion` property on
 the extension:
