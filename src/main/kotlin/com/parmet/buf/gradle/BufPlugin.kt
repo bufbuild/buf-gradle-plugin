@@ -227,7 +227,7 @@ class BufPlugin : Plugin<Project> {
 private fun Project.baseDockerArgs(ext: BufExtension) =
     listOf(
         "run",
-        "--volume", "$bufbuildDir:/workspace",
+        "--volume", "$bufbuildDir:/workspace:Z",
         "--workdir", "/workspace",
         "bufbuild/buf:${ext.toolVersion}"
     )
