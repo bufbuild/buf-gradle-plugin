@@ -30,13 +30,13 @@ open class BufExtension {
     var publishSchema = false
 
     /**
-     * If set, enables breakage checking against the image published with the provided version. In general, prefer
-     * checking against the latest release with [checkSchemaAgainstLatestRelease].
+     * Enables breakage checking against the image published with the provided version. In general prefer checking
+     * against the latest release with [checkSchemaAgainstLatestRelease].
      */
     var previousVersion: String? = null
 
     /**
-     * If set, checks the project's schema against the latest published schema. To check against a constant version use
+     * Checks the project's schema against the latest published schema. To check against a constant version use
      * [previousVersion].
      */
     var checkSchemaAgainstLatestRelease = false
