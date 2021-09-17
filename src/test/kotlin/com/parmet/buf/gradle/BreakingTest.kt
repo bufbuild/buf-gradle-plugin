@@ -18,13 +18,20 @@ package com.parmet.buf.gradle
 import com.google.common.truth.Truth.assertThat
 import java.io.File
 import org.gradle.testkit.runner.TaskOutcome.FAILED
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class BreakingTest : AbstractBufIntegrationTest() {
+    private lateinit var protoFile: File
+
+    @BeforeEach
+    fun before() {
+        protoFile = protoDir.newFolder("parmet", "buf", "test", "v1").newFile("test.proto")
+        publishSchema()
+    }
+
     @Test
     fun `breaking schema`() {
-        val protoFile = publishSchema()
-
         buildFile.writeText(
             buildGradle(
                 """
@@ -42,6 +49,56 @@ class BreakingTest : AbstractBufIntegrationTest() {
             )
         )
 
+        checkBreaking()
+    }
+
+    @Test
+    fun `breaking schema with latest-release as version`() {
+        buildFile.writeText(
+            buildGradle(
+                """
+                    $localRepo
+                    
+                    buf {
+                      checkSchemaAgainstLatestRelease = true
+
+                      imageArtifact {
+                        groupId = 'foo'
+                        artifactId = 'bar'
+                      }
+                    }
+                """.trimIndent()
+            )
+        )
+
+        checkBreaking()
+    }
+
+    @Test
+    fun `breaking schema fails with latest-release and previousVersion`() {
+        buildFile.writeText(
+            buildGradle(
+                """
+                    $localRepo
+                    
+                    buf {
+                      checkSchemaAgainstLatestRelease = true
+                      previousVersion = '2319'
+
+                      imageArtifact {
+                        groupId = 'foo'
+                        artifactId = 'bar'
+                      }
+                    }
+                """.trimIndent()
+            )
+        )
+
+        val result = checkRunner().buildAndFail()
+        assertThat(result.output).contains("Cannot configure bufBreaking against latest release and a previous version.")
+    }
+
+    private fun checkBreaking() {
         checkRunner().build()
 
         protoFile.writeText(basicProtoFile("BasicMessage2"))
@@ -51,7 +108,7 @@ class BreakingTest : AbstractBufIntegrationTest() {
         assertThat(result.output).contains("Previously present message \"BasicMessage\" was deleted from file.")
     }
 
-    private fun publishSchema(): File {
+    private fun publishSchema() {
         buildFile.writeText(
             buildGradle(
                 """
@@ -64,10 +121,7 @@ class BreakingTest : AbstractBufIntegrationTest() {
             )
         )
 
-        val protoFile = protoDir.newFolder("parmet", "buf", "test", "v1").newFile("test.proto")
         protoFile.writeText(basicProtoFile())
         publishRunner().build()
-
-        return protoFile
     }
 }

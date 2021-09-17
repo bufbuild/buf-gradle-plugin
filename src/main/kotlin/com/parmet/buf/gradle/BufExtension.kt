@@ -19,13 +19,38 @@ import java.io.File
 import org.gradle.api.Action
 
 open class BufExtension {
+    /**
+     * Specify the location of buf.yaml.
+     */
     var configFileLocation: File? = null
+
+    /**
+     * Publish an image.json artifact with the complete descriptor set.
+     */
     var publishSchema = false
+
+    /**
+     * If set, enables breakage checking against the image published with the provided version. In general, prefer
+     * checking against the latest release with [checkSchemaAgainstLatestRelease].
+     */
     var previousVersion: String? = null
+
+    /**
+     * If set, checks the project's schema against the latest published schema. To check against a constant version use
+     * [previousVersion].
+     */
+    var checkSchemaAgainstLatestRelease = false
+
+    /**
+     * Specify the version of Buf.
+     */
     var toolVersion: String = "0.54.1"
 
     internal var imageArtifactDetails: ArtifactDetails? = null
 
+    /**
+     * Specify the artifact details for schema publication.
+     */
     fun imageArtifact(configure: Action<ArtifactDetails>) {
         imageArtifactDetails = (imageArtifactDetails ?: ArtifactDetails()).apply(configure::execute)
     }
@@ -35,7 +60,4 @@ class ArtifactDetails(
     var groupId: String? = null,
     var artifactId: String? = null,
     var version: String? = null
-) {
-    internal fun groupAndArtifact() =
-        "$groupId:$artifactId"
-}
+)

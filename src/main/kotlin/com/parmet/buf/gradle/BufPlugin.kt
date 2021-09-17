@@ -44,7 +44,7 @@ class BufPlugin : Plugin<Project> {
                 if (ext.publishSchema) {
                     project.configureBuild(ext, it)
                 }
-                if (ext.previousVersion != null) {
+                if (ext.runBreakageCheck()) {
                     project.configureBreaking(ext, it)
                 }
             }
@@ -75,7 +75,7 @@ class BufPlugin : Plugin<Project> {
                 null
             }
 
-        return if (ext.publishSchema || ext.previousVersion != null) {
+        return if (ext.publishSchema || ext.runBreakageCheck()) {
             checkNotNull(ext.imageArtifactDetails ?: inferredDetails as? ArtifactDetails) {
                 """
                     Unable to determine image artifact details and schema publication or
@@ -111,34 +111,60 @@ class BufPlugin : Plugin<Project> {
     }
 
     private fun Project.configureBreaking(ext: BufExtension, artifactDetails: ArtifactDetails) {
-        logger.info("Resolving buf schema image from ${artifactDetails.groupAndArtifact()}:${ext.previousVersion}")
+        val versionSpecifier =
+            if (ext.checkSchemaAgainstLatestRelease) {
+                require(ext.previousVersion == null) {
+                    "Cannot configure bufBreaking against latest release and a previous version."
+                }
+                "latest.release"
+            } else {
+                ext.previousVersion
+            }
+
+        logger.info("Resolving buf schema image from ${artifactDetails.groupAndArtifact()}:$versionSpecifier")
 
         configurations.create(BUF_BREAKING_CONFIGURATION_NAME)
+
         dependencies {
-            add(BUF_BREAKING_CONFIGURATION_NAME, "${artifactDetails.groupAndArtifact()}:${ext.previousVersion}")
+            add(BUF_BREAKING_CONFIGURATION_NAME, "${artifactDetails.groupAndArtifact()}:$versionSpecifier")
         }
 
+        val breakingDir = file("$bufbuildDir/$BREAKING_DIR")
+
         tasks.register<Copy>(BUF_BREAKING_EXTRACT_TASK_NAME) {
-            from(configurations.getByName(BUF_BREAKING_CONFIGURATION_NAME).files)
-            into(file("$bufbuildDir/$BREAKING_DIR"))
+            val bufBreakingFiles = configurations.getByName(BUF_BREAKING_CONFIGURATION_NAME).files
+
+            from(bufBreakingFiles)
+            into(breakingDir)
+
+            var renamedOneFile = false
+            rename {
+                check(!renamedOneFile) {
+                    "Already renamed a file; trying to rename another one: $it. Does your schema publication have " +
+                        "more than one file? Files found: $bufBreakingFiles. Please file an issue at " +
+                        "https://github.com/andrewparmet/buf-gradle-plugin/issues/new if you see this error."
+                }
+                renamedOneFile = true
+                BUF_BUILD_PUBLICATION_FILENAME
+            }
         }
 
         tasks.register<Exec>(BUF_BREAKING_TASK_NAME) {
             dependsOn(BUF_BREAKING_EXTRACT_TASK_NAME)
-
             group = CHECK_TASK_NAME
+
             bufTask(
                 ext,
                 "breaking",
                 "--against",
-                "$BREAKING_DIR/${artifactDetails.artifactId}-${ext.previousVersion}.json"
+                "$BREAKING_DIR/$BUF_BUILD_PUBLICATION_FILENAME"
             )
         }
 
         tasks.named(CHECK_TASK_NAME).dependsOn(BUF_BREAKING_TASK_NAME)
     }
 
-    private fun Exec.bufTask(ext: BufExtension, vararg args: String) {
+    private fun Exec.bufTask(ext: BufExtension, vararg args: Any) {
         dependsOn(COPY_PROTO_TO_WORKSPACE_TASK_NAME)
         dependsOn(WRITE_WORKSPACE_YAML_TASK_NAME)
 
@@ -238,3 +264,9 @@ private fun TaskProvider<*>.dependsOn(obj: Any) {
 
 private val Project.bufbuildDir
     get() = "$buildDir/$BUF_BUILD_DIR"
+
+private fun BufExtension.runBreakageCheck() =
+    checkSchemaAgainstLatestRelease || previousVersion != null
+
+private fun ArtifactDetails.groupAndArtifact() =
+    "$groupId:$artifactId"
