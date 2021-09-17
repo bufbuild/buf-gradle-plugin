@@ -12,7 +12,7 @@ const val BUF_BREAKING_TASK_NAME = "bufBreaking"
 const val BUF_BREAKING_CONFIGURATION_NAME = "bufBreaking"
 const val BREAKING_DIR = "breaking"
 
-fun Project.configureBreaking(ext: BufExtension, artifactDetails: ArtifactDetails) {
+internal fun Project.configureBreaking(ext: BufExtension, artifactDetails: ArtifactDetails) {
     addSchemaDependency(ext, artifactDetails)
 
     val bufBreakingFile = LazyBufBreakingFile()
