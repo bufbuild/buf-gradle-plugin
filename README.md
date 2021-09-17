@@ -119,6 +119,8 @@ integration isn't quite enough since it requires a buildable protobuf source set
 and the `protobuf-gradle-plugin`'s merge step typically targets the project
 build directory, which is ephemeral and not committed.
 
+#### Checking against the latest published version
+
 At the moment, this plugin uses Buf to create an image from the current protobuf
 schema and publishes it as a Maven publication. Then, in the next build, you can
 enable `checkSchemaAgainstLatestRelease`, and the plugin will resolve the
@@ -165,6 +167,8 @@ buf {
     previousVersion = "0.1.0" 
 }
 ```
+
+#### Artifact details
 
 By default the published image artifact will infer its details from an existing
 Maven publication if one exists. If one doesn't exist, you have more than one,
