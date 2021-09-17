@@ -15,7 +15,6 @@
 
 package com.parmet.buf.gradle
 
-import com.parmet.buf.gradle.BufPlugin.Companion.BUF_CONFIGURATION_NAME
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.dsl.DependencyHandler
