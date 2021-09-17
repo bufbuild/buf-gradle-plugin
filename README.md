@@ -116,14 +116,17 @@ standard CLI behavior.
 `bufBreaking` is more complicated since it requires a previous version of
 the protobuf schema to validate the current version. Buf's built-in Git
 integration isn't quite enough since it requires a buildable protobuf source set
-and the `protobuf-gradle-plugin`'s merge step typically targets the project
+and the `protobuf-gradle-plugin`'s extraction step typically targets the project
 build directory, which is ephemeral and not committed.
+
+This plugin uses `buf build` to create an image from the current protobuf schema
+and publishes it as a Maven publication. In subsequent builds of the project
+the plugin will resolve the previously published schema image and run
+`buf breaking` against the current schema with the image as its reference.
 
 #### Checking against the latest published version
 
-At the moment, this plugin uses Buf to create an image from the current protobuf
-schema and publishes it as a Maven publication. Then, in the next build, you can
-enable `checkSchemaAgainstLatestRelease`, and the plugin will resolve the
+Enable `checkSchemaAgainstLatestRelease` and the plugin will resolve the
 previously published Maven artifact as its input for validation.
 
 For example, first publish the project with `publishSchema` enabled:
