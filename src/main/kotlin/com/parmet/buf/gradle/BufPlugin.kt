@@ -164,7 +164,7 @@ class BufPlugin : Plugin<Project> {
         tasks.named(CHECK_TASK_NAME).dependsOn(BUF_BREAKING_TASK_NAME)
     }
 
-    private fun Exec.bufTask(ext: BufExtension, vararg args: Any) {
+    private fun Exec.bufTask(ext: BufExtension, vararg args: String) {
         dependsOn(COPY_PROTO_TO_WORKSPACE_TASK_NAME)
         dependsOn(WRITE_WORKSPACE_YAML_TASK_NAME)
 
