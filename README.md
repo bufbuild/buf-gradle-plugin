@@ -121,36 +121,49 @@ build directory, which is ephemeral and not committed.
 
 At the moment, this plugin uses Buf to create an image from the current protobuf
 schema and publishes it as a Maven publication. Then, in the next build, you can
-specify a `previousVersion` in the plugin configuration, and the plugin will use
-that Maven artifact as its input for validation.
+enable `checkSchemaAgainstLatestRelease`, and the plugin will resolve the
+previously published Maven artifact as its input for validation.
 
-For example, first publish the project with `publishSchema` set to `true` and
-version `0.1.0`:
+For example, first publish the project with `publishSchema` enabled:
 
 ``` kotlin
 buf {
     publishSchema = true
-    // previousVersion = null (default)
 }
 ```
 
-Then configure the plugin to check against that version:
+Then configure the plugin to check the schema:
 
 ``` kotlin
 buf {
     // continue to publish schema
     publishSchema = true
 
-    previousVersion = "0.1.0"
+    checkSchemaAgainstLatestRelease = true
 }
 ```
 
-The plugin will run Buf checking the project's current schema against
-version `0.1.0`:
+The plugin will run Buf to check the project's current schema:
 
 ```
 > Task :bufBreaking FAILED
 src/main/proto/parmet/service/test/test.proto:9:1:Previously present field "1" with name "test_content" on message "TestMessage" was deleted.
+```
+
+#### Checking against a static version
+
+If for some reason you do not want to dynamically check against the latest
+published version of your schema, you can specify a constant version with
+`previousVersion`:
+
+``` kotlin
+buf {
+    // continue to publish schema
+    publishSchema = true
+    
+    // will always check against version 0.1.0
+    previousVersion = "0.1.0" 
+}
 ```
 
 By default the published image artifact will infer its details from an existing
