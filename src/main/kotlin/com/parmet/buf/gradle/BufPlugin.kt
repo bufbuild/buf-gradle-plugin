@@ -111,6 +111,16 @@ class BufPlugin : Plugin<Project> {
     }
 
     private fun Project.configureBreaking(ext: BufExtension, artifactDetails: ArtifactDetails) {
+        addSchemaDependency(ext, artifactDetails)
+
+        val bufBreakingFile = LazyBufBreakingFile()
+        configureSchemaExtraction(bufBreakingFile)
+        configureBreakingTask(ext, bufBreakingFile)
+
+        tasks.named(CHECK_TASK_NAME).dependsOn(BUF_BREAKING_TASK_NAME)
+    }
+
+    private fun Project.addSchemaDependency(ext: BufExtension, artifactDetails: ArtifactDetails) {
         val versionSpecifier =
             if (ext.checkSchemaAgainstLatestRelease) {
                 require(ext.previousVersion == null) {
@@ -128,27 +138,36 @@ class BufPlugin : Plugin<Project> {
         dependencies {
             add(BUF_BREAKING_CONFIGURATION_NAME, "${artifactDetails.groupAndArtifact()}:$versionSpecifier")
         }
+    }
 
-        val breakingDir = file("$bufbuildDir/$BREAKING_DIR")
-
+    private fun Project.configureSchemaExtraction(bufBreakingFile: LazyBufBreakingFile) {
         tasks.register<Copy>(BUF_BREAKING_EXTRACT_TASK_NAME) {
-            val bufBreakingFiles = configurations.getByName(BUF_BREAKING_CONFIGURATION_NAME).files
+            outputs.upToDateWhen { false }
+            val breakingDir = file("$bufbuildDir/$BREAKING_DIR")
 
-            from(bufBreakingFiles)
+            doFirst { breakingDir.deleteRecursively() }
+
+            from(configurations.getByName(BUF_BREAKING_CONFIGURATION_NAME).files)
             into(breakingDir)
 
-            var renamedOneFile = false
-            rename {
-                check(!renamedOneFile) {
-                    "Already renamed a file; trying to rename another one: $it. Does your schema publication have " +
-                        "more than one file? Files found: $bufBreakingFiles. Please file an issue at " +
-                        "https://github.com/andrewparmet/buf-gradle-plugin/issues/new if you see this error."
-                }
-                renamedOneFile = true
-                BUF_BUILD_PUBLICATION_FILENAME
+            doLast {
+                val copiedFiles = breakingDir.listFiles().orEmpty()
+
+                val fileName =
+                    checkNotNull(copiedFiles.singleOrNull()) {
+                        "Unable to resolve a single file from Buf schema publication. Found $copiedFiles. Please " +
+                            "file an issue at https://github.com/andrewparmet/buf-gradle-plugin/issues/new if you " +
+                            "see this error."
+                    }.name
+
+                logger.info("Buf will check schema dependency against $fileName")
+
+                bufBreakingFile.fileName = fileName
             }
         }
+    }
 
+    private fun Project.configureBreakingTask(ext: BufExtension, bufBreakingFile: LazyBufBreakingFile) {
         tasks.register<Exec>(BUF_BREAKING_TASK_NAME) {
             dependsOn(BUF_BREAKING_EXTRACT_TASK_NAME)
             group = CHECK_TASK_NAME
@@ -157,14 +176,12 @@ class BufPlugin : Plugin<Project> {
                 ext,
                 "breaking",
                 "--against",
-                "$BREAKING_DIR/$BUF_BUILD_PUBLICATION_FILENAME"
+                bufBreakingFile
             )
         }
-
-        tasks.named(CHECK_TASK_NAME).dependsOn(BUF_BREAKING_TASK_NAME)
     }
 
-    private fun Exec.bufTask(ext: BufExtension, vararg args: String) {
+    private fun Exec.bufTask(ext: BufExtension, vararg args: Any) {
         dependsOn(COPY_PROTO_TO_WORKSPACE_TASK_NAME)
         dependsOn(WRITE_WORKSPACE_YAML_TASK_NAME)
 
@@ -227,6 +244,11 @@ class BufPlugin : Plugin<Project> {
                 ext.configFileLocation
             }
         }
+
+    private class LazyBufBreakingFile(var fileName: String? = null) {
+        override fun toString() =
+            "$BREAKING_DIR/$fileName"
+    }
 
     companion object {
         private const val EXTRACT_INCLUDE_PROTO_TASK_NAME = "extractIncludeProto"
