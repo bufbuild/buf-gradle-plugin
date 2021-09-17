@@ -44,7 +44,7 @@ open class BufExtension {
     /**
      * Specify the version of Buf.
      */
-    var toolVersion: String = "0.54.1"
+    var toolVersion: String = "1.0.0-rc1"
 
     internal var imageArtifactDetails: ArtifactDetails? = null
 
