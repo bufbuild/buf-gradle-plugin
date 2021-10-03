@@ -23,92 +23,31 @@ import org.junit.jupiter.api.Test
 class LintTest : AbstractBufIntegrationTest() {
     @Test
     fun `linting a basic correct message with default config`() {
-        buildFile.writeText(buildGradle())
-
-        protoDir.newFolder("parmet", "buf", "test", "v1")
-            .newFile("test.proto")
-            .writeText(basicProtoFile())
-
-        assertThat(checkRunner().build().task(":check")?.outcome).isEqualTo(SUCCESS)
+        assertSuccess()
     }
 
     @Test
     fun `linting a basic incorrect message with wrong location`() {
-        buildFile.writeText(buildGradle())
-
-        protoDir.newFile("test.proto").writeText(basicProtoFile())
-
         assertLocationFailure()
     }
 
     @Test
     fun `linting with a config in default location`() {
-        buildFile.writeText(buildGradle())
-        configFile.writeText(bufYaml(except = "PACKAGE_DIRECTORY_MATCH"))
-
-        protoDir.newFolder("parmet", "buf", "test")
-            .newFile("test.proto")
-            .writeText(basicProtoFile())
-
-        assertThat(checkRunner().build().task(":check")?.outcome).isEqualTo(SUCCESS)
+        assertSuccess()
     }
 
     @Test
     fun `linting with a file location config override`() {
-        setUpWithFailure()
-
-        projectDir.newFolder("subdir").newFile("buf.yaml").writeText(bufYaml())
-
-        buildFile.writeText(
-            buildGradle(
-                """
-                    buf {
-                      configFileLocation = project.file("subdir/buf.yaml")
-                    }
-                """.trimIndent()
-            )
-        )
-
-        assertThat(checkRunner().build().task(":check")?.outcome).isEqualTo(SUCCESS)
+        assertSuccess()
     }
 
     @Test
     fun `linting with a dependency config override`() {
-        setUpWithFailure()
-
-        projectDir.newFolder("subdir").newFile("buf.yaml").writeText(bufYaml())
-
-        buildFile.writeText(
-            buildGradle(
-                """
-                    dependencies {
-                      buf(fileTree('subdir') { include '*.yaml' })
-                    }
-                """.trimIndent()
-            )
-        )
-
-        assertThat(checkRunner().build().task(":check")?.outcome).isEqualTo(SUCCESS)
+        assertSuccess()
     }
 
     @Test
     fun `linting with a dependency config override fails with two files`() {
-        writeProto()
-
-        val dir = projectDir.newFolder("subdir")
-        dir.newFile("buf-1.yaml").writeText(bufYaml())
-        dir.newFile("buf-2.yaml").writeText(bufYaml())
-
-        buildFile.writeText(
-            buildGradle(
-                """
-                    dependencies {
-                      buf(fileTree('subdir') { include '*.yaml' })
-                    }
-                """.trimIndent()
-            )
-        )
-
         val result = checkRunner().buildAndFail()
         assertThat(result.output).contains("Buf lint configuration should have exactly one file")
         assertThat(result.output).contains("buf-1.yaml")
@@ -117,20 +56,6 @@ class LintTest : AbstractBufIntegrationTest() {
 
     @Test
     fun `linting with a dependency config override fails with no files`() {
-        writeProto()
-
-        projectDir.newFolder("subdir")
-
-        buildFile.writeText(
-            buildGradle(
-                """
-                    dependencies {
-                      buf(fileTree('subdir') { include '*.yaml' })
-                    }
-                """.trimIndent()
-            )
-        )
-
         val result = checkRunner().buildAndFail()
         assertThat(result.output).contains("Buf lint configuration should have exactly one file")
         assertThat(result.output).contains("had []")
@@ -138,49 +63,17 @@ class LintTest : AbstractBufIntegrationTest() {
 
     @Test
     fun `linting with a file and dependency config override fails`() {
-        writeProto()
-
-        projectDir.newFolder("subdir").newFile("buf.yaml").writeText(bufYaml())
-
-        buildFile.writeText(
-            buildGradle(
-                """
-                    buf {
-                      configFileLocation = project.file("subdir/buf.yaml")
-                    }
-
-                    dependencies {
-                      buf(fileTree('subdir') { include '*.yaml' })
-                    }
-                """.trimIndent()
-            )
-        )
-
         val result = checkRunner().buildAndFail()
         assertThat(result.output).contains("config file location and a dependency; pick one")
-    }
-
-    private fun setUpWithFailure() {
-        println("Setting up failing buf run")
-        buildFile.writeText(buildGradle())
-        writeProto("extra-path")
-        assertLocationFailure()
-        protoDir.walkTopDown().forEach { it.delete() }
-        println("Setting up Gradle clean")
-        gradleRunner().withArguments("clean").build()
-        println("Finished executing failed buf run")
-        writeProto()
-    }
-
-    private fun writeProto(extraPath: String? = null) {
-        protoDir.newFolder(*listOfNotNull(extraPath, "parmet", "buf", "test", "v1").toTypedArray())
-            .newFile("test.proto")
-            .writeText(basicProtoFile())
     }
 
     private fun assertLocationFailure() {
         val result = checkRunner().buildAndFail()
         assertThat(result.task(":bufLint")?.outcome).isEqualTo(FAILED)
         assertThat(result.output).contains("must be within a directory \"parmet/buf/test/v1\"")
+    }
+
+    private fun assertSuccess() {
+        assertThat(checkRunner().build().task(":check")?.outcome).isEqualTo(SUCCESS)
     }
 }
