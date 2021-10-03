@@ -36,18 +36,6 @@ fun buildGradle(additionalConfig: String = "") =
         $additionalConfig
     """.trimIndent()
 
-fun bufYaml(except: String = "") =
-    """
-        version: v1
-        lint:
-          ignore:
-            - google
-          use:
-            - DEFAULT
-          except:
-            - $except
-    """.trimIndent()
-
 fun basicProtoFile(messageName: String = "BasicMessage") =
     """
         syntax = "proto3";

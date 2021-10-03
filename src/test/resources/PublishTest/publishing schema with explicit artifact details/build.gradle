@@ -28,3 +28,23 @@ protobuf {
 }
 
 compileJava.enabled = false
+
+apply plugin: 'maven-publish'
+
+buf {
+  publishSchema = true
+  imageArtifact {
+    groupId = 'foo'
+    artifactId = 'bar'
+    version = '2319'
+  }
+}
+
+publishing {
+  repositories {
+    maven {
+      url 'build/repos/test'
+      name = 'test'
+    }
+  }
+}
