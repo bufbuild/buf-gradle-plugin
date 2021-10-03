@@ -51,10 +51,6 @@ internal fun Project.configureWriteWorkspaceYaml() {
                       ${if (anyProtos(BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN)) "- ${mangle(BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN)}" else ""}
                 """.trimIndent()
             )
-
-            exec {
-                commandLine("tree")
-            }
         }
     }
 }
