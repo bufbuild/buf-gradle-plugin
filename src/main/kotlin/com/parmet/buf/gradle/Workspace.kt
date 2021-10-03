@@ -47,13 +47,13 @@ internal fun Project.configureWriteWorkspaceYaml() {
                 """
                     version: v1
                     directories:
-                      ${dir(SRC_MAIN_PROTO)}
-                      ${dir(BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN)}
+                      ${entry(SRC_MAIN_PROTO)}
+                      ${entry(BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN)}
                 """.trimIndent()
             )
         }
     }
 }
 
-private fun Project.dir(path: String) =
+private fun Project.entry(path: String) =
     if (anyProtos(path)) "- ${mangle(path)}" else ""
