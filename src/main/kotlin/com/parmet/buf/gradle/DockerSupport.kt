@@ -5,7 +5,7 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.Exec
 
 internal fun Exec.bufTask(ext: BufExtension, vararg args: Any) {
-    dependsOn(COPY_PROTO_TO_WORKSPACE_TASK_NAME)
+    dependsOn(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME)
     dependsOn(WRITE_WORKSPACE_YAML_TASK_NAME)
 
     commandLine("docker")
@@ -46,7 +46,7 @@ private fun Project.resolveConfig(ext: BufExtension): File? =
 private fun Project.baseDockerArgs(ext: BufExtension) =
     listOf(
         "run",
-        "--volume", "$bufbuildDir:/workspace:Z",
-        "--workdir", "/workspace",
+        "--volume", "$projectDir:/workspace:Z",
+        "--workdir", "/workspace/build/bufbuild",
         "bufbuild/buf:${ext.toolVersion}"
     )
