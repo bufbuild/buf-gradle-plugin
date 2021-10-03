@@ -33,21 +33,3 @@ compileJava.enabled = false
 buf {
   publishSchema = true
 }
-
-publishing {
-  repositories {
-    maven {
-      url 'build/repos/test'
-      name = 'test'
-    }
-  }
-
-  publications {
-    maven(MavenPublication) {
-      groupId = 'foo'
-      artifactId = 'bar'
-      version = '2319'
-      from components.java
-    }
-  }
-}

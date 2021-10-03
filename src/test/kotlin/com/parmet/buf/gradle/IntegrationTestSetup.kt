@@ -66,21 +66,6 @@ val imageArtifact =
         }
     """
 
-val publication = publication("maven")
-val publication2 = publication("maven2")
-
-private fun publication(name: String) =
-    """
-        publications {
-          $name(MavenPublication) {
-            groupId = 'foo'
-            artifactId = 'bar'
-            version = '2319'
-            from components.java
-          }
-        }
-    """.trimIndent()
-
 val publishSchema =
     """
         apply plugin: 'maven-publish'

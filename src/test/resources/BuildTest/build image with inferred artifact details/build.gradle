@@ -35,13 +35,6 @@ buf {
 }
 
 publishing {
-  repositories {
-    maven {
-      url 'build/repos/test'
-      name = 'test'
-    }
-  }
-
   publications {
     maven(MavenPublication) {
       groupId = 'foo'
