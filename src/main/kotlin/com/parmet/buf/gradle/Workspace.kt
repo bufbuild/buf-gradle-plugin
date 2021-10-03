@@ -1,13 +1,42 @@
 package com.parmet.buf.gradle
 
 import java.io.File
+import java.nio.file.Files
+import java.nio.file.Paths
 import org.gradle.api.Project
-import org.gradle.api.tasks.Copy
-import org.gradle.kotlin.dsl.register
 
+const val CREATE_SYM_LINKS_TO_MODULES_TASK_NAME = "createSymLinksToModules"
 const val WRITE_WORKSPACE_YAML_TASK_NAME = "writeWorkspaceYaml"
-const val COPY_PROTO_TO_WORKSPACE_TASK_NAME = "copyProtoToWorkspace"
-const val WORKSPACE_DIR = "workspace"
+
+private const val SRC_MAIN_PROTO = "src/main/proto"
+private const val BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN = "build/extracted-include-protos/main"
+
+internal fun Project.configureCreateSymLinksToModules() {
+    tasks.register(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME) {
+        dependsOn(EXTRACT_INCLUDE_PROTO_TASK_NAME)
+        outputs.dir(bufbuildDir)
+
+        doLast {
+            File(bufbuildDir).mkdirs()
+            createSymLink(SRC_MAIN_PROTO)
+            createSymLink(BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN)
+        }
+    }
+}
+
+private fun Project.createSymLink(protoDir: String) {
+    val symLinkFile = File(bufbuildDir, mangle(protoDir))
+    if (anyProtos(protoDir) && !symLinkFile.exists()) {
+        logger.info("Creating symlink for $protoDir at $symLinkFile")
+        Files.createSymbolicLink(symLinkFile.toPath(), Paths.get(bufbuildDir).relativize(file(protoDir).toPath()))
+    }
+}
+
+private fun mangle(name: String) =
+    name.replace("-", "--").replace(File.separator, "-")
+
+private fun Project.anyProtos(path: String) =
+    file(path).walkTopDown().any { it.extension == "proto" }
 
 internal fun Project.configureWriteWorkspaceYaml() {
     tasks.register(WRITE_WORKSPACE_YAML_TASK_NAME) {
@@ -18,18 +47,13 @@ internal fun Project.configureWriteWorkspaceYaml() {
                 """
                     version: v1
                     directories:
-                      - workspace
+                      ${entry(SRC_MAIN_PROTO)}
+                      ${entry(BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN)}
                 """.trimIndent()
             )
         }
     }
 }
 
-internal fun Project.configureCopyProtoToWorkspace() {
-    tasks.register<Copy>(COPY_PROTO_TO_WORKSPACE_TASK_NAME) {
-        dependsOn(EXTRACT_INCLUDE_PROTO_TASK_NAME)
-
-        from("src/main/proto", "build/extracted-include-protos/main")
-        into("${project.bufbuildDir}/$WORKSPACE_DIR")
-    }
-}
+private fun Project.entry(path: String) =
+    if (anyProtos(path)) "- ${mangle(path)}" else ""
