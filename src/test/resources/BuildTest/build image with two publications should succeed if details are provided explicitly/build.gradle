@@ -17,6 +17,7 @@ plugins {
   id 'java'
   id 'com.parmet.buf'
   id 'com.google.protobuf' version '0.8.17'
+  id 'maven-publish'
 }
 
 repositories { mavenCentral() }
@@ -28,3 +29,30 @@ protobuf {
 }
 
 compileJava.enabled = false
+
+buf {
+  publishSchema = true
+  imageArtifact {
+    groupId = 'foo'
+    artifactId = 'bar'
+    version = '2319'
+  }
+}
+
+publishing {
+  publications {
+    maven(MavenPublication) {
+      groupId = 'foo'
+      artifactId = 'bar'
+      version = '2319'
+      from components.java
+    }
+
+    maven2(MavenPublication) {
+      groupId = 'foo'
+      artifactId = 'bar'
+      version = '2319'
+      from components.java
+    }
+  }
+}

@@ -23,42 +23,16 @@ import org.junit.jupiter.api.Test
 class BuildTest : AbstractBufIntegrationTest() {
     @Test
     fun `build image with explicit artifact details`() {
-        buildFile.writeText(
-            buildGradle(
-                """
-                    $publishSchema
-                    
-                    $imageArtifact
-                """.trimIndent()
-            )
-        )
-
         assertImageGeneration()
     }
 
     @Test
     fun `build image with inferred artifact details`() {
-        buildFile.writeText(
-            buildGradle(
-                """
-                    $publishSchema
-                    
-                    publishing {
-                      $publication
-                    }
-                """.trimIndent()
-            )
-        )
-
         assertImageGeneration()
     }
 
     @Test
     fun `build image with no artifact details should fail`() {
-        buildFile.writeText(buildGradle(publishSchema))
-
-        prepareProject()
-
         val result = buildRunner().buildAndFail()
         assertThat(result.output).contains("Unable to determine image artifact details")
         assertThat(result.output).contains("found 0")
@@ -66,22 +40,6 @@ class BuildTest : AbstractBufIntegrationTest() {
 
     @Test
     fun `build image with two publications should fail`() {
-        buildFile.writeText(
-            buildGradle(
-                """
-                    $publishSchema
-                    
-                    publishing {
-                      $publication
-                      
-                      $publication2
-                    }
-                """.trimIndent()
-            )
-        )
-
-        prepareProject()
-
         val result = buildRunner().buildAndFail()
         assertThat(result.output).contains("Unable to determine image artifact details")
         assertThat(result.output).contains("found 2")
@@ -89,34 +47,10 @@ class BuildTest : AbstractBufIntegrationTest() {
 
     @Test
     fun `build image with two publications should succeed if details are provided explicitly`() {
-        buildFile.writeText(
-            buildGradle(
-                """
-                    $publishSchema
-                    
-                    publishing {
-                      $publication
-                      
-                      $publication2
-                    }
-                    
-                    $imageArtifact
-                """.trimIndent()
-            )
-        )
-
         assertImageGeneration()
     }
 
-    private fun prepareProject() {
-        protoDir.newFolder("parmet", "buf", "test", "v1")
-            .newFile("test.proto")
-            .writeText(basicProtoFile())
-    }
-
     private fun assertImageGeneration() {
-        prepareProject()
-
         assertThat(buildRunner().build().task(":bufBuild")?.outcome).isEqualTo(SUCCESS)
         val image = Paths.get(projectDir.path, "build", "bufbuild", "image.json").toFile().readText()
         assertThat(image).isNotEmpty()

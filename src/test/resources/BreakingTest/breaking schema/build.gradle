@@ -17,9 +17,13 @@ plugins {
   id 'java'
   id 'com.parmet.buf'
   id 'com.google.protobuf' version '0.8.17'
+  id 'maven-publish'
 }
 
-repositories { mavenCentral() }
+repositories {
+  mavenCentral()
+  maven { url 'build/repos/test' }
+}
 
 protobuf {
   protoc {
@@ -28,3 +32,20 @@ protobuf {
 }
 
 compileJava.enabled = false
+
+publishing {
+  repositories {
+    maven { url 'build/repos/test' }
+  }
+}
+
+buf {
+  publishSchema = true
+  //previousVersion = '2319'
+
+  imageArtifact {
+    groupId = 'foo'
+    artifactId = 'bar'
+    version = '2319'
+  }
+}

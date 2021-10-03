@@ -23,45 +23,15 @@ import org.junit.jupiter.api.Test
 class PublishTest : AbstractBufIntegrationTest() {
     @Test
     fun `publishing schema with explicit artifact details`() {
-        buildFile.writeText(
-            buildGradle(
-                """
-                    $publishSchema
-                    
-                    publishing { $localRepo }
-                    
-                    $imageArtifact
-                """.trimIndent()
-            )
-        )
-
         assertImagePublication("bar")
     }
 
     @Test
     fun `publishing schema with inferred artifact details`() {
-        buildFile.writeText(
-            buildGradle(
-                """
-                    $publishSchema
-                    
-                    publishing {
-                      $localRepo
-                      
-                      $publication
-                    }
-                """.trimIndent()
-            )
-        )
-
         assertImagePublication("bar-bufbuild")
     }
 
     private fun assertImagePublication(artifactId: String) {
-        protoDir.newFolder("parmet", "buf", "test", "v1")
-            .newFile("test.proto")
-            .writeText(basicProtoFile())
-
         assertThat(publishRunner().build().task(":publish")?.outcome).isEqualTo(SUCCESS)
 
         val builtImage = Paths.get(projectDir.path, "build", "bufbuild", "image.json")
