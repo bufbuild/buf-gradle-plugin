@@ -35,8 +35,8 @@ private fun Project.createSymLink(protoDir: String) {
 private fun mangle(name: String) =
     name.replace("-", "--").replace(File.separator, "-")
 
-private fun Project.anyProtos(file: String) =
-    file(file).walkTopDown().any { it.extension == "proto" }
+private fun Project.anyProtos(path: String) =
+    file(path).walkTopDown().any { it.extension == "proto" }
 
 internal fun Project.configureWriteWorkspaceYaml() {
     tasks.register(WRITE_WORKSPACE_YAML_TASK_NAME) {
@@ -47,10 +47,13 @@ internal fun Project.configureWriteWorkspaceYaml() {
                 """
                     version: v1
                     directories:
-                      ${if (anyProtos(SRC_MAIN_PROTO)) "- ${mangle(SRC_MAIN_PROTO)}" else ""}
-                      ${if (anyProtos(BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN)) "- ${mangle(BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN)}" else ""}
+                      ${dir(SRC_MAIN_PROTO)}
+                      ${dir(BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN)}
                 """.trimIndent()
             )
         }
     }
 }
+
+private fun Project.dir(path: String) =
+    if (anyProtos(path)) "- ${mangle(path)}" else ""
