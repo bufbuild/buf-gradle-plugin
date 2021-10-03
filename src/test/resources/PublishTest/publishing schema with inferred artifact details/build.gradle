@@ -36,10 +36,7 @@ buf {
 
 publishing {
   repositories {
-    maven {
-      url 'build/repos/test'
-      name = 'test'
-    }
+    maven { url 'build/repos/test' }
   }
 
   publications {

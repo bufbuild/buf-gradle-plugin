@@ -20,7 +20,10 @@ plugins {
   id 'maven-publish'
 }
 
-repositories { mavenCentral() }
+repositories {
+  mavenCentral()
+  maven { url 'build/repos/test' }
+}
 
 protobuf {
   protoc {
@@ -32,15 +35,12 @@ compileJava.enabled = false
 
 buf {
   publishSchema = true
+  checkSchemaAgainstLatestRelease = true
+  previousVersion = '2319'
+
   imageArtifact {
     groupId = 'foo'
     artifactId = 'bar'
     version = '2319'
-  }
-}
-
-publishing {
-  repositories {
-    maven { url 'build/repos/test' }
   }
 }
