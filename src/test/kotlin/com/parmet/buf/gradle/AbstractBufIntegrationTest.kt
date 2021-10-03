@@ -15,9 +15,11 @@
 
 package com.parmet.buf.gradle
 
+import com.google.common.truth.Truth.assertWithMessage
 import java.io.File
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.TestInfo
 import org.junit.jupiter.api.io.TempDir
 
 abstract class AbstractBufIntegrationTest {
@@ -30,13 +32,18 @@ abstract class AbstractBufIntegrationTest {
     lateinit var configFile: File
 
     @BeforeEach
-    fun setup() {
+    fun setup(testInfo: TestInfo) {
         settingsFile = File(projectDir, "settings.gradle")
         buildFile = File(projectDir, "build.gradle")
         protoDir = projectDir.newFolder("src", "main", "proto")
         configFile = File(projectDir, "buf.yaml")
 
         settingsFile.writeText("rootProject.name = 'testing'")
+
+        val fixture = File("src/test/resources/${testInfo.testClass.get().simpleName}/${testInfo.testMethod.get().name}")
+        if (fixture.exists()) {
+            assertWithMessage("Failed to copy test fixture files").that(fixture.copyRecursively(projectDir)).isTrue()
+        }
     }
 
     class WrappedRunner(
