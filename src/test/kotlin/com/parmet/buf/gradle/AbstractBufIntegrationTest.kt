@@ -21,22 +21,21 @@ import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.TestInfo
 import org.junit.jupiter.api.io.TempDir
+import java.nio.file.Path
 
 abstract class AbstractBufIntegrationTest {
     @TempDir
     lateinit var projectDir: File
 
-    lateinit var settingsFile: File
+    private lateinit var settingsFile: File
     lateinit var buildFile: File
     lateinit var protoDir: File
-    lateinit var configFile: File
 
     @BeforeEach
     fun setup(testInfo: TestInfo) {
         settingsFile = File(projectDir, "settings.gradle")
         buildFile = File(projectDir, "build.gradle")
-        protoDir = projectDir.newFolder("src", "main", "proto")
-        configFile = File(projectDir, "buf.yaml")
+        protoDir = Path.of(projectDir.path, "src", "main", "proto").toFile()
 
         settingsFile.writeText("rootProject.name = 'testing'")
 
