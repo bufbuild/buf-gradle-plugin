@@ -4,6 +4,7 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.kotlin.dsl.get
@@ -20,13 +21,9 @@ private const val BUILD_EXTRACTED_PROTOS_MAIN = "build/extracted-protos/main"
 
 internal fun Project.configureCreateSymLinksToModules() {
     tasks.register(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME) {
-        dependsOn(EXTRACT_INCLUDE_PROTO_TASK_NAME)
-        dependsOn(EXTRACT_PROTO_TASK_NAME)
-
-        outputs.dir(bufbuildDir)
+        workspaceCommonConfig()
 
         doLast {
-            File(bufbuildDir).mkdirs()
             protoDirs().forEach { createSymLink(it) }
         }
     }
@@ -42,9 +39,9 @@ private fun Project.createSymLink(protoDir: Path) {
 
 internal fun Project.configureWriteWorkspaceYaml() {
     tasks.register(WRITE_WORKSPACE_YAML_TASK_NAME) {
-        outputs.dir(bufbuildDir)
+        workspaceCommonConfig()
+
         doLast {
-            File(bufbuildDir).mkdirs()
             val bufWork =
                 """
                     |version: v1
@@ -56,6 +53,15 @@ internal fun Project.configureWriteWorkspaceYaml() {
 
             File("$bufbuildDir/buf.work.yaml").writeText(bufWork)
         }
+    }
+}
+
+private fun Task.workspaceCommonConfig() {
+    dependsOn(EXTRACT_INCLUDE_PROTO_TASK_NAME)
+    dependsOn(EXTRACT_PROTO_TASK_NAME)
+    outputs.dir(project.bufbuildDir)
+    doLast {
+        File(project.bufbuildDir).mkdirs()
     }
 }
 
