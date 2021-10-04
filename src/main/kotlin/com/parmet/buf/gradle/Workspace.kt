@@ -22,10 +22,7 @@ private const val BUILD_EXTRACTED_PROTOS_MAIN = "build/extracted-protos/main"
 internal fun Project.configureCreateSymLinksToModules() {
     tasks.register(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME) {
         workspaceCommonConfig()
-
-        doLast {
-            protoDirs().forEach { createSymLink(it) }
-        }
+        doLast { protoDirs().forEach { createSymLink(it) } }
     }
 }
 
@@ -49,7 +46,7 @@ internal fun Project.configureWriteWorkspaceYaml() {
                     ${workspaceSymLinkEntries()}
                 """.trimMargin()
 
-            logger.info("Writing generated buf.work.yaml: \n$bufWork")
+            logger.info("Writing generated buf.work.yaml:\n$bufWork")
 
             File("$bufbuildDir/buf.work.yaml").writeText(bufWork)
         }
@@ -60,9 +57,7 @@ private fun Task.workspaceCommonConfig() {
     dependsOn(EXTRACT_INCLUDE_PROTO_TASK_NAME)
     dependsOn(EXTRACT_PROTO_TASK_NAME)
     outputs.dir(project.bufbuildDir)
-    doLast {
-        File(project.bufbuildDir).mkdirs()
-    }
+    doLast { File(project.bufbuildDir).mkdirs() }
 }
 
 private fun Project.workspaceSymLinkEntries() =
