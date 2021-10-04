@@ -63,20 +63,21 @@ private fun Project.workspaceSymLinkEntries() =
     protoDirs().joinToString("\n") { "|  - ${mangle(it)}" }
 
 private fun Project.protoDirs(): List<Path> =
-    potentialProtoDirs().filter { anyProtos(it) }
+    (srcDirs() + extractDirs()).filter { anyProtos(it) }
 
-private fun Project.potentialProtoDirs() =
+private fun Project.srcDirs() =
     the<SourceSetContainer>()["main"]
         .extensions
         .getByName("proto")
         .let { it as SourceDirectorySet }
-        .let { sourceDirSet ->
-            sourceDirSet.srcDirs.map { projectDir.toPath().relativize(it.toPath()) }
-        } +
-            listOf(
-                BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN,
-                BUILD_EXTRACTED_PROTOS_MAIN
-            ).map(Path::of)
+        .srcDirs
+        .map { projectDir.toPath().relativize(it.toPath()) }
+
+private fun extractDirs() =
+    listOf(
+        BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN,
+        BUILD_EXTRACTED_PROTOS_MAIN
+    ).map(Path::of)
 
 private fun Project.anyProtos(path: Path) =
     file(path).walkTopDown().any { it.extension == "proto" }
