@@ -30,5 +30,5 @@ protobuf {
 compileJava.enabled = false
 
 dependencies {
-  buf fileTree('subdir') { include '*.yaml' }
+  protobuf files('subdir')
 }
