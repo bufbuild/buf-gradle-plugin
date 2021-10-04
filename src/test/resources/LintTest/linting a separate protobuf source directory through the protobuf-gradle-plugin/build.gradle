@@ -29,6 +29,10 @@ protobuf {
 
 compileJava.enabled = false
 
-dependencies {
-  buf fileTree('subdir') { include '*.yaml' }
+sourceSets {
+  main {
+    proto {
+      srcDir 'subdir'
+    }
+  }
 }

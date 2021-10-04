@@ -67,6 +67,26 @@ class LintTest : AbstractBufIntegrationTest() {
         assertThat(result.output).contains("config file location and a dependency; pick one")
     }
 
+    @Test
+    fun `linting a separate protobuf source directory through the protobuf-gradle-plugin`() {
+        assertSuccess()
+    }
+
+    @Test
+    fun `linting a file with a google dependency with the protobuf-gradle-plugin`() {
+        assertSuccess()
+    }
+
+    @Test
+    fun `linting a file with a protobuf dependency with the protobuf-gradle-plugin`() {
+        assertSuccess()
+    }
+
+    @Test
+    fun `linting a file with a protobuf dependency and a google dependency with the protobuf-gradle-plugin`() {
+        assertSuccess()
+    }
+
     private fun assertLocationFailure() {
         val result = checkRunner().buildAndFail()
         assertThat(result.task(":bufLint")?.outcome).isEqualTo(FAILED)

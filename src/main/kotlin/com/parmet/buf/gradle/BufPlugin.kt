@@ -20,8 +20,6 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.create
 
-internal const val EXTRACT_INCLUDE_PROTO_TASK_NAME = "extractIncludeProto"
-
 const val BUF_CONFIGURATION_NAME = "buf"
 
 class BufPlugin : Plugin<Project> {
