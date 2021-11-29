@@ -15,8 +15,8 @@
 
 package com.parmet.buf.gradle
 
-import java.io.File
 import org.gradle.api.Action
+import java.io.File
 
 open class BufExtension {
     /**
@@ -44,7 +44,7 @@ open class BufExtension {
     /**
      * Specify the version of Buf.
      */
-    var toolVersion: String = "1.0.0-rc2"
+    var toolVersion: String = "1.0.0-rc8"
 
     internal var imageArtifactDetails: ArtifactDetails? = null
 

@@ -16,9 +16,9 @@
 package com.parmet.buf.gradle
 
 import com.google.common.truth.Truth.assertThat
-import java.nio.file.Paths
 import org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import org.junit.jupiter.api.Test
+import java.nio.file.Paths
 
 class BuildTest : AbstractBufIntegrationTest() {
     @Test

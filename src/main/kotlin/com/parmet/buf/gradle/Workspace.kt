@@ -1,14 +1,14 @@
 package com.parmet.buf.gradle
 
-import java.io.File
-import java.nio.file.Files
-import java.nio.file.Path
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.the
+import java.io.File
+import java.nio.file.Files
+import java.nio.file.Path
 
 const val CREATE_SYM_LINKS_TO_MODULES_TASK_NAME = "createSymLinksToModules"
 const val WRITE_WORKSPACE_YAML_TASK_NAME = "writeWorkspaceYaml"
