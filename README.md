@@ -196,7 +196,7 @@ the extension:
 
 ``` kotlin
 buf {
-    toolVersion = "1.0.0-rc2"
+    toolVersion = "1.0.0-rc8"
 }
 ```
 

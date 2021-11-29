@@ -16,10 +16,10 @@
 package com.parmet.buf.gradle
 
 import com.google.common.truth.Truth.assertThat
-import java.io.File
-import java.nio.file.Paths
 import org.gradle.testkit.runner.TaskOutcome.FAILED
 import org.junit.jupiter.api.Test
+import java.io.File
+import java.nio.file.Paths
 
 class BreakingTest : AbstractBufIntegrationTest() {
     @Test

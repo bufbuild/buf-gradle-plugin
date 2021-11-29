@@ -19,15 +19,14 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 repositories {
     gradlePluginPortal()
-    mavenCentral()
 }
 
 plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
     kotlin("jvm")
-    id("com.gradle.plugin-publish") version "0.15.0"
-    id("com.diffplug.spotless") version "5.14.2"
+    id("com.gradle.plugin-publish") version "0.18.0"
+    id("com.diffplug.spotless") version "6.0.0"
 }
 
 allprojects {
