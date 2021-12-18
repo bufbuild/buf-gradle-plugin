@@ -40,6 +40,13 @@ class BreakingTest : AbstractBufIntegrationTest() {
         assertThat(result.output).contains("Cannot configure bufBreaking against latest release and a previous version.")
     }
 
+    @Test
+    fun `schema with multi-directory workspace`() {
+        publishRunner().build()
+        buildFile.replace("//", "")
+        checkRunner().build()
+    }
+
     private fun checkBreaking() {
         checkRunner().build()
 
