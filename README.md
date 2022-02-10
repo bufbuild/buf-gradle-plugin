@@ -6,9 +6,7 @@
 Linting and breakage-check integration for [Buf](https://github.com/bufbuild/buf) with the
 [protobuf-gradle-plugin](https://github.com/google/protobuf-gradle-plugin).
 
-Supports straightforward usage of `buf lint` and a self-contained integration between `buf build` and `buf breaking`.
-Does not integrate with `buf generate` as it assumes usage of the `protobuf-gradle-plugin` for dependency resolution
-and code generation.
+Supports straightforward usage of `buf lint` and a self-contained integration between `buf build` and `buf breaking`. Does not integrate with `buf generate` as it assumes usage of the `protobuf-gradle-plugin` for dependency resolution and code generation.
 
 ## Usage
 
@@ -27,9 +25,7 @@ lint:
     - DEFAULT
 ```
 
-This plugin assumes that all protobuf source is in the `src/main/proto` directory. It works with an implicit Buf
-workspace that includes `src/main/proto` and the `include` dependencies that the protobuf-gradle-plugin extracts into
-`"${project.buildDir}/extracted-include-protos"`. 
+This plugin assumes that all protobuf source is in the `src/main/proto` directory. It works with an implicit Buf workspace that includes `src/main/proto`, the `include` dependencies that the protobuf-gradle-plugin extracts into `"${project.buildDir}/extracted-include-protos"`, and the dependencies that the protobuf-gradle-plugin has been told to generate that are extracted into `"${project.buildDir}/extracted-protos"`. 
 
 See [below](#configuration) for alternative methods of configuration.
 
@@ -113,21 +109,13 @@ standard CLI behavior.
 
 ### `bufBreaking`
 
-`bufBreaking` is more complicated since it requires a previous version of
-the protobuf schema to validate the current version. Buf's built-in Git
-integration isn't quite enough since it requires a buildable protobuf source set
-and the `protobuf-gradle-plugin`'s extraction step typically targets the project
-build directory, which is ephemeral and not committed.
+`bufBreaking` is more complicated since it requires a previous version of the protobuf schema to validate the current version. Buf's built-in Git integration isn't quite enough since it requires a buildable protobuf source set and the `protobuf-gradle-plugin`'s extraction step typically targets the project build directory, which is ephemeral and not committed.
 
-This plugin uses `buf build` to create an image from the current protobuf schema
-and publishes it as a Maven publication. In subsequent builds of the project
-the plugin will resolve the previously published schema image and run
-`buf breaking` against the current schema with the image as its reference.
+This plugin uses `buf build` to create an image from the current protobuf schema and publishes it as a Maven publication. In subsequent builds of the project the plugin will resolve the previously published schema image and run `buf breaking` against the current schema with the image as its reference.
 
 #### Checking against the latest published version
 
-Enable `checkSchemaAgainstLatestRelease` and the plugin will resolve the
-previously published Maven artifact as its input for validation.
+Enable `checkSchemaAgainstLatestRelease` and the plugin will resolve the previously published Maven artifact as its input for validation.
 
 For example, first publish the project with `publishSchema` enabled:
 
@@ -173,9 +161,7 @@ buf {
 
 #### Artifact details
 
-By default the published image artifact will infer its details from an existing
-Maven publication if one exists. If one doesn't exist, you have more than one,
-or you'd like to specify the details yourself, you can configure them:
+By default the published image artifact will infer its details from an existing Maven publication if one exists. If one doesn't exist, you have more than one, or you'd like to specify the details yourself, you can configure them:
 
 ``` kotlin
 buf {
@@ -202,5 +188,4 @@ buf {
 
 ### Prerequisites
 
-The plugin delegates calls to a Buf Docker image. It requires
-Docker to be installed wherever it is run.
+The plugin delegates calls to a Buf Docker image. It requires Docker to be installed wherever it is run.
