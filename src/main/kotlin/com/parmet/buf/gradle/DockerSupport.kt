@@ -46,6 +46,7 @@ private fun Project.resolveConfig(ext: BufExtension): File? =
 private fun Project.baseDockerArgs(ext: BufExtension) =
     listOf(
         "run",
+        "--rm",
         "--volume", "$projectDir:/workspace:Z",
         "--workdir", "/workspace/build/bufbuild",
         "bufbuild/buf:${ext.toolVersion}"
