@@ -49,7 +49,7 @@ abstract class AbstractBufIntegrationTest {
         private val delegate: GradleRunner
     ) {
         fun withArguments(vararg args: String) =
-            WrappedRunner(delegate.withArguments(*args))
+            WrappedRunner(delegate.withArguments(delegate.arguments + args))
 
         fun build() =
             delegate.build().also { println(it.output) }
@@ -62,6 +62,7 @@ abstract class AbstractBufIntegrationTest {
         GradleRunner.create()
             .withProjectDir(projectDir)
             .withPluginClasspath()
+            .withArguments("-PprotobufGradleVersion=0.8.18", "-PprotobufVersion=3.19.1")
             .let { WrappedRunner(it) }
 
     fun checkRunner() =
