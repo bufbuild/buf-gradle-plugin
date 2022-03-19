@@ -18,7 +18,7 @@ internal fun Project.configureCopyBufConfig(ext: BufExtension) {
 private fun Project.bufConfigFile(ext: BufExtension) =
     project.resolveConfig(ext).let {
         if (it != null) {
-            logger.quiet("Using buf config from $it")
+            logger.info("Using buf config from $it")
             it
         } else {
             val configFile = project.file("buf.yaml")
