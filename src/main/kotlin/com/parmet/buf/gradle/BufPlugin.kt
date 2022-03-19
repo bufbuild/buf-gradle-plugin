@@ -29,6 +29,7 @@ class BufPlugin : Plugin<Project> {
 
         project.afterEvaluate {
             project.configureCreateSymLinksToModules()
+            project.configureCopyBufConfig(ext)
             project.configureWriteWorkspaceYaml()
             project.configureLint(ext)
             project.getArtifactDetails(ext)?.let {
