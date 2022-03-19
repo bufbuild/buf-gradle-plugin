@@ -72,11 +72,14 @@ private fun Project.configureSchemaExtraction(bufBreakingFile: LazyBufBreakingFi
 private fun Project.configureBreakingTask(ext: BufExtension, bufBreakingFile: LazyBufBreakingFile) {
     tasks.register<Exec>(BUF_BREAKING_TASK_NAME) {
         dependsOn(BUF_BREAKING_EXTRACT_TASK_NAME)
+        dependsOn(BUF_BUILD_TASK_NAME)
+
         group = CHECK_TASK_NAME
 
         bufTask(
             ext,
             "breaking",
+            BUF_BUILD_PUBLICATION_FILENAME,
             "--against",
             bufBreakingFile
         )
