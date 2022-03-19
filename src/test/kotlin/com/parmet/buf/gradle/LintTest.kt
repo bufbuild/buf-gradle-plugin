@@ -19,7 +19,6 @@ import com.google.common.truth.Truth.assertThat
 import org.gradle.testkit.runner.TaskOutcome.FAILED
 import org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import org.junit.jupiter.api.Test
-import java.io.File
 
 class LintTest : AbstractBufIntegrationTest() {
     @Test
@@ -39,17 +38,7 @@ class LintTest : AbstractBufIntegrationTest() {
 
     @Test
     fun `linting with a file location config override`() {
-        try {
-            assertSuccess()
-        } catch (t: Throwable) {
-            File(projectDir, "build/bufbuild").walkTopDown().forEach {
-                println(it)
-                if (it.name == "buf.yaml") {
-                    println(it.readText())
-                }
-            }
-            throw t
-        }
+        assertSuccess()
     }
 
     @Test

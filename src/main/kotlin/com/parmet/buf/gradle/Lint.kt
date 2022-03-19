@@ -9,8 +9,9 @@ const val BUF_LINT_TASK_NAME = "bufLint"
 
 internal fun Project.configureLint(ext: BufExtension) {
     tasks.register<Exec>(BUF_LINT_TASK_NAME) {
+        dependsOn(BUF_BUILD_TASK_NAME)
         group = CHECK_TASK_NAME
-        bufTask(ext, "lint")
+        bufTask(ext, "lint", BUF_BUILD_PUBLICATION_FILENAME)
     }
 
     tasks.named(CHECK_TASK_NAME).dependsOn(BUF_LINT_TASK_NAME)

@@ -32,9 +32,10 @@ class BufPlugin : Plugin<Project> {
             project.configureCopyBufConfig(ext)
             project.configureWriteWorkspaceYaml()
             project.configureLint(ext)
+            project.configureBuild(ext)
             project.getArtifactDetails(ext)?.let {
                 if (ext.publishSchema) {
-                    project.configureBuild(ext, it)
+                    project.configureImagePublication(it)
                 }
                 if (ext.runBreakageCheck()) {
                     project.configureBreaking(ext, it)
