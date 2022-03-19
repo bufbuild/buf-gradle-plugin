@@ -12,12 +12,14 @@ const val BUF_BUILD_TASK_NAME = "bufBuild"
 const val BUF_BUILD_PUBLICATION_FILENAME = "image.json"
 const val BUF_IMAGE_PUBLICATION_NAME = "bufImagePublication"
 
-internal fun Project.configureBuild(ext: BufExtension, artifactDetails: ArtifactDetails) {
-    logger.info("Publishing buf schema image to ${artifactDetails.groupAndArtifact()}:${artifactDetails.version}")
-
+internal fun Project.configureBuild(ext: BufExtension) {
     tasks.register<Exec>(BUF_BUILD_TASK_NAME) {
         bufTask(ext, "build", "--output", BUF_BUILD_PUBLICATION_FILENAME)
     }
+}
+
+internal fun Project.configureImagePublication(artifactDetails: ArtifactDetails) {
+    logger.info("Publishing buf schema image to ${artifactDetails.groupAndArtifact()}:${artifactDetails.version}")
 
     the<PublishingExtension>().publications {
         create<MavenPublication>(BUF_IMAGE_PUBLICATION_NAME) {
