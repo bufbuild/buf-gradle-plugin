@@ -25,8 +25,8 @@ plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
     kotlin("jvm")
-    id("com.gradle.plugin-publish") version "0.18.0"
-    id("com.diffplug.spotless") version "6.0.5"
+    id("com.gradle.plugin-publish") version "0.20.0"
+    id("com.diffplug.spotless") version "6.3.0"
 }
 
 allprojects {
