@@ -16,7 +16,7 @@
 plugins {
   id 'java'
   id 'com.parmet.buf'
-  id 'com.google.protobuf' version '0.8.17'
+  id 'com.google.protobuf' version "$protobufGradleVersion"
   id 'maven-publish'
 }
 
@@ -27,7 +27,7 @@ repositories {
 
 protobuf {
   protoc {
-    artifact = 'com.google.protobuf:protoc:3.18.0'
+    artifact = "com.google.protobuf:protoc:$protobufVersion"
   }
 }
 
@@ -51,5 +51,5 @@ buf {
 }
 
 dependencies {
-  implementation "com.google.protobuf:protobuf-java:3.18.0"
+  implementation "com.google.protobuf:protobuf-java:$protobufVersion"
 }

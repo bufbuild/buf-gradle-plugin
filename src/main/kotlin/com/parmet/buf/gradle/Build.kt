@@ -9,7 +9,7 @@ import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.the
 
 const val BUF_BUILD_TASK_NAME = "bufBuild"
-const val BUF_BUILD_PUBLICATION_FILENAME = "image.bin"
+const val BUF_BUILD_PUBLICATION_FILENAME = "image.json"
 const val BUF_IMAGE_PUBLICATION_NAME = "bufImagePublication"
 
 internal fun Project.configureBuild(ext: BufExtension, artifactDetails: ArtifactDetails) {
