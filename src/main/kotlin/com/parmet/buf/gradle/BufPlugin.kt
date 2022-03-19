@@ -28,8 +28,8 @@ class BufPlugin : Plugin<Project> {
         project.configurations.create(BUF_CONFIGURATION_NAME)
 
         project.afterEvaluate {
-            project.configureCreateSymLinksToModules()
             project.configureWriteWorkspaceYaml()
+            project.configureCopyProtoToWorkspace()
             project.configureLint(ext)
             project.getArtifactDetails(ext)?.let {
                 if (ext.publishSchema) {
