@@ -21,7 +21,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.TestInfo
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
-import java.nio.file.Path
+import java.nio.file.Paths
 
 abstract class AbstractBufIntegrationTest {
     @TempDir
@@ -35,7 +35,7 @@ abstract class AbstractBufIntegrationTest {
     fun setup(testInfo: TestInfo) {
         settingsFile = File(projectDir, "settings.gradle")
         buildFile = File(projectDir, "build.gradle")
-        protoDir = Path.of(projectDir.path, "src", "main", "proto").toFile()
+        protoDir = Paths.get(projectDir.path, "src", "main", "proto").toFile()
 
         settingsFile.writeText("rootProject.name = 'testing'")
 
