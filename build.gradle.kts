@@ -25,8 +25,8 @@ plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
     kotlin("jvm")
-    id("com.gradle.plugin-publish") version "0.20.0"
-    id("com.diffplug.spotless") version "6.3.0"
+    alias(libs.plugins.pluginPublish)
+    alias(libs.plugins.spotless)
 }
 
 allprojects {
@@ -72,6 +72,8 @@ pluginBundle {
 ext[GRADLE_PUBLISH_KEY] = System.getenv("GRADLE_PORTAL_PUBLISH_KEY")
 ext[GRADLE_PUBLISH_SECRET] = System.getenv("GRADLE_PORTAL_PUBLISH_SECRET")
 
+val targetJavaVersion = JavaVersion.VERSION_1_8
+
 tasks {
     named("publishPlugins") {
         enabled = isRelease()
@@ -84,17 +86,17 @@ tasks {
     withType<KotlinCompile> {
         kotlinOptions {
             allWarningsAsErrors = true
-            jvmTarget = JavaVersion.VERSION_1_8.toString()
+            jvmTarget = targetJavaVersion.toString()
         }
     }
 }
 
 dependencies {
-    testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
-    testImplementation("com.google.truth:truth:1.1.3")
+    testImplementation(libs.junit)
+    testImplementation(libs.truth)
 }
 
 configure<JavaPluginExtension> {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = targetJavaVersion
+    targetCompatibility = targetJavaVersion
 }
