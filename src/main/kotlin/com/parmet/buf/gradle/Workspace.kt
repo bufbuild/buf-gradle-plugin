@@ -24,6 +24,7 @@ import org.gradle.kotlin.dsl.the
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.Paths
 
 const val CREATE_SYM_LINKS_TO_MODULES_TASK_NAME = "createSymLinksToModules"
 const val WRITE_WORKSPACE_YAML_TASK_NAME = "writeWorkspaceYaml"
@@ -45,7 +46,7 @@ private fun Project.createSymLink(protoDir: Path) {
     val symLinkFile = File(bufbuildDir, mangle(protoDir))
     if (!symLinkFile.exists()) {
         logger.info("Creating symlink for $protoDir at $symLinkFile")
-        Files.createSymbolicLink(symLinkFile.toPath(), Path.of(bufbuildDir).relativize(file(protoDir).toPath()))
+        Files.createSymbolicLink(symLinkFile.toPath(), Paths.get(bufbuildDir).relativize(file(protoDir).toPath()))
     }
 }
 
@@ -93,7 +94,7 @@ private fun extractDirs() =
     listOf(
         BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN,
         BUILD_EXTRACTED_PROTOS_MAIN
-    ).map(Path::of)
+    ).map(Paths::get)
 
 private fun Project.anyProtos(path: Path) =
     file(path).walkTopDown().any { it.extension == "proto" }
