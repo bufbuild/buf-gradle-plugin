@@ -27,6 +27,7 @@ plugins {
     kotlin("jvm")
     alias(libs.plugins.pluginPublish)
     alias(libs.plugins.spotless)
+    alias(libs.plugins.animalsniffer)
 }
 
 allprojects {
@@ -92,6 +93,8 @@ tasks {
 }
 
 dependencies {
+    signature(libs.java8Signature) { artifact { type = "signature" } }
+
     testImplementation(libs.junit)
     testImplementation(libs.truth)
 }
