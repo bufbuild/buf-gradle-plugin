@@ -12,7 +12,7 @@ Supports straightforward usage of `buf lint` and a self-contained integration be
 
 Make sure you have applied the `protobuf-gradle-plugin` to your project.
 
-Create a Buf configuration file in the project directory:
+Optionally create a Buf configuration file in the project directory:
 
 ``` yaml
 # buf.yaml
@@ -20,12 +20,12 @@ Create a Buf configuration file in the project directory:
 version: v1
 lint:
   ignore:
-    - google
+    - path/to/dir/to/ignore
   use:
     - DEFAULT
 ```
 
-This plugin assumes that all protobuf source is in the `src/main/proto` directory. It works with an implicit Buf workspace that includes `src/main/proto`, the `include` dependencies that the protobuf-gradle-plugin extracts into `"${project.buildDir}/extracted-include-protos"`, and the dependencies that the protobuf-gradle-plugin has been told to generate that are extracted into `"${project.buildDir}/extracted-protos"`. 
+This plugin works with an implicit Buf workspace that includes all specified protobuf source set directories, the `include` dependencies that the protobuf-gradle-plugin extracts into `"${project.buildDir}/extracted-include-protos"`, and the dependencies that the protobuf-gradle-plugin has been told to generate that are extracted into `"${project.buildDir}/extracted-protos"`. 
 
 See [below](#configuration) for alternative methods of configuration.
 
