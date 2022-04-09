@@ -76,6 +76,9 @@ private fun Task.workspaceCommonConfig() {
     doLast { File(project.bufbuildDir).mkdirs() }
 }
 
+private fun Project.workspaceSymLinkEntries() =
+    allProtoDirs().joinToString("\n") { "|  - ${mangle(it)}" }
+
 fun Project.allProtoDirs(): List<Path> =
     (srcProtoDirs() + extractProtoDirs()).filter { anyProtos(it) }
 
@@ -96,9 +99,6 @@ private fun extractProtoDirs() =
 
 private fun Project.anyProtos(path: Path) =
     file(path).walkTopDown().any { it.extension == "proto" }
-
-private fun Project.workspaceSymLinkEntries() =
-    allProtoDirs().joinToString("\n") { "|  - ${mangle(it)}" }
 
 fun mangle(name: Path) =
     name.toString().replace("-", "--").replace(File.separator, "-")
