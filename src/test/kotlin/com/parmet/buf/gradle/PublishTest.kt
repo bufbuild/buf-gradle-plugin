@@ -22,12 +22,12 @@ import java.nio.file.Paths
 
 class PublishTest : AbstractBufIntegrationTest() {
     @Test
-    fun `publishing schema with explicit artifact details`() {
+    fun `publish schema with explicit artifact details`() {
         assertImagePublication("bar")
     }
 
     @Test
-    fun `publishing schema with inferred artifact details`() {
+    fun `publish schema with inferred artifact details`() {
         assertImagePublication("bar-bufbuild")
     }
 

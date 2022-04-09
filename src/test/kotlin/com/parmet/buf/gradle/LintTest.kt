@@ -22,32 +22,32 @@ import org.junit.jupiter.api.Test
 
 class LintTest : AbstractBufIntegrationTest() {
     @Test
-    fun `linting a basic correct message with default config`() {
+    fun `lint a basic correct message with default config`() {
         assertSuccess()
     }
 
     @Test
-    fun `linting a basic incorrect message with wrong location`() {
+    fun `lint a basic incorrect message with wrong location`() {
         assertLocationFailure()
     }
 
     @Test
-    fun `linting with a config in default location`() {
+    fun `lint with a config in default location`() {
         assertSuccess()
     }
 
     @Test
-    fun `linting with a file location config override`() {
+    fun `lint with a file location config override`() {
         assertSuccess()
     }
 
     @Test
-    fun `linting with a dependency config override`() {
+    fun `lint with a dependency config override`() {
         assertSuccess()
     }
 
     @Test
-    fun `linting with a dependency config override fails with two files`() {
+    fun `lint with a dependency config override fails with two files`() {
         val result = checkRunner().buildAndFail()
         assertThat(result.output).contains("Buf lint configuration should have exactly one file")
         assertThat(result.output).contains("buf-1.yaml")
@@ -55,35 +55,35 @@ class LintTest : AbstractBufIntegrationTest() {
     }
 
     @Test
-    fun `linting with a dependency config override fails with no files`() {
+    fun `lint with a dependency config override fails with no files`() {
         val result = checkRunner().buildAndFail()
         assertThat(result.output).contains("Buf lint configuration should have exactly one file")
         assertThat(result.output).contains("had []")
     }
 
     @Test
-    fun `linting with a file and dependency config override fails`() {
+    fun `lint with a file and dependency config override fails`() {
         val result = checkRunner().buildAndFail()
         assertThat(result.output).contains("config file location and a dependency; pick one")
     }
 
     @Test
-    fun `linting a separate protobuf source directory through the protobuf-gradle-plugin`() {
+    fun `lint a separate protobuf source directory through the protobuf-gradle-plugin`() {
         assertSuccess()
     }
 
     @Test
-    fun `linting a file with a google dependency with the protobuf-gradle-plugin`() {
+    fun `lint a file with a google dependency with the protobuf-gradle-plugin`() {
         assertSuccess()
     }
 
     @Test
-    fun `linting a file with a protobuf dependency with the protobuf-gradle-plugin`() {
+    fun `lint a file with a protobuf dependency with the protobuf-gradle-plugin`() {
         assertSuccess()
     }
 
     @Test
-    fun `linting a file with a protobuf dependency and a google dependency with the protobuf-gradle-plugin`() {
+    fun `lint a file with a protobuf dependency and a google dependency with the protobuf-gradle-plugin`() {
         assertSuccess()
     }
 
