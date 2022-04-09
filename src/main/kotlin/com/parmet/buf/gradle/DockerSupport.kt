@@ -20,8 +20,10 @@ import org.gradle.api.tasks.Exec
 import org.gradle.process.ExecSpec
 
 internal fun Exec.buf(ext: BufExtension, vararg args: Any) {
-    dependsOn(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME)
-    dependsOn(WRITE_WORKSPACE_YAML_TASK_NAME)
+    if (project.hasProtobufGradlePlugin()) {
+        dependsOn(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME)
+        dependsOn(WRITE_WORKSPACE_YAML_TASK_NAME)
+    }
     buf(project, ext, args.asList())
 }
 
@@ -37,6 +39,14 @@ private fun Project.baseDockerArgs(ext: BufExtension) =
         "run",
         "--rm",
         "--volume", "$projectDir:/workspace:Z",
-        "--workdir", "/workspace/build/bufbuild",
+        "--workdir", bufWorkingDir(),
         "bufbuild/buf:${ext.toolVersion}"
     )
+
+private fun Project.bufWorkingDir() =
+    "/workspace" +
+        if (hasProtobufGradlePlugin()) {
+            "/build/bufbuild"
+        } else {
+            ""
+        }

@@ -35,6 +35,9 @@ private const val EXTRACT_PROTO_TASK_NAME = "extractProto"
 private const val BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN = "build/extracted-include-protos/main"
 private const val BUILD_EXTRACTED_PROTOS_MAIN = "build/extracted-protos/main"
 
+internal fun Project.hasProtobufGradlePlugin() =
+    pluginManager.hasPlugin("com.google.protobuf")
+
 internal fun Project.configureCreateSymLinksToModules() {
     tasks.register(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME) {
         workspaceCommonConfig()
@@ -79,10 +82,10 @@ private fun Task.workspaceCommonConfig() {
 private fun Project.workspaceSymLinkEntries() =
     allProtoDirs().joinToString("\n") { "|  - ${mangle(it)}" }
 
-fun Project.allProtoDirs(): List<Path> =
+internal fun Project.allProtoDirs(): List<Path> =
     (srcProtoDirs() + extractProtoDirs()).filter { anyProtos(it) }
 
-fun Project.srcProtoDirs() =
+internal fun Project.srcProtoDirs() =
     the<SourceSetContainer>()["main"]
         .extensions
         .getByName("proto")
@@ -100,5 +103,5 @@ private fun extractProtoDirs() =
 private fun Project.anyProtos(path: Path) =
     file(path).walkTopDown().any { it.extension == "proto" }
 
-fun mangle(name: Path) =
+internal fun mangle(name: Path) =
     name.toString().replace("-", "--").replace(File.separator, "-")

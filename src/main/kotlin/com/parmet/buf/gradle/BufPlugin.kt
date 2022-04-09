@@ -27,19 +27,29 @@ class BufPlugin : Plugin<Project> {
         val ext = project.extensions.create<BufExtension>("buf")
         project.configurations.create(BUF_CONFIGURATION_NAME)
 
-        project.afterEvaluate {
-            project.configureCreateSymLinksToModules()
-            project.configureCopyBufConfig(ext)
-            project.configureWriteWorkspaceYaml()
-            project.configureLint(ext)
-            project.configureBuild(ext)
-            project.getArtifactDetails(ext)?.let {
-                if (ext.publishSchema) {
-                    project.configureImagePublication(it)
-                }
-                if (ext.runBreakageCheck()) {
-                    project.configureBreaking(ext, it)
-                }
+        if (project.hasProtobufGradlePlugin()) {
+            project.afterEvaluate { configureBufWithProtobufGradle(ext) }
+        } else {
+            project.configureBuf(ext)
+        }
+    }
+
+    private fun Project.configureBufWithProtobufGradle(ext: BufExtension) {
+        configureCreateSymLinksToModules()
+        configureCopyBufConfig(ext)
+        configureWriteWorkspaceYaml()
+        configureBuf(ext)
+    }
+
+    private fun Project.configureBuf(ext: BufExtension) {
+        configureLint(ext)
+        configureBuild(ext)
+        getArtifactDetails(ext)?.let {
+            if (ext.publishSchema) {
+                configureImagePublication(it)
+            }
+            if (ext.runBreakageCheck()) {
+                configureBreaking(ext, it)
             }
         }
     }
