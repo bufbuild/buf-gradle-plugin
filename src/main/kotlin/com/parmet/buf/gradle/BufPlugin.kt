@@ -30,7 +30,7 @@ class BufPlugin : Plugin<Project> {
         if (project.hasProtobufGradlePlugin()) {
             project.afterEvaluate { configureBufWithProtobufGradle(ext) }
         } else {
-            project.configureBufVanilla(ext)
+            project.configureBuf(ext)
         }
     }
 
@@ -38,10 +38,13 @@ class BufPlugin : Plugin<Project> {
         configureCreateSymLinksToModules()
         configureCopyBufConfig(ext)
         configureWriteWorkspaceYaml()
+<<<<<<< HEAD
         configureBuf(ext)
     }
 
     private fun Project.configureBufVanilla(ext: BufExtension) {
+=======
+>>>>>>> f20f69a (reorder plugin application in tests using protobuf-gradle-plugin)
         configureBuf(ext)
     }
 
