@@ -17,10 +17,6 @@ package com.parmet.buf.gradle
 
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.api.file.SourceDirectorySet
-import org.gradle.api.tasks.SourceSetContainer
-import org.gradle.kotlin.dsl.get
-import org.gradle.kotlin.dsl.the
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
@@ -30,15 +26,12 @@ const val CREATE_SYM_LINKS_TO_MODULES_TASK_NAME = "createSymLinksToModules"
 const val WRITE_WORKSPACE_YAML_TASK_NAME = "writeWorkspaceYaml"
 
 private const val EXTRACT_INCLUDE_PROTO_TASK_NAME = "extractIncludeProto"
-private const val BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN = "build/extracted-include-protos/main"
-
 private const val EXTRACT_PROTO_TASK_NAME = "extractProto"
-private const val BUILD_EXTRACTED_PROTOS_MAIN = "build/extracted-protos/main"
 
 internal fun Project.configureCreateSymLinksToModules() {
     tasks.register(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME) {
         workspaceCommonConfig()
-        doLast { protoDirs().forEach { createSymLink(it) } }
+        doLast { allProtoDirs().forEach { createSymLink(it) } }
     }
 }
 
@@ -77,27 +70,7 @@ private fun Task.workspaceCommonConfig() {
 }
 
 private fun Project.workspaceSymLinkEntries() =
-    protoDirs().joinToString("\n") { "|  - ${mangle(it)}" }
-
-private fun Project.protoDirs(): List<Path> =
-    (srcDirs() + extractDirs()).filter { anyProtos(it) }
-
-private fun Project.srcDirs() =
-    the<SourceSetContainer>()["main"]
-        .extensions
-        .getByName("proto")
-        .let { it as SourceDirectorySet }
-        .srcDirs
-        .map { projectDir.toPath().relativize(it.toPath()) }
-
-private fun extractDirs() =
-    listOf(
-        BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN,
-        BUILD_EXTRACTED_PROTOS_MAIN
-    ).map(Paths::get)
-
-private fun Project.anyProtos(path: Path) =
-    file(path).walkTopDown().any { it.extension == "proto" }
+    allProtoDirs().joinToString("\n") { "|  - ${mangle(it)}" }
 
 private fun mangle(name: Path) =
     name.toString().replace("-", "--").replace(File.separator, "-")

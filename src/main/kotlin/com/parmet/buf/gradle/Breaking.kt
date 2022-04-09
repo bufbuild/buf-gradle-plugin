@@ -91,7 +91,7 @@ private fun Project.configureBreakingTask(ext: BufExtension, bufBreakingFile: La
 
         group = CHECK_TASK_NAME
 
-        bufTask(
+        buf(
             ext,
             "breaking",
             BUF_BUILD_PUBLICATION_FILENAME,

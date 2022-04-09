@@ -17,14 +17,28 @@ package com.parmet.buf.gradle
 
 import org.gradle.api.Project
 import org.gradle.api.tasks.Exec
+import org.gradle.process.ExecSpec
 
-internal fun Exec.bufTask(ext: BufExtension, vararg args: Any) {
-    dependsOn(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME)
-    dependsOn(WRITE_WORKSPACE_YAML_TASK_NAME)
-    dependsOn(COPY_BUF_CONFIG_TASK_NAME)
+internal val BUF_DOCKER_TASK_DEPENDENCIES =
+    listOf(
+        CREATE_SYM_LINKS_TO_MODULES_TASK_NAME,
+        WRITE_WORKSPACE_YAML_TASK_NAME,
+        COPY_BUF_CONFIG_TASK_NAME
+    )
+
+internal fun Exec.buf(ext: BufExtension, vararg args: Any) {
+    dependsOn(BUF_DOCKER_TASK_DEPENDENCIES)
 
     commandLine("docker")
-    setArgs(project.baseDockerArgs(ext) + args)
+    val dockerArgs = project.baseDockerArgs(ext) + args
+    setArgs(dockerArgs)
+    project.logger.quiet("Running buf: `docker ${dockerArgs.joinToString(" ")}`")
+}
+
+internal fun ExecSpec.bufLint(project: Project, ext: BufExtension, vararg args: Any) {
+    commandLine("docker")
+    setArgs(project.lintDockerArgs(ext) + args)
+    project.logger.quiet("Running buf: `docker ${getArgs().joinToString(" ")}`")
 }
 
 private fun Project.baseDockerArgs(ext: BufExtension) =
@@ -33,5 +47,14 @@ private fun Project.baseDockerArgs(ext: BufExtension) =
         "--rm",
         "--volume", "$projectDir:/workspace:Z",
         "--workdir", "/workspace/build/bufbuild",
+        "bufbuild/buf:${ext.toolVersion}"
+    )
+
+private fun Project.lintDockerArgs(ext: BufExtension) =
+    listOf(
+        "run",
+        "--rm",
+        "--volume", "$projectDir:/workspace:Z",
+        "--workdir", "/workspace",
         "bufbuild/buf:${ext.toolVersion}"
     )
