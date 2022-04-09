@@ -22,7 +22,6 @@ const val BUF_LINT_TASK_NAME = "bufLint"
 
 internal fun Project.configureLint(ext: BufExtension) {
     tasks.register(BUF_LINT_TASK_NAME) {
-        dependsOn(BUF_BUILD_TASK_NAME)
         dependsOn(BUF_DOCKER_TASK_DEPENDENCIES)
 
         group = CHECK_TASK_NAME
@@ -30,7 +29,8 @@ internal fun Project.configureLint(ext: BufExtension) {
         doLast {
             srcProtoDirs().forEach {
                 exec {
-                    bufLint(this@configureLint, ext, "lint", it)
+                    val configArgs = bufConfigFile(ext)?.let { listOf("--config", it.readText()) }.orEmpty()
+                    buf(this@configureLint, ext, listOf("lint", mangle(it)) + configArgs)
                 }
             }
         }

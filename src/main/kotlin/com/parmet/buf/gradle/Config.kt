@@ -30,7 +30,7 @@ internal fun Project.configureCopyBufConfig(ext: BufExtension) {
     }
 }
 
-private fun Project.bufConfigFile(ext: BufExtension) =
+internal fun Project.bufConfigFile(ext: BufExtension) =
     project.resolveConfig(ext).let {
         if (it != null) {
             logger.info("Using buf config from $it")
