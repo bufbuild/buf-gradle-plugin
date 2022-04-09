@@ -22,7 +22,8 @@ const val BUF_LINT_TASK_NAME = "bufLint"
 
 internal fun Project.configureLint(ext: BufExtension) {
     tasks.register(BUF_LINT_TASK_NAME) {
-        dependsOn(BUF_DOCKER_TASK_DEPENDENCIES)
+        dependsOn(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME)
+        dependsOn(WRITE_WORKSPACE_YAML_TASK_NAME)
 
         group = CHECK_TASK_NAME
 

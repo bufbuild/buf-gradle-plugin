@@ -19,15 +19,9 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.Exec
 import org.gradle.process.ExecSpec
 
-internal val BUF_DOCKER_TASK_DEPENDENCIES =
-    listOf(
-        CREATE_SYM_LINKS_TO_MODULES_TASK_NAME,
-        WRITE_WORKSPACE_YAML_TASK_NAME,
-        COPY_BUF_CONFIG_TASK_NAME
-    )
-
 internal fun Exec.buf(ext: BufExtension, vararg args: Any) {
-    dependsOn(BUF_DOCKER_TASK_DEPENDENCIES)
+    dependsOn(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME)
+    dependsOn(WRITE_WORKSPACE_YAML_TASK_NAME)
     buf(project, ext, args.asList())
 }
 
