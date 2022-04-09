@@ -17,21 +17,33 @@ package com.parmet.buf.gradle
 
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaBasePlugin.CHECK_TASK_NAME
+import java.nio.file.Path
 
 const val BUF_LINT_TASK_NAME = "bufLint"
 
 internal fun Project.configureLint(ext: BufExtension) {
     tasks.register(BUF_LINT_TASK_NAME) {
-        dependsOn(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME)
-        dependsOn(WRITE_WORKSPACE_YAML_TASK_NAME)
-
         group = CHECK_TASK_NAME
 
+        if (hasProtobufGradlePlugin()) {
+            dependsOn(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME)
+            dependsOn(WRITE_WORKSPACE_YAML_TASK_NAME)
+        }
+
         doLast {
-            srcProtoDirs().forEach {
+            fun lintArgs(path: Path? = null) =
+                listOfNotNull("lint", path?.let(::mangle)) +
+                    bufConfigFile(ext)?.let { listOf("--config", it.readText()) }.orEmpty()
+
+            if (hasProtobufGradlePlugin()) {
+                srcProtoDirs().forEach {
+                    exec {
+                        buf(this@configureLint, ext, lintArgs(it))
+                    }
+                }
+            } else {
                 exec {
-                    val configArgs = bufConfigFile(ext)?.let { listOf("--config", it.readText()) }.orEmpty()
-                    buf(this@configureLint, ext, listOf("lint", mangle(it)) + configArgs)
+                    buf(this@configureLint, ext, lintArgs())
                 }
             }
         }

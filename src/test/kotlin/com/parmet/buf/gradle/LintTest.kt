@@ -87,6 +87,21 @@ class LintTest : AbstractBufIntegrationTest() {
         assertSuccess()
     }
 
+    @Test
+    fun `lint a basic message without the protobuf-gradle-plugin`() {
+        assertSuccess()
+    }
+
+    @Test
+    fun `lint incorrect message without the protobuf-gradle-plugin`() {
+        assertLocationFailure()
+    }
+
+    @Test
+    fun `lint without the protobuf-gradle-plugin with a config in default location`() {
+        assertSuccess()
+    }
+
     private fun assertLocationFailure() {
         val result = checkRunner().buildAndFail()
         assertThat(result.task(":bufLint")?.outcome).isEqualTo(FAILED)

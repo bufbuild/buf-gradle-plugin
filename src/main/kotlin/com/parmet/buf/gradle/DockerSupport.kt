@@ -45,8 +45,8 @@ private fun Project.baseDockerArgs(ext: BufExtension) =
 
 private fun Project.bufWorkingDir() =
     "/workspace" +
-    if (hasProtobufGradlePlugin()) {
-        "/build/bufbuild"
-    } else {
-        ""
-    }
+        if (hasProtobufGradlePlugin()) {
+            "/build/bufbuild"
+        } else {
+            ""
+        }
