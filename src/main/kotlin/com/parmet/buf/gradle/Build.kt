@@ -29,7 +29,8 @@ const val BUF_IMAGE_PUBLICATION_NAME = "bufImagePublication"
 
 internal fun Project.configureBuild(ext: BufExtension) {
     tasks.register<Exec>(BUF_BUILD_TASK_NAME) {
-        bufTask(ext, "build", "--output", BUF_BUILD_PUBLICATION_FILENAME)
+        dependsOn(COPY_BUF_CONFIG_TASK_NAME)
+        buf(ext, "build", "--output", BUF_BUILD_PUBLICATION_FILENAME)
     }
 }
 

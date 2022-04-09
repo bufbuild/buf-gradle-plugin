@@ -30,15 +30,15 @@ const val CREATE_SYM_LINKS_TO_MODULES_TASK_NAME = "createSymLinksToModules"
 const val WRITE_WORKSPACE_YAML_TASK_NAME = "writeWorkspaceYaml"
 
 private const val EXTRACT_INCLUDE_PROTO_TASK_NAME = "extractIncludeProto"
-private const val BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN = "build/extracted-include-protos/main"
-
 private const val EXTRACT_PROTO_TASK_NAME = "extractProto"
+
+private const val BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN = "build/extracted-include-protos/main"
 private const val BUILD_EXTRACTED_PROTOS_MAIN = "build/extracted-protos/main"
 
 internal fun Project.configureCreateSymLinksToModules() {
     tasks.register(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME) {
         workspaceCommonConfig()
-        doLast { protoDirs().forEach { createSymLink(it) } }
+        doLast { allProtoDirs().forEach { createSymLink(it) } }
     }
 }
 
@@ -77,20 +77,21 @@ private fun Task.workspaceCommonConfig() {
 }
 
 private fun Project.workspaceSymLinkEntries() =
-    protoDirs().joinToString("\n") { "|  - ${mangle(it)}" }
+    allProtoDirs().joinToString("\n") { "|  - ${mangle(it)}" }
 
-private fun Project.protoDirs(): List<Path> =
-    (srcDirs() + extractDirs()).filter { anyProtos(it) }
+fun Project.allProtoDirs(): List<Path> =
+    (srcProtoDirs() + extractProtoDirs()).filter { anyProtos(it) }
 
-private fun Project.srcDirs() =
+fun Project.srcProtoDirs() =
     the<SourceSetContainer>()["main"]
         .extensions
         .getByName("proto")
         .let { it as SourceDirectorySet }
         .srcDirs
         .map { projectDir.toPath().relativize(it.toPath()) }
+        .filter { anyProtos(it) }
 
-private fun extractDirs() =
+private fun extractProtoDirs() =
     listOf(
         BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN,
         BUILD_EXTRACTED_PROTOS_MAIN
@@ -99,5 +100,5 @@ private fun extractDirs() =
 private fun Project.anyProtos(path: Path) =
     file(path).walkTopDown().any { it.extension == "proto" }
 
-private fun mangle(name: Path) =
+fun mangle(name: Path) =
     name.toString().replace("-", "--").replace(File.separator, "-")

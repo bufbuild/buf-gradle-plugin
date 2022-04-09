@@ -13,8 +13,6 @@
 
 version: v1
 lint:
-  ignore:
-    - google
   use:
     - DEFAULT
   except:

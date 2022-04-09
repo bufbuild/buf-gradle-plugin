@@ -17,14 +17,19 @@ package com.parmet.buf.gradle
 
 import org.gradle.api.Project
 import org.gradle.api.tasks.Exec
+import org.gradle.process.ExecSpec
 
-internal fun Exec.bufTask(ext: BufExtension, vararg args: Any) {
+internal fun Exec.buf(ext: BufExtension, vararg args: Any) {
     dependsOn(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME)
     dependsOn(WRITE_WORKSPACE_YAML_TASK_NAME)
-    dependsOn(COPY_BUF_CONFIG_TASK_NAME)
+    buf(project, ext, args.asList())
+}
 
+internal fun ExecSpec.buf(project: Project, ext: BufExtension, args: Iterable<Any>) {
     commandLine("docker")
-    setArgs(project.baseDockerArgs(ext) + args)
+    val dockerArgs = project.baseDockerArgs(ext) + args
+    setArgs(dockerArgs)
+    project.logger.debug("Running buf: `docker ${dockerArgs.joinToString(" ")}`")
 }
 
 private fun Project.baseDockerArgs(ext: BufExtension) =

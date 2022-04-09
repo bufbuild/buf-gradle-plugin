@@ -35,6 +35,16 @@ class BreakingTest : AbstractBufIntegrationTest() {
     }
 
     @Test
+    fun `normally breaking schema with an ignore`() {
+        publishRunner().build()
+
+        breakSchema()
+
+        buildFile.replace("//", "")
+        checkRunner().build()
+    }
+
+    @Test
     fun `breaking schema fails with latest-release and previousVersion`() {
         val result = checkRunner().buildAndFail()
         assertThat(result.output).contains("Cannot configure bufBreaking against latest release and a previous version.")
@@ -52,12 +62,16 @@ class BreakingTest : AbstractBufIntegrationTest() {
 
         buildFile.replace("//", "")
 
-        val protoFile = Paths.get(protoDir.path, "parmet", "buf", "test", "v1", "test.proto").toFile()
-        protoFile.replace("BasicMessage", "BasicMessage2")
+        breakSchema()
 
         val result = checkRunner().buildAndFail()
         assertThat(result.task(":bufBreaking")?.outcome).isEqualTo(FAILED)
         assertThat(result.output).contains("Previously present message \"BasicMessage\" was deleted from file.")
+    }
+
+    private fun breakSchema() {
+        val protoFile = Paths.get(protoDir.path, "parmet", "buf", "test", "v1", "test.proto").toFile()
+        protoFile.replace("BasicMessage", "BasicMessage2")
     }
 
     private fun File.replace(oldValue: String, newValue: String) {
