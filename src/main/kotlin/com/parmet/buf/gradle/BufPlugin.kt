@@ -37,7 +37,7 @@ class BufPlugin : Plugin<Project> {
     }
 
     private fun Project.failForWorkspaceAndPlugin() {
-        check(!project.usesWorkspaces(), ::WORKSPACE_AND_PROTOBUF_PLUGIN_FAILURE_MESSAGE)
+        check(!project.hasWorkspace(), ::WORKSPACE_AND_PROTOBUF_PLUGIN_FAILURE_MESSAGE)
     }
 
     private fun Project.configureBufWithProtobufGradle(ext: BufExtension) {
