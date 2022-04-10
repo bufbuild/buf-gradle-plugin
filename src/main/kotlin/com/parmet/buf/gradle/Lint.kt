@@ -35,16 +35,13 @@ internal fun Project.configureLint(ext: BufExtension) {
                 listOfNotNull("lint", path?.let(::mangle)) +
                     bufConfigFile(ext)?.let { listOf("--config", it.readText()) }.orEmpty()
 
-            if (hasProtobufGradlePlugin()) {
-                srcProtoDirs().forEach {
-                    exec {
-                        buf(this@configureLint, ext, lintArgs(it))
-                    }
-                }
-            } else {
-                exec {
-                    buf(this@configureLint, ext, lintArgs())
-                }
+            when {
+                hasProtobufGradlePlugin() ->
+                    srcProtoDirs().forEach { exec { buf(this@configureLint, ext, lintArgs(it)) } }
+                usesWorkspaces() ->
+                    exec { buf(this@configureLint, ext, "lint") }
+                else ->
+                    exec { buf(this@configureLint, ext, lintArgs()) }
             }
         }
     }

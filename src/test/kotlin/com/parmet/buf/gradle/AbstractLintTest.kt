@@ -20,7 +20,7 @@ import org.gradle.testkit.runner.TaskOutcome.FAILED
 import org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import org.junit.jupiter.api.Test
 
-abstract class AbstractLintTest : AbstractBufIntegrationTest() {
+abstract class AbstractLintTest : LintTestUtilities, AbstractBufIntegrationTest() {
     @Test
     fun `lint a basic correct message with default config`() {
         assertSuccess()
@@ -29,42 +29,6 @@ abstract class AbstractLintTest : AbstractBufIntegrationTest() {
     @Test
     fun `lint a basic incorrect message with wrong location`() {
         assertLocationFailure()
-    }
-
-    @Test
-    fun `lint with a config in default location`() {
-        assertSuccess()
-    }
-
-    @Test
-    fun `lint with a file location config override`() {
-        assertSuccess()
-    }
-
-    @Test
-    fun `lint with a dependency config override`() {
-        assertSuccess()
-    }
-
-    @Test
-    fun `lint with a dependency config override fails with two files`() {
-        val result = checkRunner().buildAndFail()
-        assertThat(result.output).contains("Buf lint configuration should have exactly one file")
-        assertThat(result.output).contains("buf-1.yaml")
-        assertThat(result.output).contains("buf-2.yaml")
-    }
-
-    @Test
-    fun `lint with a dependency config override fails with no files`() {
-        val result = checkRunner().buildAndFail()
-        assertThat(result.output).contains("Buf lint configuration should have exactly one file")
-        assertThat(result.output).contains("had []")
-    }
-
-    @Test
-    fun `lint with a file and dependency config override fails`() {
-        val result = checkRunner().buildAndFail()
-        assertThat(result.output).contains("config file location and a dependency; pick one")
     }
 
     @Test
@@ -77,8 +41,10 @@ abstract class AbstractLintTest : AbstractBufIntegrationTest() {
         assertThat(result.task(":bufLint")?.outcome).isEqualTo(FAILED)
         assertThat(result.output).contains("must be within a directory \"parmet/buf/test/v1\"")
     }
+}
 
-    protected fun assertSuccess() {
+interface LintTestUtilities : IntegrationTest {
+    fun assertSuccess() {
         assertThat(checkRunner().build().task(":check")?.outcome).isEqualTo(SUCCESS)
     }
 }

@@ -15,4 +15,11 @@
 
 package com.parmet.buf.gradle
 
-class LintTest : ConfigOverrideableLintTests, AbstractLintTest()
+import org.junit.jupiter.api.Test
+
+class LintWithWorkspaceTest : AbstractLintTest() {
+    @Test
+    fun `lint with a config in workspace`() {
+        assertSuccess()
+    }
+}
