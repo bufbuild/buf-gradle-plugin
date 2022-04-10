@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Andrew Parmet
+ * Copyright (c) 2021 Andrew Parmet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,25 +15,32 @@
 
 plugins {
   id 'java'
+  id 'com.google.protobuf' version "$protobufGradleVersion"
   id 'com.parmet.buf'
   id 'maven-publish'
 }
 
+repositories { mavenCentral() }
+
+protobuf {
+  protoc {
+    artifact = "com.google.protobuf:protoc:$protobufVersion"
+  }
+}
+
+compileJava.enabled = false
+
 buf {
   publishSchema = true
+  imageArtifact {
+    groupId = 'foo'
+    artifactId = 'bar'
+    version = '2319'
+  }
 }
 
 publishing {
   repositories {
     maven { url 'build/repos/test' }
-  }
-
-  publications {
-    maven(MavenPublication) {
-      groupId = 'foo'
-      artifactId = 'bar'
-      version = '2319'
-      from components.java
-    }
   }
 }
