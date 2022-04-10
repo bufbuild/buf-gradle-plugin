@@ -17,7 +17,6 @@ package com.parmet.buf.gradle
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.create
 
 const val BUF_CONFIGURATION_NAME = "buf"
@@ -37,7 +36,17 @@ class BufPlugin : Plugin<Project> {
     }
 
     private fun Project.failForWorkspaceAndPlugin() {
-        check(!project.hasWorkspace(), ::WORKSPACE_AND_PROTOBUF_PLUGIN_FAILURE_MESSAGE)
+        check(!project.hasWorkspace()) {
+            """
+                A project cannot use both the protobuf-gradle-plugin and a Buf workspace.
+                If you have multiple protobuf source directories and you would like to
+                use the protobuf-gradle-plugin, configure the protobuf-gradle-plugin to use
+                those directories as source directories in the appropriate source set. If you
+                would like to use Buf workspaces, you must configure dependency resolution and
+                code generation using Buf. There is no (easy) way to reconcile the two
+                configurations for linting, breakage, and code generation steps.
+            """.trimIndent().replace('\n', ' ')
+        }
     }
 
     private fun Project.configureBufWithProtobufGradle(ext: BufExtension) {
@@ -63,29 +72,3 @@ class BufPlugin : Plugin<Project> {
         }
     }
 }
-
-private val WORKSPACE_AND_PROTOBUF_PLUGIN_FAILURE_MESSAGE =
-    """
-        A project cannot use both the protobuf-gradle-plugin and a Buf workspace.
-        If you have multiple protobuf source directories and you would like to
-        use the protobuf-gradle-plugin, configure the protobuf-gradle-plugin to use
-        those directories as source directories in the appropriate source set. If you
-        would like to use Buf workspaces, you must configure dependency resolution and
-        code generation using Buf. There is no (easy) way to reconcile the two
-        configurations for linting, breakage, and code generation steps.
-    """.trimIndent().replace('\n', ' ')
-
-internal fun TaskProvider<*>.dependsOn(obj: Any) {
-    configure { dependsOn(obj) }
-}
-
-const val BUF_BUILD_DIR = "bufbuild"
-
-internal val Project.bufbuildDir
-    get() = "$buildDir/$BUF_BUILD_DIR"
-
-internal fun BufExtension.runBreakageCheck() =
-    checkSchemaAgainstLatestRelease || previousVersion != null
-
-internal fun ArtifactDetails.groupAndArtifact() =
-    "$groupId:$artifactId"

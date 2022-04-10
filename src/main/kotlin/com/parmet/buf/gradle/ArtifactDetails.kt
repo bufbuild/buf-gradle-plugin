@@ -50,3 +50,6 @@ internal fun Project.getArtifactDetails(ext: BufExtension): ArtifactDetails? {
         null
     }
 }
+
+internal fun BufExtension.runBreakageCheck() =
+    checkSchemaAgainstLatestRelease || previousVersion != null
