@@ -37,19 +37,11 @@ internal fun Project.configureLint(ext: BufExtension) {
 
             when {
                 hasProtobufGradlePlugin() ->
-                    srcProtoDirs().forEach {
-                        exec {
-                            buf(this@configureLint, ext, lintArgs(it))
-                        }
-                    }
+                    srcProtoDirs().forEach { exec { buf(this@configureLint, ext, lintArgs(it)) } }
                 usesWorkspaces() ->
-                    exec {
-                        buf(this@configureLint, ext, "lint")
-                    }
+                    exec { buf(this@configureLint, ext, "lint") }
                 else ->
-                    exec {
-                        buf(this@configureLint, ext, lintArgs())
-                    }
+                    exec { buf(this@configureLint, ext, lintArgs()) }
             }
         }
     }
