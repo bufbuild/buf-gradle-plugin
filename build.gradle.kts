@@ -95,7 +95,7 @@ tasks {
 dependencies {
     signature(libs.java8Signature) { artifact { type = "signature" } }
 
-    testImplementation(libs.junit) { version { branch = "main" } }
+    testImplementation(libs.junit)
     testImplementation(libs.truth)
 }
 
