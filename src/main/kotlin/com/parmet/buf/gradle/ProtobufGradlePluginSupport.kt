@@ -18,6 +18,7 @@ package com.parmet.buf.gradle
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.file.SourceDirectorySet
+import org.gradle.api.plugins.AppliedPlugin
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.the
@@ -37,6 +38,9 @@ private const val BUILD_EXTRACTED_PROTOS_MAIN = "build/extracted-protos/main"
 
 internal fun Project.hasProtobufGradlePlugin() =
     pluginManager.hasPlugin("com.google.protobuf")
+
+internal fun Project.withProtobufGradlePlugin(action: (AppliedPlugin) -> Unit) =
+    pluginManager.withPlugin("com.google.protobuf", action)
 
 internal fun Project.configureCreateSymLinksToModules() {
     tasks.register(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME) {

@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
-package com.parmet.buf.gradle
-
-class LintTest : ConfigOverrideableLintTests, AbstractLintTest()
+plugins {
+  id 'java'
+  id 'com.parmet.buf'
+}

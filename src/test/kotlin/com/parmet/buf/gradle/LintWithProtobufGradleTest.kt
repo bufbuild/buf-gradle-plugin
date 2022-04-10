@@ -17,7 +17,7 @@ package com.parmet.buf.gradle
 
 import org.junit.jupiter.api.Test
 
-class LintWithProtobufGradleTest : AbstractLintTest() {
+class LintWithProtobufGradleTest : ConfigOverrideableLintTests, AbstractLintTest() {
     @Test
     fun `lint a separate protobuf source directory through the protobuf-gradle-plugin`() {
         assertSuccess()

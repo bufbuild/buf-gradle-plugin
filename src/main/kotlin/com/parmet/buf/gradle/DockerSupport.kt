@@ -27,6 +27,10 @@ internal fun Exec.buf(ext: BufExtension, vararg args: Any) {
     buf(project, ext, args.asList())
 }
 
+internal fun ExecSpec.buf(project: Project, ext: BufExtension, vararg args: Any) {
+    buf(project, ext, args.asList())
+}
+
 internal fun ExecSpec.buf(project: Project, ext: BufExtension, args: Iterable<Any>) {
     commandLine("docker")
     val dockerArgs = project.baseDockerArgs(ext) + args

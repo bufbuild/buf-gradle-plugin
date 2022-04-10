@@ -23,7 +23,7 @@ import org.junit.jupiter.api.io.TempDir
 import java.io.File
 import java.nio.file.Paths
 
-abstract class AbstractBufIntegrationTest {
+abstract class AbstractBufIntegrationTest : IntegrationTest {
     @TempDir
     lateinit var projectDir: File
 
@@ -63,9 +63,13 @@ abstract class AbstractBufIntegrationTest {
             .withArguments("-PprotobufGradleVersion=0.8.18", "-PprotobufVersion=3.19.4")
             .let { WrappedRunner(it) }
 
-    fun checkRunner() =
+    override fun checkRunner() =
         gradleRunner().withArguments("check")
 
     fun publishRunner() =
         gradleRunner().withArguments("publish")
+}
+
+interface IntegrationTest {
+    fun checkRunner(): AbstractBufIntegrationTest.WrappedRunner
 }

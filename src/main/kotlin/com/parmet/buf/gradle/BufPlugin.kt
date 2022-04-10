@@ -28,10 +28,16 @@ class BufPlugin : Plugin<Project> {
         project.configurations.create(BUF_CONFIGURATION_NAME)
 
         if (project.hasProtobufGradlePlugin()) {
+            project.failForWorkspacesAndPlugin()
             project.afterEvaluate { configureBufWithProtobufGradle(ext) }
         } else {
+            project.withProtobufGradlePlugin { project.failForWorkspacesAndPlugin() }
             project.configureBuf(ext)
         }
+    }
+
+    private fun Project.failForWorkspacesAndPlugin() {
+        check(!project.usesWorkspaces(), ::WORKSPACES_AND_PROTOBUF_PLUGIN_FAILURE_MESSAGE)
     }
 
     private fun Project.configureBufWithProtobufGradle(ext: BufExtension) {
@@ -57,6 +63,12 @@ class BufPlugin : Plugin<Project> {
         }
     }
 }
+
+private val WORKSPACES_AND_PROTOBUF_PLUGIN_FAILURE_MESSAGE =
+    "A project cannot use both the protobuf-gradle-plugin and Buf workspaces. " +
+        "If you have multiple directories of protobuf source and you would like to " +
+        "use the protobuf-gradle-plugin, configure the protobuf-gradle-plugin to use " +
+        "those directories as source directories in the appropriate source set."
 
 internal fun TaskProvider<*>.dependsOn(obj: Any) {
     configure { dependsOn(obj) }
