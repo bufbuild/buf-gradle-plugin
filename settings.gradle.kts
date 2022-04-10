@@ -13,23 +13,22 @@
  * limitations under the License.
  */
 
-import java.net.URI
+import me.champeau.gradle.igp.gitRepositories
 
-buildscript {
-    repositories {
-        gradlePluginPortal()
-    }
-    dependencies {
-        classpath("gradle.plugin.net.vivin:gradle-semantic-build-versioning:4.0.0")
-    }
+buildscript { repositories { gradlePluginPortal() } }
+
+plugins {
+    id("me.champeau.includegit") version "0.1.5"
+    id("net.vivin.gradle-semantic-build-versioning") version "4.0.0"
 }
-
-apply(plugin = "net.vivin.gradle-semantic-build-versioning")
 
 rootProject.name = "buf-gradle-plugin"
 
-sourceControl {
-    gitRepository(URI.create("https://github.com/andrewparmet/junit5.git")) {
-        producesModule("org.junit.jupiter:junit-jupiter")
+gitRepositories {
+    checkoutsDirectory.set(file("build/checkouts"))
+
+    include("junit") {
+        uri.set("git@github.com:junit-team/junit5.git")
+        commit.set("c8fa9c3")
     }
 }

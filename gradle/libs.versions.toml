@@ -21,6 +21,7 @@ spotless = "6.3.0"
 java8Signature = "1.0"
 
 # test
+junit = "5.9.0-SNAPSHOT"
 truth = "1.1.3"
 
 [plugins]
@@ -33,5 +34,5 @@ spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 java8Signature = { module = "org.codehaus.mojo.signature:java18", version.ref = "java8Signature" }
 
 # test
-junit = { module = "org.junit.jupiter:junit-jupiter" }
+junit = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
 truth = { module = "com.google.truth:truth", version.ref = "truth" }
