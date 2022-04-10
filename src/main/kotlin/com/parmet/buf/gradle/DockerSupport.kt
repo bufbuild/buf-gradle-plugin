@@ -31,7 +31,7 @@ internal fun ExecSpec.buf(project: Project, ext: BufExtension, args: Iterable<An
     commandLine("docker")
     val dockerArgs = project.baseDockerArgs(ext) + args
     setArgs(dockerArgs)
-    project.logger.quiet("Running buf: `docker ${dockerArgs.joinToString(" ")}`")
+    project.logger.info("Running buf: `docker ${dockerArgs.joinToString(" ")}`")
 }
 
 private fun Project.baseDockerArgs(ext: BufExtension) =
