@@ -35,9 +35,10 @@ buildscript {
 apply(plugin = "com.parmet.buf")
 ```
 
-When applied the plugin creates two useful tasks:
+When applied the plugin creates several tasks:
 - `bufLint` lints protobuf code
 - `bufBreaking` checks protobuf against a previous version for backwards-incompatible changes
+- `bufGenerate` generates protobuf code
 
 ## Configuration
 
