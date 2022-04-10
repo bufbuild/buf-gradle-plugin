@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Andrew Parmet
+ * Copyright (c) 2022 Andrew Parmet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,28 +15,4 @@
 
 package com.parmet.buf.gradle
 
-import com.google.common.truth.Truth.assertThat
-import org.gradle.testkit.runner.TaskOutcome.SUCCESS
-import org.junit.jupiter.api.Test
-import java.nio.file.Paths
-
-class PublishTest : AbstractBufIntegrationTest() {
-    @Test
-    fun `publish schema with explicit artifact details`() {
-        assertImagePublication("bar")
-    }
-
-    @Test
-    fun `publish schema with inferred artifact details`() {
-        assertImagePublication("bar-bufbuild")
-    }
-
-    private fun assertImagePublication(artifactId: String) {
-        assertThat(publishRunner().build().task(":publish")?.outcome).isEqualTo(SUCCESS)
-
-        val builtImage = Paths.get(projectDir.path, "build", "bufbuild", "image.json")
-        val publishedImage = Paths.get(projectDir.path, "build", "repos", "test", "foo", artifactId, "2319", "$artifactId-2319.json")
-
-        assertThat(publishedImage.toFile().readText()).isEqualTo(builtImage.toFile().readText())
-    }
-}
+class PublishTest : AbstractPublishTest()

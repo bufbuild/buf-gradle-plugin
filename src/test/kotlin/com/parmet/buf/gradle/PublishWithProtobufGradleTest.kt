@@ -13,27 +13,6 @@
  * limitations under the License.
  */
 
-plugins {
-  id 'java'
-  id 'com.parmet.buf'
-  id 'maven-publish'
-}
+package com.parmet.buf.gradle
 
-buf {
-  publishSchema = true
-}
-
-publishing {
-  repositories {
-    maven { url 'build/repos/test' }
-  }
-
-  publications {
-    maven(MavenPublication) {
-      groupId = 'foo'
-      artifactId = 'bar'
-      version = '2319'
-      from components.java
-    }
-  }
-}
+class PublishWithProtobufGradleTest : AbstractPublishTest()
