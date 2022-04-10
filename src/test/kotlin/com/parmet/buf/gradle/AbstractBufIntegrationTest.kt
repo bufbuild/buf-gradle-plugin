@@ -28,14 +28,16 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
     lateinit var projectDir: File
 
     private lateinit var settingsFile: File
-    lateinit var buildFile: File
-    lateinit var protoDir: File
+
+    val buildFile
+        get() = File(projectDir, "build.gradle").takeIf { it.exists() } ?: File(projectDir, "build.gradle.kts")
+
+    val protoDir
+        get() = Paths.get(projectDir.path, "src", "main", "proto").toFile()
 
     @BeforeEach
     fun setup(testInfo: TestInfo) {
         settingsFile = File(projectDir, "settings.gradle")
-        buildFile = File(projectDir, "build.gradle")
-        protoDir = Paths.get(projectDir.path, "src", "main", "proto").toFile()
 
         settingsFile.writeText("rootProject.name = 'testing'")
 

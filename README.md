@@ -5,13 +5,13 @@
 
 Linting and breakage-check integration for [Buf](https://github.com/bufbuild/buf) with Gradle. Supports integration purely between Buf and Gradle or additionally with the [protobuf-gradle-plugin](https://github.com/google/protobuf-gradle-plugin).
 
-This plugin supports straightforward usage of `buf lint` and a self-contained integration between `buf build` and `buf breaking`. It does not (yet) integrate with `buf generate`.
+This plugin supports straightforward usage of `buf lint` and `buf generate` and a self-contained integration between `buf build` and `buf breaking`.
 
 ## Usage
 
 By default this plugin assumes that Buf is configured for the project root (with or without a workspace `buf.work.yaml`). It will scan all top-level directories for protobuf sources.
 
-If the project includes the `protobuf-gradle-plugin`, then this plugin will use an implicit Buf workspace that includes all specified protobuf source set directories, the `include` dependencies that the protobuf-gradle-plugin extracts into `"${project.buildDir}/extracted-include-protos"`, and the dependencies that the protobuf-gradle-plugin has been told to generate that are extracted into `"${project.buildDir}/extracted-protos"`.
+If the project includes the `protobuf-gradle-plugin`, then this plugin will use an implicit Buf workspace that includes all specified protobuf source set directories, the `include` dependencies that the protobuf-gradle-plugin extracts into `"$buildDir/extracted-include-protos"`, and the dependencies that the protobuf-gradle-plugin has been told to generate that are extracted into `"$buildDir/extracted-protos"`.
 
 This plugin does not support usage of both a Buf workspace and the `protobuf-gradle-plugin`; determining ownership of dependency resolution in that case would be complicated and error-prone.
 
@@ -167,6 +167,45 @@ buf {
         artifactId = "custom-artifact-id"
         version = rootProject.version.toString()
     }
+}
+```
+
+### `bufGenerate`
+
+`bufGenerate` is configured as described in the Buf docs. Create a `buf.gen.yaml` in the project root and `bufGenerate` will generate code in the project's build directory at `"$buildDir/bufbuild/generated/<out path from buf.gen.yaml>"`.
+
+An example for Java code generation using the remote plugin:
+
+``` yaml
+version: v1
+plugins:
+  - remote: buf.build/protocolbuffers/plugins/java:<version>
+    out: java
+```
+
+If you want to use generated code in your build you must add the generated code as a source directory and configure a task dependency to ensure code is generated before compilation:
+
+``` kotlin
+// build.gradle.kts
+
+import com.parmet.buf.gradle.BUF_GENERATED_DIR
+
+plugins {
+    `java`
+    id("com.parmet.buf") version "<version>"
+}
+
+// Add a task dependency for compilation
+tasks.named("compileJava").configure { dependsOn("bufGenerate") }
+
+// Add the generated code to the main source set
+sourceSets["main"].java { srcDir("$buildDir/$BUF_GENERATED_DIR/java") }
+
+// Configure dependencies for protobuf-java:
+repositories { mavenCentral() }
+
+dependencies {
+    implementation("com.google.protobuf:protobuf-java:<protobuf version>")
 }
 ```
 

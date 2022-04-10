@@ -59,6 +59,7 @@ class BufPlugin : Plugin<Project> {
     private fun Project.configureBuf(ext: BufExtension) {
         configureLint(ext)
         configureBuild(ext)
+        configureGenerate(ext)
 
         afterEvaluate {
             getArtifactDetails(ext)?.let {

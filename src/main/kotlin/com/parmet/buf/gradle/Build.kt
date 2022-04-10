@@ -24,7 +24,7 @@ import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.the
 
 const val BUF_BUILD_TASK_NAME = "bufBuild"
-const val BUF_BUILD_PUBLICATION_FILENAME = "image.json"
+const val BUF_BUILD_PUBLICATION_FILE_NAME = "image.json"
 const val BUF_IMAGE_PUBLICATION_NAME = "bufImagePublication"
 
 internal fun Project.configureBuild(ext: BufExtension) {
@@ -36,7 +36,7 @@ internal fun Project.configureBuild(ext: BufExtension) {
             createsOutput()
         }
 
-        buf(ext, "build", "--output", qualifyFile(BUF_BUILD_PUBLICATION_FILENAME))
+        buf(ext, "build", "--output", qualifyFile(BUF_BUILD_PUBLICATION_FILE_NAME))
     }
 }
 
@@ -49,7 +49,7 @@ internal fun Project.configureImagePublication(artifactDetails: ArtifactDetails)
             artifactId = artifactDetails.artifactId
             version = artifactDetails.version
 
-            artifact(file("$bufbuildDir/$BUF_BUILD_PUBLICATION_FILENAME")) {
+            artifact(file("$bufbuildDir/$BUF_BUILD_PUBLICATION_FILE_NAME")) {
                 builtBy(tasks.named(BUF_BUILD_TASK_NAME))
             }
         }
