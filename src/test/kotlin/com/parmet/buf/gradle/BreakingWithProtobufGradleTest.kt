@@ -15,9 +15,17 @@
 
 package com.parmet.buf.gradle
 
+import org.junit.jupiter.api.Test
 import java.nio.file.Paths
 
-class BreakingTest : AbstractBreakingTest() {
+class BreakingWithProtobufGradleTest : AbstractBreakingTest() {
     override fun protoFile() =
-        Paths.get(projectDir.path, "parmet", "buf", "test", "v1", "test.proto")
+        Paths.get(protoDir.path, "parmet", "buf", "test", "v1", "test.proto")
+
+    @Test
+    fun `schema with multi-directory workspace`() {
+        publishRunner().build()
+        buildFile.replace("//", "")
+        checkRunner().build()
+    }
 }

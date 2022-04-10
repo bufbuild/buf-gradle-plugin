@@ -15,23 +15,13 @@
 
 plugins {
   id 'java'
-  id 'com.google.protobuf' version "$protobufGradleVersion"
   id 'com.parmet.buf'
   id 'maven-publish'
 }
 
 repositories {
-  mavenCentral()
   maven { url 'build/repos/test' }
 }
-
-protobuf {
-  protoc {
-    artifact = "com.google.protobuf:protoc:$protobufVersion"
-  }
-}
-
-compileJava.enabled = false
 
 publishing {
   repositories {

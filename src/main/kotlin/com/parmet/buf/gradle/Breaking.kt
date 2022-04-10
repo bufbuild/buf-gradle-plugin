@@ -94,14 +94,11 @@ private fun Project.configureBreakingTask(ext: BufExtension, bufBreakingFile: La
         buf(
             ext,
             "breaking",
-            BUF_BUILD_PUBLICATION_FILENAME,
+            qualifyFile(BUF_BUILD_PUBLICATION_FILENAME),
             "--against",
-            bufBreakingFile
+            qualifyFile { "$BREAKING_DIR/${bufBreakingFile.fileName}" }
         )
     }
 }
 
-private class LazyBufBreakingFile(var fileName: String? = null) {
-    override fun toString() =
-        "$BREAKING_DIR/$fileName"
-}
+private class LazyBufBreakingFile(var fileName: String? = null)

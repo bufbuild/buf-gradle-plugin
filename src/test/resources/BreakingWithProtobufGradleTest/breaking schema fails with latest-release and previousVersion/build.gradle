@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Andrew Parmet
+ * Copyright (c) 2021 Andrew Parmet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,34 @@
  * limitations under the License.
  */
 
-package com.parmet.buf.gradle
+plugins {
+  id 'java'
+  id 'com.google.protobuf' version "$protobufGradleVersion"
+  id 'com.parmet.buf'
+  id 'maven-publish'
+}
 
-import java.nio.file.Paths
+repositories {
+  mavenCentral()
+  maven { url 'build/repos/test' }
+}
 
-class BreakingTest : AbstractBreakingTest() {
-    override fun protoFile() =
-        Paths.get(projectDir.path, "parmet", "buf", "test", "v1", "test.proto")
+protobuf {
+  protoc {
+    artifact = "com.google.protobuf:protoc:$protobufVersion"
+  }
+}
+
+compileJava.enabled = false
+
+buf {
+  publishSchema = true
+  checkSchemaAgainstLatestRelease = true
+  previousVersion = '2319'
+
+  imageArtifact {
+    groupId = 'foo'
+    artifactId = 'bar'
+    version = '2319'
+  }
 }
