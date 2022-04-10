@@ -29,7 +29,7 @@ apply(plugin = "net.vivin.gradle-semantic-build-versioning")
 rootProject.name = "buf-gradle-plugin"
 
 sourceControl {
-    gitRepository(URI.create("https://github.com/junit-team/junit5.git")) {
+    gitRepository(URI.create("https://github.com/andrewparmet/junit5.git")) {
         producesModule("org.junit.jupiter:junit-jupiter")
     }
 }
