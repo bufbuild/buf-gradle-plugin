@@ -17,15 +17,16 @@ package com.parmet.buf.gradle
 
 import com.google.common.truth.Truth.assertWithMessage
 import org.gradle.testkit.runner.GradleRunner
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.TestInfo
-import org.junit.jupiter.api.io.CleanupMode.NEVER
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
 import java.nio.file.Paths
+import java.util.concurrent.TimeUnit
 
 abstract class AbstractBufIntegrationTest : IntegrationTest {
-    @TempDir(cleanup = NEVER)
+    @TempDir
     lateinit var projectDir: File
 
     private val settingsFile
@@ -43,6 +44,23 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
 
         val fixture = File("src/test/resources/${testInfo.testClass.get().simpleName}/${testInfo.testMethod.get().name}")
         assertWithMessage("Failed to copy test fixture files").that(fixture.copyRecursively(projectDir)).isTrue()
+    }
+
+    @AfterEach
+    fun inspectTempDir() {
+        println("ls -lR".runCommand(File(projectDir, "build")))
+    }
+
+    private fun String.runCommand(workingDir: File): String {
+        val parts = split("\\s".toRegex())
+        val proc = ProcessBuilder(*parts.toTypedArray())
+            .directory(workingDir)
+            .redirectOutput(ProcessBuilder.Redirect.PIPE)
+            .redirectError(ProcessBuilder.Redirect.PIPE)
+            .start()
+
+        proc.waitFor(60, TimeUnit.MINUTES)
+        return proc.inputStream.bufferedReader().readText()
     }
 
     class WrappedRunner(
