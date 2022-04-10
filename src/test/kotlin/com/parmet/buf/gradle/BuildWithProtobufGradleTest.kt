@@ -13,12 +13,6 @@
  * limitations under the License.
  */
 
-plugins {
-  id 'java'
-  id 'com.parmet.buf'
-  id 'maven-publish'
-}
+package com.parmet.buf.gradle
 
-buf {
-  publishSchema = true
-}
+class BuildWithProtobufGradleTest : AbstractBuildTest()

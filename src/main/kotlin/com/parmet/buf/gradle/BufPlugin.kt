@@ -44,12 +44,15 @@ class BufPlugin : Plugin<Project> {
     private fun Project.configureBuf(ext: BufExtension) {
         configureLint(ext)
         configureBuild(ext)
-        getArtifactDetails(ext)?.let {
-            if (ext.publishSchema) {
-                configureImagePublication(it)
-            }
-            if (ext.runBreakageCheck()) {
-                configureBreaking(ext, it)
+
+        afterEvaluate {
+            getArtifactDetails(ext)?.let {
+                if (ext.publishSchema) {
+                    configureImagePublication(it)
+                }
+                if (ext.runBreakageCheck()) {
+                    configureBreaking(ext, it)
+                }
             }
         }
     }
@@ -59,8 +62,10 @@ internal fun TaskProvider<*>.dependsOn(obj: Any) {
     configure { dependsOn(obj) }
 }
 
+const val BUF_BUILD_DIR = "bufbuild"
+
 internal val Project.bufbuildDir
-    get() = "$buildDir/bufbuild"
+    get() = "$buildDir/$BUF_BUILD_DIR"
 
 internal fun BufExtension.runBreakageCheck() =
     checkSchemaAgainstLatestRelease || previousVersion != null

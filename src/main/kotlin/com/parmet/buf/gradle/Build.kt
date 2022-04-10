@@ -29,8 +29,21 @@ const val BUF_IMAGE_PUBLICATION_NAME = "bufImagePublication"
 
 internal fun Project.configureBuild(ext: BufExtension) {
     tasks.register<Exec>(BUF_BUILD_TASK_NAME) {
-        dependsOn(COPY_BUF_CONFIG_TASK_NAME)
-        buf(ext, "build", "--output", BUF_BUILD_PUBLICATION_FILENAME)
+        if (hasProtobufGradlePlugin()) {
+            dependsOn(COPY_BUF_CONFIG_TASK_NAME)
+        } else {
+            // Called already during workspace configuration if the protobuf-gradle-plugin has been applied
+            createsOutput()
+        }
+
+        val destinationPrefix =
+            if (hasProtobufGradlePlugin()) {
+                ""
+            } else {
+                "${buildDir.name}/$BUF_BUILD_DIR/"
+            }
+
+        buf(ext, "build", "--output", destinationPrefix + BUF_BUILD_PUBLICATION_FILENAME)
     }
 }
 
