@@ -42,7 +42,7 @@ class BufPlugin : Plugin<Project> {
                 If you have multiple protobuf source directories and you would like to
                 use the protobuf-gradle-plugin, configure the protobuf-gradle-plugin to use
                 those directories as source directories in the appropriate source set. If you
-                would like to use Buf workspaces, you must configure dependency resolution and
+                would like to use a Buf workspace, you must configure dependency resolution and
                 code generation using Buf. There is no (easy) way to reconcile the two
                 configurations for linting, breakage, and code generation steps.
             """.trimIndent().replace('\n', ' ')
