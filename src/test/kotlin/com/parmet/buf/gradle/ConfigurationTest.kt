@@ -16,6 +16,6 @@ class ConfigurationTest : AbstractBufIntegrationTest() {
 
     private fun assertFailure() {
         val result = gradleRunner().withArguments(":tasks").buildAndFail()
-        assertThat(result.output).contains("cannot use both the protobuf-gradle-plugin and Buf workspaces")
+        assertThat(result.output).contains("cannot use both the protobuf-gradle-plugin and a Buf workspace")
     }
 }
