@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Andrew Parmet
+ * Copyright (c) 2021 Andrew Parmet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,16 @@
 
 plugins {
   id 'java'
+  id 'com.google.protobuf' version "$protobufGradleVersion"
   id 'com.parmet.buf'
 }
 
-dependencies {
-  buf(fileTree('subdir') { include '*.yaml' })
+repositories { mavenCentral() }
+
+protobuf {
+  protoc {
+    artifact = "com.google.protobuf:protoc:$protobufVersion"
+  }
 }
+
+compileJava.enabled = false
