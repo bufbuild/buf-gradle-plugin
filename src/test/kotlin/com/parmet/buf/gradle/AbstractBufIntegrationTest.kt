@@ -19,24 +19,26 @@ import com.google.common.truth.Truth.assertWithMessage
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.TestInfo
+import org.junit.jupiter.api.io.CleanupMode.NEVER
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
 import java.nio.file.Paths
 
 abstract class AbstractBufIntegrationTest : IntegrationTest {
-    @TempDir
+    @TempDir(cleanup = NEVER)
     lateinit var projectDir: File
 
-    private lateinit var settingsFile: File
-    lateinit var buildFile: File
-    lateinit var protoDir: File
+    private val settingsFile
+        get() = File(projectDir, "settings.gradle")
+
+    val buildFile
+        get() = File(projectDir, "build.gradle").takeIf { it.exists() } ?: File(projectDir, "build.gradle.kts")
+
+    val protoDir
+        get() = Paths.get(projectDir.path, "src", "main", "proto").toFile()
 
     @BeforeEach
     fun setup(testInfo: TestInfo) {
-        settingsFile = File(projectDir, "settings.gradle")
-        buildFile = File(projectDir, "build.gradle")
-        protoDir = Paths.get(projectDir.path, "src", "main", "proto").toFile()
-
         settingsFile.writeText("rootProject.name = 'testing'")
 
         val fixture = File("src/test/resources/${testInfo.testClass.get().simpleName}/${testInfo.testMethod.get().name}")

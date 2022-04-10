@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Andrew Parmet
+ * Copyright (c) 2022 Andrew Parmet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,23 @@
  * limitations under the License.
  */
 
-import java.net.URI
+import com.parmet.buf.gradle.BUF_GENERATED_DIR
 
-buildscript {
-    repositories {
-        gradlePluginPortal()
-    }
-    dependencies {
-        classpath("gradle.plugin.net.vivin:gradle-semantic-build-versioning:4.0.0")
-    }
+plugins {
+    `java`
+    id("com.parmet.buf")
 }
 
-apply(plugin = "net.vivin.gradle-semantic-build-versioning")
+repositories { mavenCentral() }
 
-rootProject.name = "buf-gradle-plugin"
+tasks.named("compileJava").configure { dependsOn("bufGenerate") }
 
-sourceControl {
-    gitRepository(URI.create("https://github.com/andrewparmet/junit5.git")) {
-        producesModule("org.junit.jupiter:junit-jupiter")
-    }
+sourceSets["main"].java {
+    srcDir("$buildDir/$BUF_GENERATED_DIR/java")
+}
+
+val protobufVersion: String by project
+
+dependencies {
+    implementation("com.google.protobuf:protobuf-java:$protobufVersion")
 }

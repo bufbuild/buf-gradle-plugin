@@ -94,7 +94,7 @@ private fun Project.configureBreakingTask(ext: BufExtension, bufBreakingFile: La
         buf(
             ext,
             "breaking",
-            qualifyFile(BUF_BUILD_PUBLICATION_FILENAME),
+            qualifyFile(BUF_BUILD_PUBLICATION_FILE_NAME),
             "--against",
             qualifyFile { "$BREAKING_DIR/${bufBreakingFile.fileName}" }
         )

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Andrew Parmet
+ * Copyright (c) 2022 Andrew Parmet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,6 @@
  * limitations under the License.
  */
 
-import java.net.URI
+package com.parmet.buf.gradle
 
-buildscript {
-    repositories {
-        gradlePluginPortal()
-    }
-    dependencies {
-        classpath("gradle.plugin.net.vivin:gradle-semantic-build-versioning:4.0.0")
-    }
-}
-
-apply(plugin = "net.vivin.gradle-semantic-build-versioning")
-
-rootProject.name = "buf-gradle-plugin"
-
-sourceControl {
-    gitRepository(URI.create("https://github.com/andrewparmet/junit5.git")) {
-        producesModule("org.junit.jupiter:junit-jupiter")
-    }
-}
+class GenerateTest : AbstractGenerateTest()

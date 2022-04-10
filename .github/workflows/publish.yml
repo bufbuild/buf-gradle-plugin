@@ -2,9 +2,9 @@ name: Publish
 
 on:
   push:
-    tags: 
+    tags:
       - "[0-9]+.[0-9]+.[0-9]+"
-    
+
   workflow_dispatch:
 
 jobs:
@@ -25,11 +25,11 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-        
-      - name: Set up JDK 11
+
+      - name: Set up JDK 17
         uses: actions/setup-java@v1
         with:
-          java-version: 11
+          java-version: 17
 
       - name: Publish
         run: ./gradlew publishToRemote closeAndReleaseRepository publishPlugins -Dorg.gradle.internal.http.socketTimeout=120000 -Dorg.gradle.internal.network.retry.max.attempts=1 -Dorg.gradle.internal.publish.checksums.insecure=true
