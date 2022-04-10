@@ -75,8 +75,7 @@ internal fun Project.configureWriteWorkspaceYaml() {
 private fun Task.workspaceCommonConfig() {
     dependsOn(EXTRACT_INCLUDE_PROTO_TASK_NAME)
     dependsOn(EXTRACT_PROTO_TASK_NAME)
-    outputs.dir(project.bufbuildDir)
-    doLast { File(project.bufbuildDir).mkdirs() }
+    createsOutput()
 }
 
 private fun Project.workspaceSymLinkEntries() =

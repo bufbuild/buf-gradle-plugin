@@ -31,7 +31,7 @@ internal fun ExecSpec.buf(project: Project, ext: BufExtension, args: Iterable<An
     commandLine("docker")
     val dockerArgs = project.baseDockerArgs(ext) + args
     setArgs(dockerArgs)
-    project.logger.debug("Running buf: `docker ${dockerArgs.joinToString(" ")}`")
+    project.logger.quiet("Running buf: `docker ${dockerArgs.joinToString(" ")}`")
 }
 
 private fun Project.baseDockerArgs(ext: BufExtension) =
@@ -46,7 +46,7 @@ private fun Project.baseDockerArgs(ext: BufExtension) =
 private fun Project.bufWorkingDir() =
     "/workspace" +
         if (hasProtobufGradlePlugin()) {
-            "/build/bufbuild"
+            "/${buildDir.name}/$BUF_BUILD_DIR"
         } else {
             ""
         }
