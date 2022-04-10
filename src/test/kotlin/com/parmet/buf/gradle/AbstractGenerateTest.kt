@@ -17,11 +17,26 @@ package com.parmet.buf.gradle
 
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
+import java.io.File
+import java.util.concurrent.TimeUnit
 
 abstract class AbstractGenerateTest : AbstractBufIntegrationTest() {
     @AfterEach
     fun cleanUp() {
-        projectDir.deleteRecursively()
+        println("ls -l".runCommand(File(projectDir, "build/$BUF_GENERATED_DIR")))
+        println("ls -l".runCommand(File(projectDir, "build/$BUF_GENERATED_DIR/java/com/parmet/buf/test/v1")))
+    }
+
+    fun String.runCommand(workingDir: File): String? {
+        val parts = this.split("\\s".toRegex())
+        val proc = ProcessBuilder(*parts.toTypedArray())
+            .directory(workingDir)
+            .redirectOutput(ProcessBuilder.Redirect.PIPE)
+            .redirectError(ProcessBuilder.Redirect.PIPE)
+            .start()
+
+        proc.waitFor(60, TimeUnit.MINUTES)
+        return proc.inputStream.bufferedReader().readText()
     }
 
     @Test
