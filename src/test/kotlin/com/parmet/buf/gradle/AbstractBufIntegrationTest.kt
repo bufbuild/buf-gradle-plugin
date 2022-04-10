@@ -27,7 +27,8 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
     @TempDir
     lateinit var projectDir: File
 
-    private lateinit var settingsFile: File
+    private val settingsFile
+        get() = File(projectDir, "settings.gradle")
 
     val buildFile
         get() = File(projectDir, "build.gradle").takeIf { it.exists() } ?: File(projectDir, "build.gradle.kts")
@@ -37,8 +38,6 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
 
     @BeforeEach
     fun setup(testInfo: TestInfo) {
-        settingsFile = File(projectDir, "settings.gradle")
-
         settingsFile.writeText("rootProject.name = 'testing'")
 
         val fixture = File("src/test/resources/${testInfo.testClass.get().simpleName}/${testInfo.testMethod.get().name}")

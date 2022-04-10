@@ -15,9 +15,16 @@
 
 package com.parmet.buf.gradle
 
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
+import java.io.File
 
 abstract class AbstractGenerateTest : AbstractBufIntegrationTest() {
+    @AfterEach
+    fun cleanUp() {
+        File(projectDir, "build").deleteRecursively()
+    }
+
     @Test
     fun `generate java`() {
         gradleRunner().withArguments("build").build()
