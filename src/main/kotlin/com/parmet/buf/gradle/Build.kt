@@ -36,14 +36,7 @@ internal fun Project.configureBuild(ext: BufExtension) {
             createsOutput()
         }
 
-        val destinationPrefix =
-            if (hasProtobufGradlePlugin()) {
-                ""
-            } else {
-                "${buildDir.name}/$BUF_BUILD_DIR/"
-            }
-
-        buf(ext, "build", "--output", destinationPrefix + BUF_BUILD_PUBLICATION_FILENAME)
+        buf(ext, "build", "--output", qualifyFile(BUF_BUILD_PUBLICATION_FILENAME))
     }
 }
 
