@@ -3,31 +3,17 @@
 [![Maven Central](https://img.shields.io/badge/dynamic/xml?color=orange&label=maven-central&prefix=v&query=%2F%2Fmetadata%2Fversioning%2Flatest&url=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fcom%2Fparmet%2Fbuf-gradle-plugin%2Fmaven-metadata.xml)](https://search.maven.org/artifact/com.parmet/buf-gradle-plugin)
 [![Gradle Portal](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/com/parmet/buf-gradle-plugin/maven-metadata.xml.svg?label=gradle-portal&color=yellowgreen)](https://plugins.gradle.org/plugin/com.parmet.buf)
 
-Linting and breakage-check integration for [Buf](https://github.com/bufbuild/buf) with the
-[protobuf-gradle-plugin](https://github.com/google/protobuf-gradle-plugin).
+Linting and breakage-check integration for [Buf](https://github.com/bufbuild/buf) with Gradle. Supports integration purely between Buf and Gradle or additionally with the [protobuf-gradle-plugin](https://github.com/google/protobuf-gradle-plugin).
 
-Supports straightforward usage of `buf lint` and a self-contained integration between `buf build` and `buf breaking`. Does not integrate with `buf generate` as it assumes usage of the `protobuf-gradle-plugin` for dependency resolution and code generation.
+This plugin supports straightforward usage of `buf lint` and a self-contained integration between `buf build` and `buf breaking`. It does not (yet) integrate with `buf generate`.
 
 ## Usage
 
-Make sure you have applied the `protobuf-gradle-plugin` to your project.
+By default this plugin assumes that Buf is configured for the project root (with or without a workspace `buf.work.yaml`). It will scan all top-level directories for protobuf sources.
 
-Optionally create a Buf configuration file in the project directory:
+If the project includes the `protobuf-gradle-plugin`, then this plugin will use an implicit Buf workspace that includes all specified protobuf source set directories, the `include` dependencies that the protobuf-gradle-plugin extracts into `"${project.buildDir}/extracted-include-protos"`, and the dependencies that the protobuf-gradle-plugin has been told to generate that are extracted into `"${project.buildDir}/extracted-protos"`.
 
-``` yaml
-# buf.yaml
-
-version: v1
-lint:
-  ignore:
-    - path/to/dir/to/ignore
-  use:
-    - DEFAULT
-```
-
-This plugin works with an implicit Buf workspace that includes all specified protobuf source set directories, the `include` dependencies that the protobuf-gradle-plugin extracts into `"${project.buildDir}/extracted-include-protos"`, and the dependencies that the protobuf-gradle-plugin has been told to generate that are extracted into `"${project.buildDir}/extracted-protos"`. 
-
-See [below](#configuration) for alternative methods of configuration.
+This plugin does not support usage of both a Buf workspace and the `protobuf-gradle-plugin`; determining ownership of dependency resolution in that case would be complicated and error-prone.
 
 Apply the plugin:
 
@@ -51,13 +37,24 @@ apply(plugin = "com.parmet.buf")
 
 When applied the plugin creates two useful tasks:
 - `bufLint` lints protobuf code
-- `bufBreaking` checks protobuf against a previous version for
-backwards-incompatible changes.
+- `bufBreaking` checks protobuf against a previous version for backwards-incompatible changes
 
 ## Configuration
 
-As an alternative to a `buf.yaml` file in the project directory you can specify
-the location of `buf.yaml` by configuring the extension: 
+For a basic Buf project or one that uses the `protobuf-gradle-plugin` you can create a Buf configuration file in the project directory:
+
+``` yaml
+# buf.yaml
+
+version: v1
+lint:
+  ignore:
+    - path/to/dir/to/ignore
+  use:
+    - DEFAULT
+```
+
+As an alternative to a `buf.yaml` file in the project directory you can specify the location of `buf.yaml` by configuring the extension: 
 
 ``` kotlin
 buf {
@@ -65,8 +62,7 @@ buf {
 }
 ```
 
-Or you can share a Buf configuration across projects and specify it via the
-dedicated `buf` configuration:
+Or you can share a Buf configuration across projects and specify it via the dedicated `buf` configuration:
 
 ``` kotlin
 dependencies {
@@ -102,10 +98,11 @@ publishing {
 }
 ```
 
+Projects with Buf workspaces must configure their workspaces as described in the Buf documentation; no configuration for linting will be overrideable. A `buf.yaml` in the project root or specified in the extension will be used for breakage checks only.
+
 ### `bufLint`
 
-`bufLint` is configured solely through `buf.yaml` and follows Buf's
-standard CLI behavior.
+`bufLint` is configured by creating `buf.yaml` in basic projects or projects using the `protobuf-gradle-plugin`. Lint configuration at the Gradle plugin level is not supported for projects using a Buf workspace.
 
 ### `bufBreaking`
 
@@ -145,9 +142,7 @@ src/main/proto/parmet/service/test/test.proto:9:1:Previously present field "1" w
 
 #### Checking against a static version
 
-If for some reason you do not want to dynamically check against the latest
-published version of your schema, you can specify a constant version with
-`previousVersion`:
+If for some reason you do not want to dynamically check against the latest published version of your schema, you can specify a constant version with `previousVersion`:
 
 ``` kotlin
 buf {
@@ -177,8 +172,7 @@ buf {
 
 ## Additional Configuration
 
-The version of Buf used can be configured using the `toolVersion` property on
-the extension:
+The version of Buf used can be configured using the `toolVersion` property on the extension:
 
 ``` kotlin
 buf {
