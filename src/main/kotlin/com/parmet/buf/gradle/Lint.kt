@@ -38,7 +38,7 @@ internal fun Project.configureLint(ext: BufExtension) {
             when {
                 hasProtobufGradlePlugin() ->
                     srcProtoDirs().forEach { exec { buf(this@configureLint, ext, lintArgs(it)) } }
-                usesWorkspaces() ->
+                hasWorkspace() ->
                     exec { buf(this@configureLint, ext, "lint") }
                 else ->
                     exec { buf(this@configureLint, ext, lintArgs()) }

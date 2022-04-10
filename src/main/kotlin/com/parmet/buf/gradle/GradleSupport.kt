@@ -15,7 +15,8 @@
 
 package com.parmet.buf.gradle
 
-import org.gradle.api.Project
+import org.gradle.api.tasks.TaskProvider
 
-internal fun Project.hasWorkspace() =
-    file("buf.work.yaml").let { it.exists() && it.isFile }
+internal fun TaskProvider<*>.dependsOn(obj: Any) {
+    configure { dependsOn(obj) }
+}
