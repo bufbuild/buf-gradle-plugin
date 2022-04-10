@@ -40,7 +40,6 @@ abstract class AbstractBufIntegrationTest {
         settingsFile.writeText("rootProject.name = 'testing'")
 
         val fixture = File("src/test/resources/${testInfo.testClass.get().simpleName}/${testInfo.testMethod.get().name}")
-        assertWithMessage("No test fixtures exist for ${testInfo.displayName}").that(fixture.exists())
         assertWithMessage("Failed to copy test fixture files").that(fixture.copyRecursively(projectDir)).isTrue()
     }
 
