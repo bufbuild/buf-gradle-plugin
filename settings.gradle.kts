@@ -28,7 +28,7 @@ gitRepositories {
     checkoutsDirectory.set(file("build/checkouts"))
 
     include("junit") {
-        uri.set("https://github.com:junit-team/junit5.git")
+        uri.set("https://github.com/junit-team/junit5.git")
         commit.set("c8fa9c3")
     }
 }
