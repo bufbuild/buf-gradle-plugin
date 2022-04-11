@@ -17,21 +17,20 @@ package com.parmet.buf.gradle
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.create
 
 const val BUF_CONFIGURATION_NAME = "buf"
 
 class BufPlugin : Plugin<Project> {
     override fun apply(project: Project) {
-        val ext = project.extensions.create<BufExtension>("buf")
+        project.createExtension()
         project.configurations.create(BUF_CONFIGURATION_NAME)
 
         if (project.hasProtobufGradlePlugin()) {
             project.failForWorkspaceAndPlugin()
-            project.afterEvaluate { configureBufWithProtobufGradle(ext) }
+            project.afterEvaluate { configureBufWithProtobufGradle() }
         } else {
             project.withProtobufGradlePlugin { project.failForWorkspaceAndPlugin() }
-            project.configureBuf(ext)
+            project.configureBuf()
         }
     }
 
@@ -49,25 +48,25 @@ class BufPlugin : Plugin<Project> {
         }
     }
 
-    private fun Project.configureBufWithProtobufGradle(ext: BufExtension) {
+    private fun Project.configureBufWithProtobufGradle() {
         configureCreateSymLinksToModules()
-        configureCopyBufConfig(ext)
+        configureCopyBufConfig()
         configureWriteWorkspaceYaml()
-        configureBuf(ext)
+        configureBuf()
     }
 
-    private fun Project.configureBuf(ext: BufExtension) {
-        configureLint(ext)
-        configureBuild(ext)
-        configureGenerate(ext)
+    private fun Project.configureBuf() {
+        configureLint()
+        configureBuild()
+        configureGenerate()
 
         afterEvaluate {
-            getArtifactDetails(ext)?.let {
-                if (ext.publishSchema) {
+            getArtifactDetails()?.let {
+                if (publishSchema()) {
                     configureImagePublication(it)
                 }
-                if (ext.runBreakageCheck()) {
-                    configureBreaking(ext, it)
+                if (runBreakageCheck()) {
+                    configureBreaking(it)
                 }
             }
         }

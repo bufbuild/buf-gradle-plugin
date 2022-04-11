@@ -16,35 +16,36 @@
 package com.parmet.buf.gradle
 
 import org.gradle.api.Project
-import org.gradle.api.tasks.Exec
-import org.gradle.process.ExecSpec
+import org.gradle.api.Task
 
-internal fun Exec.buf(ext: BufExtension, vararg args: Any) {
+internal fun Task.execBuf(vararg args: Any) {
+    execBuf(args.asList())
+}
+
+internal fun Task.execBuf(args: Iterable<Any>) {
     if (project.hasProtobufGradlePlugin()) {
         dependsOn(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME)
         dependsOn(WRITE_WORKSPACE_YAML_TASK_NAME)
     }
-    buf(project, ext, args.asList())
+    doLast {
+        project.exec {
+            // todo: after moving off of docker, working dir can be set based on hasProtobufGradlePlugin() and file locations can be absolute
+
+            commandLine("docker")
+            val dockerArgs = project.baseDockerArgs() + args
+            setArgs(dockerArgs)
+            logger.info("Running buf: `docker ${dockerArgs.joinToString(" ")}`")
+        }
+    }
 }
 
-internal fun ExecSpec.buf(project: Project, ext: BufExtension, vararg args: Any) {
-    buf(project, ext, args.asList())
-}
-
-internal fun ExecSpec.buf(project: Project, ext: BufExtension, args: Iterable<Any>) {
-    commandLine("docker")
-    val dockerArgs = project.baseDockerArgs(ext) + args
-    setArgs(dockerArgs)
-    project.logger.info("Running buf: `docker ${dockerArgs.joinToString(" ")}`")
-}
-
-private fun Project.baseDockerArgs(ext: BufExtension) =
+private fun Project.baseDockerArgs() =
     listOf(
         "run",
         "--rm",
         "--volume", "$projectDir:/workspace:Z",
         "--workdir", bufWorkingDir(),
-        "bufbuild/buf:${ext.toolVersion}"
+        "bufbuild/buf:${getExtension().toolVersion}"
     )
 
 private fun Project.bufWorkingDir() =

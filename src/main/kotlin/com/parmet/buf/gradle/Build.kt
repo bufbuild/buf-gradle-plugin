@@ -18,17 +18,15 @@ package com.parmet.buf.gradle
 import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
-import org.gradle.api.tasks.Exec
 import org.gradle.kotlin.dsl.create
-import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.the
 
 const val BUF_BUILD_TASK_NAME = "bufBuild"
 const val BUF_BUILD_PUBLICATION_FILE_NAME = "image.json"
 const val BUF_IMAGE_PUBLICATION_NAME = "bufImagePublication"
 
-internal fun Project.configureBuild(ext: BufExtension) {
-    tasks.register<Exec>(BUF_BUILD_TASK_NAME) {
+internal fun Project.configureBuild() {
+    tasks.register(BUF_BUILD_TASK_NAME) {
         if (hasProtobufGradlePlugin()) {
             dependsOn(COPY_BUF_CONFIG_TASK_NAME)
         } else {
@@ -36,7 +34,7 @@ internal fun Project.configureBuild(ext: BufExtension) {
             createsOutput()
         }
 
-        buf(ext, "build", "--output", qualifyFile(BUF_BUILD_PUBLICATION_FILE_NAME))
+        execBuf("build", "--output", qualifyFile(BUF_BUILD_PUBLICATION_FILE_NAME))
     }
 }
 

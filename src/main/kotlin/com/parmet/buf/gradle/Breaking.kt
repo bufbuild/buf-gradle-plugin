@@ -17,7 +17,6 @@ package com.parmet.buf.gradle
 
 import org.gradle.api.Project
 import org.gradle.api.tasks.Copy
-import org.gradle.api.tasks.Exec
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.register
 import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
@@ -27,17 +26,19 @@ const val BUF_BREAKING_TASK_NAME = "bufBreaking"
 const val BUF_BREAKING_CONFIGURATION_NAME = "bufBreaking"
 const val BREAKING_DIR = "breaking"
 
-internal fun Project.configureBreaking(ext: BufExtension, artifactDetails: ArtifactDetails) {
-    addSchemaDependency(ext, artifactDetails)
+internal fun Project.configureBreaking(artifactDetails: ArtifactDetails) {
+    addSchemaDependency(artifactDetails)
 
     val bufBreakingFile = LazyBufBreakingFile()
     configureSchemaExtraction(bufBreakingFile)
-    configureBreakingTask(ext, bufBreakingFile)
+    configureBreakingTask(bufBreakingFile)
 
     tasks.named(CHECK_TASK_NAME).dependsOn(BUF_BREAKING_TASK_NAME)
 }
 
-private fun Project.addSchemaDependency(ext: BufExtension, artifactDetails: ArtifactDetails) {
+private fun Project.addSchemaDependency(artifactDetails: ArtifactDetails) {
+    val ext = getExtension()
+
     val versionSpecifier =
         if (ext.checkSchemaAgainstLatestRelease) {
             require(ext.previousVersion == null) {
@@ -84,15 +85,14 @@ private fun Project.configureSchemaExtraction(bufBreakingFile: LazyBufBreakingFi
     }
 }
 
-private fun Project.configureBreakingTask(ext: BufExtension, bufBreakingFile: LazyBufBreakingFile) {
-    tasks.register<Exec>(BUF_BREAKING_TASK_NAME) {
+private fun Project.configureBreakingTask(bufBreakingFile: LazyBufBreakingFile) {
+    tasks.register(BUF_BREAKING_TASK_NAME) {
         dependsOn(BUF_BREAKING_EXTRACT_TASK_NAME)
         dependsOn(BUF_BUILD_TASK_NAME)
 
         group = CHECK_TASK_NAME
 
-        buf(
-            ext,
+        execBuf(
             "breaking",
             qualifyFile(BUF_BUILD_PUBLICATION_FILE_NAME),
             "--against",

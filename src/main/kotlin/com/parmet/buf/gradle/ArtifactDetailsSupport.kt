@@ -21,9 +21,9 @@ import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.kotlin.dsl.the
 import org.gradle.kotlin.dsl.withType
 
-internal fun Project.getArtifactDetails(ext: BufExtension): ArtifactDetails? {
+internal fun Project.getArtifactDetails(): ArtifactDetails? {
     val inferredDetails =
-        if (ext.publishSchema) {
+        if (publishSchema()) {
             val publications = the<PublishingExtension>().publications.withType<MavenPublication>()
             publications.singleOrNull()?.let {
                 ArtifactDetails(
@@ -36,8 +36,8 @@ internal fun Project.getArtifactDetails(ext: BufExtension): ArtifactDetails? {
             null
         }
 
-    return if (ext.publishSchema || ext.runBreakageCheck()) {
-        checkNotNull(ext.imageArtifactDetails ?: inferredDetails as? ArtifactDetails) {
+    return if (publishSchema() || runBreakageCheck()) {
+        checkNotNull(getExtension().imageArtifactDetails ?: inferredDetails as? ArtifactDetails) {
             """
                 Unable to determine image artifact details and schema publication or
                 compatibility check was requested; no image publication details
@@ -50,6 +50,3 @@ internal fun Project.getArtifactDetails(ext: BufExtension): ArtifactDetails? {
         null
     }
 }
-
-internal fun BufExtension.runBreakageCheck() =
-    checkSchemaAgainstLatestRelease || previousVersion != null
