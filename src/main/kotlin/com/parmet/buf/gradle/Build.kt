@@ -27,7 +27,7 @@ const val BUF_BUILD_TASK_NAME = "bufBuild"
 const val BUF_BUILD_PUBLICATION_FILE_NAME = "image.json"
 const val BUF_IMAGE_PUBLICATION_NAME = "bufImagePublication"
 
-internal fun Project.configureBuild(ext: BufExtension) {
+internal fun Project.configureBuild() {
     tasks.register<Exec>(BUF_BUILD_TASK_NAME) {
         if (hasProtobufGradlePlugin()) {
             dependsOn(COPY_BUF_CONFIG_TASK_NAME)
@@ -36,7 +36,7 @@ internal fun Project.configureBuild(ext: BufExtension) {
             createsOutput()
         }
 
-        buf(ext, "build", "--output", qualifyFile(BUF_BUILD_PUBLICATION_FILE_NAME))
+        buf("build", "--output", qualifyFile(BUF_BUILD_PUBLICATION_FILE_NAME))
     }
 }
 

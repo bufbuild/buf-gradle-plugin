@@ -21,7 +21,7 @@ import java.nio.file.Path
 
 const val BUF_LINT_TASK_NAME = "bufLint"
 
-internal fun Project.configureLint(ext: BufExtension) {
+internal fun Project.configureLint() {
     tasks.register(BUF_LINT_TASK_NAME) {
         group = CHECK_TASK_NAME
 
@@ -31,17 +31,17 @@ internal fun Project.configureLint(ext: BufExtension) {
         }
 
         doLast {
-            fun lintArgs(path: Path? = null) =
+            fun lintWithArgs(path: Path? = null) =
                 listOfNotNull("lint", path?.let(::mangle)) +
-                    bufConfigFile(ext)?.let { listOf("--config", it.readText()) }.orEmpty()
+                    bufConfigFile()?.let { listOf("--config", it.readText()) }.orEmpty()
 
             when {
                 hasProtobufGradlePlugin() ->
-                    srcProtoDirs().forEach { exec { buf(this@configureLint, ext, lintArgs(it)) } }
+                    srcProtoDirs().forEach { exec { buf(this@configureLint, lintWithArgs(it)) } }
                 hasWorkspace() ->
-                    exec { buf(this@configureLint, ext, "lint") }
+                    exec { buf(this@configureLint, listOf("lint")) }
                 else ->
-                    exec { buf(this@configureLint, ext, lintArgs()) }
+                    exec { buf(this@configureLint, lintWithArgs()) }
             }
         }
     }

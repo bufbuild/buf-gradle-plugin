@@ -22,16 +22,16 @@ import java.io.File
 
 const val COPY_BUF_CONFIG_TASK_NAME = "copyBufConfig"
 
-internal fun Project.configureCopyBufConfig(ext: BufExtension) {
+internal fun Project.configureCopyBufConfig() {
     tasks.register<Copy>(COPY_BUF_CONFIG_TASK_NAME) {
-        from(listOfNotNull(bufConfigFile(ext)))
+        from(listOfNotNull(bufConfigFile()))
         into(bufbuildDir)
         rename { "buf.yaml" }
     }
 }
 
-internal fun Project.bufConfigFile(ext: BufExtension) =
-    project.resolveConfig(ext).let {
+internal fun Project.bufConfigFile() =
+    project.resolveConfig().let {
         if (it != null) {
             logger.info("Using buf config from $it")
             it
@@ -47,8 +47,9 @@ internal fun Project.bufConfigFile(ext: BufExtension) =
         }
     }
 
-private fun Project.resolveConfig(ext: BufExtension): File? =
-    configurations.getByName(BUF_CONFIGURATION_NAME).let {
+private fun Project.resolveConfig(): File? {
+    val ext = getExtension()
+    return configurations.getByName(BUF_CONFIGURATION_NAME).let {
         if (it.dependencies.isNotEmpty()) {
             check(ext.configFileLocation == null) {
                 "Buf lint configuration specified with a config file location and a dependency; pick one."
@@ -60,3 +61,4 @@ private fun Project.resolveConfig(ext: BufExtension): File? =
             ext.configFileLocation
         }
     }
+}

@@ -16,22 +16,22 @@
 package com.parmet.buf.gradle
 
 import org.gradle.api.Project
-import org.gradle.api.tasks.Exec
-import org.gradle.kotlin.dsl.register
+import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.getByName
 
-const val BUF_GENERATE_TASK_NAME = "bufGenerate"
+const val BUF_EXTENSION_NAME = "buf"
 
-private const val GENERATED_DIR = "generated"
-const val BUF_GENERATED_DIR = "$BUF_BUILD_DIR/$GENERATED_DIR"
-
-internal fun Project.configureGenerate() {
-    if (hasGenerate()) {
-        tasks.register<Exec>(BUF_GENERATE_TASK_NAME) {
-            createsOutput()
-            buf("generate", "--output", qualifyFile(GENERATED_DIR))
-        }
-    }
+internal fun Project.createExtension() {
+    extensions.create<BufExtension>(BUF_EXTENSION_NAME)
 }
 
-private fun Project.hasGenerate() =
-    file("buf.gen.yaml").let { it.exists() && it.isFile }
+internal fun Project.getExtension() =
+    extensions.getByName<BufExtension>(BUF_EXTENSION_NAME)
+
+internal fun Project.runBreakageCheck() =
+    with(getExtension()) {
+        checkSchemaAgainstLatestRelease || previousVersion != null
+    }
+
+internal fun Project.publishSchema() =
+    getExtension().publishSchema
