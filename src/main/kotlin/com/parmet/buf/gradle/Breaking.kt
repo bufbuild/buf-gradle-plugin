@@ -17,7 +17,6 @@ package com.parmet.buf.gradle
 
 import org.gradle.api.Project
 import org.gradle.api.tasks.Copy
-import org.gradle.api.tasks.Exec
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.register
 import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
@@ -87,13 +86,13 @@ private fun Project.configureSchemaExtraction(bufBreakingFile: LazyBufBreakingFi
 }
 
 private fun Project.configureBreakingTask(bufBreakingFile: LazyBufBreakingFile) {
-    tasks.register<Exec>(BUF_BREAKING_TASK_NAME) {
+    tasks.register(BUF_BREAKING_TASK_NAME) {
         dependsOn(BUF_BREAKING_EXTRACT_TASK_NAME)
         dependsOn(BUF_BUILD_TASK_NAME)
 
         group = CHECK_TASK_NAME
 
-        buf(
+        execBuf(
             "breaking",
             qualifyFile(BUF_BUILD_PUBLICATION_FILE_NAME),
             "--against",

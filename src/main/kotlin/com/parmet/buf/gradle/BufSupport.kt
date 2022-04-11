@@ -16,22 +16,25 @@
 package com.parmet.buf.gradle
 
 import org.gradle.api.Project
-import org.gradle.api.tasks.Exec
-import org.gradle.process.ExecSpec
+import org.gradle.api.Task
 
-internal fun Exec.buf(vararg args: Any) {
+internal fun Task.execBuf(vararg args: Any) {
+    execBuf(args.asList())
+}
+
+internal fun Task.execBuf(args: Iterable<Any>) {
     if (project.hasProtobufGradlePlugin()) {
         dependsOn(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME)
         dependsOn(WRITE_WORKSPACE_YAML_TASK_NAME)
     }
-    buf(project = project, args.asList())
-}
-
-internal fun ExecSpec.buf(project: Project, args: Iterable<Any>) {
-    commandLine("docker")
-    val dockerArgs = project.baseDockerArgs() + args
-    setArgs(dockerArgs)
-    project.logger.info("Running buf: `docker ${dockerArgs.joinToString(" ")}`")
+    doLast {
+        project.exec {
+            commandLine("docker")
+            val dockerArgs = project.baseDockerArgs() + args
+            setArgs(dockerArgs)
+            logger.info("Running buf: `docker ${dockerArgs.joinToString(" ")}`")
+        }
+    }
 }
 
 private fun Project.baseDockerArgs() =

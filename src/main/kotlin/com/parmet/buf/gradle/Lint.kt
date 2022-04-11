@@ -25,24 +25,17 @@ internal fun Project.configureLint() {
     tasks.register(BUF_LINT_TASK_NAME) {
         group = CHECK_TASK_NAME
 
-        if (hasProtobufGradlePlugin()) {
-            dependsOn(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME)
-            dependsOn(WRITE_WORKSPACE_YAML_TASK_NAME)
-        }
+        fun lintWithArgs(path: Path? = null) =
+            listOfNotNull("lint", path?.let(::mangle)) +
+                bufConfigFile()?.let { listOf("--config", it.readText()) }.orEmpty()
 
-        doLast {
-            fun lintWithArgs(path: Path? = null) =
-                listOfNotNull("lint", path?.let(::mangle)) +
-                    bufConfigFile()?.let { listOf("--config", it.readText()) }.orEmpty()
-
-            when {
-                hasProtobufGradlePlugin() ->
-                    srcProtoDirs().forEach { exec { buf(this@configureLint, lintWithArgs(it)) } }
-                hasWorkspace() ->
-                    exec { buf(this@configureLint, listOf("lint")) }
-                else ->
-                    exec { buf(this@configureLint, lintWithArgs()) }
-            }
+        when {
+            hasProtobufGradlePlugin() ->
+                srcProtoDirs().forEach { execBuf(lintWithArgs(it)) }
+            hasWorkspace() ->
+                execBuf("lint")
+            else ->
+                execBuf(lintWithArgs())
         }
     }
 

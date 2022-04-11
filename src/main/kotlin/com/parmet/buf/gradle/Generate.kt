@@ -16,8 +16,6 @@
 package com.parmet.buf.gradle
 
 import org.gradle.api.Project
-import org.gradle.api.tasks.Exec
-import org.gradle.kotlin.dsl.register
 
 const val BUF_GENERATE_TASK_NAME = "bufGenerate"
 
@@ -26,9 +24,9 @@ const val BUF_GENERATED_DIR = "$BUF_BUILD_DIR/$GENERATED_DIR"
 
 internal fun Project.configureGenerate() {
     if (hasGenerate()) {
-        tasks.register<Exec>(BUF_GENERATE_TASK_NAME) {
+        tasks.register(BUF_GENERATE_TASK_NAME) {
             createsOutput()
-            buf("generate", "--output", qualifyFile(GENERATED_DIR))
+            execBuf("generate", "--output", qualifyFile(GENERATED_DIR))
         }
     }
 }
