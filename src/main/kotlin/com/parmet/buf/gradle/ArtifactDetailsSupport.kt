@@ -22,10 +22,8 @@ import org.gradle.kotlin.dsl.the
 import org.gradle.kotlin.dsl.withType
 
 internal fun Project.getArtifactDetails(): ArtifactDetails? {
-    val ext = getExtension()
-
     val inferredDetails =
-        if (ext.publishSchema) {
+        if (publishSchema()) {
             val publications = the<PublishingExtension>().publications.withType<MavenPublication>()
             publications.singleOrNull()?.let {
                 ArtifactDetails(
@@ -38,8 +36,8 @@ internal fun Project.getArtifactDetails(): ArtifactDetails? {
             null
         }
 
-    return if (ext.publishSchema || runBreakageCheck()) {
-        checkNotNull(ext.imageArtifactDetails ?: inferredDetails as? ArtifactDetails) {
+    return if (publishSchema() || runBreakageCheck()) {
+        checkNotNull(getExtension().imageArtifactDetails ?: inferredDetails as? ArtifactDetails) {
             """
                 Unable to determine image artifact details and schema publication or
                 compatibility check was requested; no image publication details
