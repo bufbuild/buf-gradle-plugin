@@ -29,8 +29,8 @@ internal fun Task.execBuf(args: Iterable<Any>) {
     }
     doLast {
         project.exec {
-            // todo: working dir can be set based on hasProtobufGradlePlugin() and then file locations can be absolute
-            
+            // todo: after moving off of docker, working dir can be set based on hasProtobufGradlePlugin() and file locations can be absolute
+
             commandLine("docker")
             val dockerArgs = project.baseDockerArgs() + args
             setArgs(dockerArgs)
