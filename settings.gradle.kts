@@ -13,22 +13,10 @@
  * limitations under the License.
  */
 
-import me.champeau.gradle.igp.gitRepositories
-
 buildscript { repositories { gradlePluginPortal() } }
 
 plugins {
-    id("me.champeau.includegit") version "0.1.5"
     id("net.vivin.gradle-semantic-build-versioning") version "4.0.0"
 }
 
 rootProject.name = "buf-gradle-plugin"
-
-gitRepositories {
-    checkoutsDirectory.set(file("build/checkouts"))
-
-    include("junit") {
-        uri.set("https://github.com/junit-team/junit5.git")
-        commit.set("c8fa9c3")
-    }
-}

@@ -21,7 +21,7 @@ spotless = "6.3.0"
 java8Signature = "1.0"
 
 # test
-junit = "5.9.0"
+junit = "5.8.2"
 truth = "1.1.3"
 
 [plugins]

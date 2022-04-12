@@ -18,7 +18,6 @@ package com.parmet.buf.gradle
 import org.gradle.api.Project
 import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
 
-const val BUF_BREAKING_EXTRACT_TASK_NAME = "bufBreakingExtract"
 const val BUF_BREAKING_TASK_NAME = "bufBreaking"
 const val BUF_BREAKING_CONFIGURATION_NAME = "bufBreaking"
 
@@ -52,7 +51,6 @@ private fun Project.addSchemaDependency(artifactDetails: ArtifactDetails) {
 
 private fun Project.configureBreakingTask() {
     tasks.register(BUF_BREAKING_TASK_NAME) {
-        dependsOn(BUF_BREAKING_EXTRACT_TASK_NAME)
         dependsOn(BUF_BUILD_TASK_NAME)
 
         group = CHECK_TASK_NAME

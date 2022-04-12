@@ -19,13 +19,12 @@ import com.google.common.truth.Truth.assertWithMessage
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.TestInfo
-import org.junit.jupiter.api.io.CleanupMode.NEVER
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
 import java.nio.file.Paths
 
 abstract class AbstractBufIntegrationTest : IntegrationTest {
-    @TempDir(cleanup = NEVER)
+    @TempDir
     lateinit var projectDir: File
 
     private val settingsFile

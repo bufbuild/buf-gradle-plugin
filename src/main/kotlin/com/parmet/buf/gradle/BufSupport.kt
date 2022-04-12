@@ -51,10 +51,7 @@ internal fun Project.configureBufDependency() {
 
     val version = getExtension().toolVersion
 
-    createConfigurationWithDependency(
-        BUF_BINARY_CONFIGURATION_NAME,
-        "bufbuild:buf:$version:$osPart@$archPart"
-    )
+    createConfigurationWithDependency(BUF_BINARY_CONFIGURATION_NAME, "bufbuild:buf:$version:$osPart@$archPart")
 }
 
 internal fun Task.execBuf(vararg args: Any) {
