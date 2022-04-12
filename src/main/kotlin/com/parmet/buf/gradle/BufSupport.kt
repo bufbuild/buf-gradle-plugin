@@ -20,7 +20,6 @@ import org.gradle.api.Task
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.ivy
 import org.gradle.kotlin.dsl.repositories
-import kotlin.reflect.KFunction
 
 const val BUF_BINARY_CONFIGURATION_NAME = "bufTool"
 
@@ -35,7 +34,6 @@ internal fun Project.configureBufDependency() {
     }
 
     val os = System.getProperty("os.name").toLowerCase()
-
     val osPart =
         when {
             os.startsWith("windows") -> "Windows"
@@ -44,15 +42,20 @@ internal fun Project.configureBufDependency() {
             else -> error("unsupported os: $os")
         }
 
-    val arch = System.getProperty("os.arch").toLowerCase()
-    require(arch in setOf("x86_64", "aarch64", "arm64")) { "unsupported arch: $arch" }
+    val archPart =
+        when (val arch = System.getProperty("os.arch").toLowerCase()) {
+            in setOf("x86_64", "amd64") -> "x86_64"
+            "aarch64" -> "aarch64"
+            "arm64" -> "arm64"
+            else -> error("unsupported arch: $arch")
+        }
 
     val version = getExtension().toolVersion
 
     configurations.create(BUF_BINARY_CONFIGURATION_NAME)
 
     dependencies {
-        add(BUF_BINARY_CONFIGURATION_NAME, "bufbuild:buf:$version:$osPart@$arch")
+        add(BUF_BINARY_CONFIGURATION_NAME, "bufbuild:buf:$version:$osPart@$archPart")
     }
 }
 
