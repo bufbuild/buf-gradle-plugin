@@ -20,8 +20,7 @@ import java.io.File
 
 const val BUF_GENERATE_TASK_NAME = "bufGenerate"
 
-private const val GENERATED_DIR = "generated"
-const val BUF_GENERATED_DIR = "$BUF_BUILD_DIR/$GENERATED_DIR"
+const val GENERATED_DIR = "generated"
 
 internal fun Project.configureGenerate() {
     if (hasGenerate()) {

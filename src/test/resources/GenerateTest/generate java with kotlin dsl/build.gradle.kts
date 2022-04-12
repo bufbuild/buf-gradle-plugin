@@ -13,7 +13,8 @@
  * limitations under the License.
  */
 
-import com.parmet.buf.gradle.BUF_GENERATED_DIR
+import com.parmet.buf.gradle.BUF_BUILD_DIR
+import com.parmet.buf.gradle.GENERATED_DIR
 
 plugins {
     `java`
@@ -25,7 +26,7 @@ repositories { mavenCentral() }
 tasks.named("compileJava").configure { dependsOn("bufGenerate") }
 
 sourceSets["main"].java {
-    srcDir("$buildDir/$BUF_GENERATED_DIR/java")
+    srcDir("$buildDir/$BUF_BUILD_DIR/$GENERATED_DIR/java")
 }
 
 val protobufVersion: String by project

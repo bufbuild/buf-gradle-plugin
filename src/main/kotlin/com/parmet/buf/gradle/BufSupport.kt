@@ -49,9 +49,10 @@ internal fun Project.configureBufDependency() {
             else -> error("unsupported arch: $arch")
         }
 
-    val version = getExtension().toolVersion
-
-    createConfigurationWithDependency(BUF_BINARY_CONFIGURATION_NAME, "bufbuild:buf:$version:$osPart@$archPart")
+    createConfigurationWithDependency(
+        BUF_BINARY_CONFIGURATION_NAME,
+        "bufbuild:buf:${getExtension().toolVersion}:$osPart@$archPart"
+    )
 }
 
 internal fun Task.execBuf(vararg args: Any) {
@@ -64,21 +65,27 @@ internal fun Task.execBuf(args: Iterable<Any>) {
         dependsOn(WRITE_WORKSPACE_YAML_TASK_NAME)
     }
     doLast {
-        project.exec {
-            project.configurations.getByName(BUF_BINARY_CONFIGURATION_NAME).singleFile.setExecutable(true)
+        with(project) {
+            exec {
+                val executable = singleFileFromConfiguration(BUF_BINARY_CONFIGURATION_NAME)
 
-            workingDir(
-                if (project.hasProtobufGradlePlugin()) {
-                    project.bufbuildDir
-                } else {
-                    project.projectDir
+                if (!executable.canExecute()) {
+                    executable.setExecutable(true)
                 }
-            )
 
-            commandLine(project.configurations.getByName(BUF_BINARY_CONFIGURATION_NAME).singleFile.path)
-            setArgs(args)
+                workingDir(
+                    if (hasProtobufGradlePlugin()) {
+                        bufbuildDir
+                    } else {
+                        projectDir
+                    }
+                )
 
-            logger.info("Running buf from $workingDir: `buf ${args.joinToString(" ")}`")
+                commandLine(executable)
+                setArgs(args)
+
+                logger.info("Running buf from $workingDir: `buf ${args.joinToString(" ")}`")
+            }
         }
     }
 }
