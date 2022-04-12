@@ -17,7 +17,6 @@ package com.parmet.buf.gradle
 
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.ivy
 import org.gradle.kotlin.dsl.repositories
 
@@ -52,11 +51,10 @@ internal fun Project.configureBufDependency() {
 
     val version = getExtension().toolVersion
 
-    configurations.create(BUF_BINARY_CONFIGURATION_NAME)
-
-    dependencies {
-        add(BUF_BINARY_CONFIGURATION_NAME, "bufbuild:buf:$version:$osPart@$archPart")
-    }
+    createConfigurationWithDependency(
+        BUF_BINARY_CONFIGURATION_NAME,
+        "bufbuild:buf:$version:$osPart@$archPart"
+    )
 }
 
 internal fun Task.execBuf(vararg args: Any) {
