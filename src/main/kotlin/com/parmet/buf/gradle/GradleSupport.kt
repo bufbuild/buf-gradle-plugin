@@ -27,3 +27,6 @@ internal fun Project.createConfigurationWithDependency(configuration: String, no
     configurations.create(configuration)
     dependencies { add(configuration, notation) }
 }
+
+internal fun Project.singleFileFromConfiguration(configuration: String) =
+    configurations.getByName(configuration).singleFile

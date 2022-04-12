@@ -22,20 +22,22 @@ const val BUF_CONFIGURATION_NAME = "buf"
 
 class BufPlugin : Plugin<Project> {
     override fun apply(project: Project) {
-        project.createExtension()
-        project.configurations.create(BUF_CONFIGURATION_NAME)
+        with(project) {
+            createExtension()
+            configurations.create(BUF_CONFIGURATION_NAME)
 
-        if (project.hasProtobufGradlePlugin()) {
-            project.failForWorkspaceAndPlugin()
-            project.afterEvaluate { configureBufWithProtobufGradle() }
-        } else {
-            project.withProtobufGradlePlugin { project.failForWorkspaceAndPlugin() }
-            project.configureBuf()
+            if (hasProtobufGradlePlugin()) {
+                failForWorkspaceAndPlugin()
+                afterEvaluate { configureBufWithProtobufGradle() }
+            } else {
+                withProtobufGradlePlugin { failForWorkspaceAndPlugin() }
+                configureBuf()
+            }
         }
     }
 
     private fun Project.failForWorkspaceAndPlugin() {
-        check(!project.hasWorkspace()) {
+        check(!hasWorkspace()) {
             """
                 A project cannot use both the protobuf-gradle-plugin and a Buf workspace.
                 If you have multiple protobuf source directories and you would like to

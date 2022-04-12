@@ -59,7 +59,7 @@ private fun Project.configureBreakingTask() {
             "breaking",
             bufBuildPublicationFile,
             "--against",
-            configurations.getByName(BUF_BREAKING_CONFIGURATION_NAME).singleFile
+            singleFileFromConfiguration(BUF_BREAKING_CONFIGURATION_NAME)
         )
     }
 }

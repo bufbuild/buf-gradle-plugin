@@ -33,8 +33,11 @@ const val WRITE_WORKSPACE_YAML_TASK_NAME = "writeWorkspaceYaml"
 private const val EXTRACT_INCLUDE_PROTO_TASK_NAME = "extractIncludeProto"
 private const val EXTRACT_PROTO_TASK_NAME = "extractProto"
 
-private const val BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN = "build/extracted-include-protos/main"
-private const val BUILD_EXTRACTED_PROTOS_MAIN = "build/extracted-protos/main"
+private val BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN =
+    listOf("build", "extracted-include-protos", "main").joinToString(File.separator)
+
+private val BUILD_EXTRACTED_PROTOS_MAIN =
+    listOf("build", "extracted-protos", "main").joinToString(File.separator)
 
 internal fun Project.hasProtobufGradlePlugin() =
     pluginManager.hasPlugin("com.google.protobuf")
@@ -53,7 +56,7 @@ private fun Project.createSymLink(protoDir: Path) {
     val symLinkFile = File(bufbuildDir, mangle(protoDir))
     if (!symLinkFile.exists()) {
         logger.info("Creating symlink for $protoDir at $symLinkFile")
-        Files.createSymbolicLink(symLinkFile.toPath(), Paths.get(bufbuildDir).relativize(file(protoDir).toPath()))
+        Files.createSymbolicLink(symLinkFile.toPath(), bufbuildDir.toPath().relativize(file(protoDir).toPath()))
     }
 }
 
@@ -71,7 +74,7 @@ internal fun Project.configureWriteWorkspaceYaml() {
 
             logger.info("Writing generated buf.work.yaml:\n$bufWork")
 
-            File("$bufbuildDir/buf.work.yaml").writeText(bufWork)
+            File(bufbuildDir, "buf.work.yaml").writeText(bufWork)
         }
     }
 }
