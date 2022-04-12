@@ -56,6 +56,7 @@ class BufPlugin : Plugin<Project> {
     }
 
     private fun Project.configureBuf() {
+        configureResolveBinary()
         configureLint()
         configureBuild()
         configureGenerate()
