@@ -16,22 +16,14 @@
 package com.parmet.buf.gradle
 
 import org.gradle.api.Project
-import org.gradle.api.tasks.Copy
-import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.register
 import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
 
-const val BUF_BREAKING_EXTRACT_TASK_NAME = "bufBreakingExtract"
 const val BUF_BREAKING_TASK_NAME = "bufBreaking"
 const val BUF_BREAKING_CONFIGURATION_NAME = "bufBreaking"
-const val BREAKING_DIR = "breaking"
 
 internal fun Project.configureBreaking(artifactDetails: ArtifactDetails) {
     addSchemaDependency(artifactDetails)
-
-    val bufBreakingFile = LazyBufBreakingFile()
-    configureSchemaExtraction(bufBreakingFile)
-    configureBreakingTask(bufBreakingFile)
+    configureBreakingTask()
 
     tasks.named(CHECK_TASK_NAME).dependsOn(BUF_BREAKING_TASK_NAME)
 }
@@ -51,54 +43,23 @@ private fun Project.addSchemaDependency(artifactDetails: ArtifactDetails) {
 
     logger.info("Resolving buf schema image from ${artifactDetails.groupAndArtifact()}:$versionSpecifier")
 
-    configurations.create(BUF_BREAKING_CONFIGURATION_NAME)
-
-    dependencies {
-        add(BUF_BREAKING_CONFIGURATION_NAME, "${artifactDetails.groupAndArtifact()}:$versionSpecifier")
-    }
+    createConfigurationWithDependency(
+        BUF_BREAKING_CONFIGURATION_NAME,
+        "${artifactDetails.groupAndArtifact()}:$versionSpecifier"
+    )
 }
 
-private fun Project.configureSchemaExtraction(bufBreakingFile: LazyBufBreakingFile) {
-    tasks.register<Copy>(BUF_BREAKING_EXTRACT_TASK_NAME) {
-        outputs.upToDateWhen { false }
-        val breakingDir = file("$bufbuildDir/$BREAKING_DIR")
-
-        doFirst { breakingDir.deleteRecursively() }
-
-        from(configurations.getByName(BUF_BREAKING_CONFIGURATION_NAME).files)
-        into(breakingDir)
-
-        doLast {
-            val copiedFiles = breakingDir.listFiles().orEmpty()
-
-            val fileName =
-                checkNotNull(copiedFiles.singleOrNull()) {
-                    "Unable to resolve a single file from Buf schema publication. Found $copiedFiles. Please " +
-                        "file an issue at https://github.com/andrewparmet/buf-gradle-plugin/issues/new if you " +
-                        "see this error."
-                }.name
-
-            logger.info("Buf will check schema dependency against $fileName")
-
-            bufBreakingFile.fileName = fileName
-        }
-    }
-}
-
-private fun Project.configureBreakingTask(bufBreakingFile: LazyBufBreakingFile) {
+private fun Project.configureBreakingTask() {
     tasks.register(BUF_BREAKING_TASK_NAME) {
-        dependsOn(BUF_BREAKING_EXTRACT_TASK_NAME)
         dependsOn(BUF_BUILD_TASK_NAME)
 
         group = CHECK_TASK_NAME
 
         execBuf(
             "breaking",
-            qualifyFile(BUF_BUILD_PUBLICATION_FILE_NAME),
+            bufBuildPublicationFile,
             "--against",
-            qualifyFile { "$BREAKING_DIR/${bufBreakingFile.fileName}" }
+            configurations.getByName(BUF_BREAKING_CONFIGURATION_NAME).singleFile
         )
     }
 }
-
-private class LazyBufBreakingFile(var fileName: String? = null)

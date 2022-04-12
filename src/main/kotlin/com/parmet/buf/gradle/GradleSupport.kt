@@ -15,8 +15,15 @@
 
 package com.parmet.buf.gradle
 
+import org.gradle.api.Project
 import org.gradle.api.tasks.TaskProvider
+import org.gradle.kotlin.dsl.dependencies
 
 internal fun TaskProvider<*>.dependsOn(obj: Any) {
     configure { dependsOn(obj) }
+}
+
+internal fun Project.createConfigurationWithDependency(configuration: String, notation: Any) {
+    configurations.create(configuration)
+    dependencies { add(configuration, notation) }
 }

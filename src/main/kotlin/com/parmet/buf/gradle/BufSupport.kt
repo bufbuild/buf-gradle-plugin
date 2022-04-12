@@ -17,6 +17,42 @@ package com.parmet.buf.gradle
 
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.kotlin.dsl.ivy
+import org.gradle.kotlin.dsl.repositories
+
+const val BUF_BINARY_CONFIGURATION_NAME = "bufTool"
+
+internal fun Project.configureBufDependency() {
+    repositories {
+        ivy("https://github.com") {
+            patternLayout {
+                artifact("/[organization]/[module]/releases/download/v[revision]/buf-[classifier]-[ext]")
+            }
+            metadataSources { artifact() }
+        }
+    }
+
+    val os = System.getProperty("os.name").toLowerCase()
+    val osPart =
+        when {
+            os.startsWith("windows") -> "Windows"
+            os.startsWith("linux") -> "Linux"
+            os.startsWith("mac") -> "Darwin"
+            else -> error("unsupported os: $os")
+        }
+
+    val archPart =
+        when (val arch = System.getProperty("os.arch").toLowerCase()) {
+            in setOf("x86_64", "amd64") -> "x86_64"
+            "aarch64" -> "aarch64"
+            "arm64" -> "arm64"
+            else -> error("unsupported arch: $arch")
+        }
+
+    val version = getExtension().toolVersion
+
+    createConfigurationWithDependency(BUF_BINARY_CONFIGURATION_NAME, "bufbuild:buf:$version:$osPart@$archPart")
+}
 
 internal fun Task.execBuf(vararg args: Any) {
     execBuf(args.asList())
@@ -29,42 +65,20 @@ internal fun Task.execBuf(args: Iterable<Any>) {
     }
     doLast {
         project.exec {
-            // todo: after moving off of docker, working dir can be set based on hasProtobufGradlePlugin() and file locations can be absolute
+            project.configurations.getByName(BUF_BINARY_CONFIGURATION_NAME).singleFile.setExecutable(true)
 
-            commandLine("docker")
-            val dockerArgs = project.baseDockerArgs() + args
-            setArgs(dockerArgs)
-            logger.info("Running buf: `docker ${dockerArgs.joinToString(" ")}`")
+            workingDir(
+                if (project.hasProtobufGradlePlugin()) {
+                    project.bufbuildDir
+                } else {
+                    project.projectDir
+                }
+            )
+
+            commandLine(project.configurations.getByName(BUF_BINARY_CONFIGURATION_NAME).singleFile.path)
+            setArgs(args)
+
+            logger.info("Running buf from $workingDir: `buf ${args.joinToString(" ")}`")
         }
     }
 }
-
-private fun Project.baseDockerArgs() =
-    listOf(
-        "run",
-        "--rm",
-        "--volume", "$projectDir:/workspace:Z",
-        "--workdir", bufWorkingDir(),
-        "bufbuild/buf:${getExtension().toolVersion}"
-    )
-
-private fun Project.bufWorkingDir() =
-    "/workspace" +
-        if (hasProtobufGradlePlugin()) {
-            "/${buildDir.name}/$BUF_BUILD_DIR"
-        } else {
-            ""
-        }
-
-internal fun Project.qualifyFile(name: String) =
-    qualifyFile { name }
-
-internal fun Project.qualifyFile(name: () -> String) =
-    object : Any() {
-        override fun toString() =
-            if (hasProtobufGradlePlugin()) {
-                ""
-            } else {
-                "${buildDir.name}/$BUF_BUILD_DIR/"
-            } + name()
-    }
