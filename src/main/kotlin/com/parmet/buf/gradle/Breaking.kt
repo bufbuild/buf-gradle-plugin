@@ -96,7 +96,7 @@ private fun Project.configureBreakingTask(bufBreakingFile: LazyBufBreakingFile) 
 
         execBuf(
             "breaking",
-            File(bufbuildDir, BUF_BUILD_PUBLICATION_FILE_NAME),
+            bufBuildPublicationFile,
             "--against",
             lazyToString { Paths.get(bufbuildDir, BREAKING_DIR, bufBreakingFile.fileName) }
         )

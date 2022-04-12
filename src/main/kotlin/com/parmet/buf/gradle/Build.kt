@@ -20,6 +20,7 @@ import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.the
+import java.io.File
 
 const val BUF_BUILD_TASK_NAME = "bufBuild"
 const val BUF_BUILD_PUBLICATION_FILE_NAME = "image.json"
@@ -34,7 +35,7 @@ internal fun Project.configureBuild() {
             createsOutput()
         }
 
-        execBuf("build", "--output", qualifyFile(BUF_BUILD_PUBLICATION_FILE_NAME))
+        execBuf("build", "--output", bufBuildPublicationFile)
     }
 }
 
@@ -47,9 +48,12 @@ internal fun Project.configureImagePublication(artifactDetails: ArtifactDetails)
             artifactId = artifactDetails.artifactId
             version = artifactDetails.version
 
-            artifact(file("$bufbuildDir/$BUF_BUILD_PUBLICATION_FILE_NAME")) {
+            artifact(bufBuildPublicationFile) {
                 builtBy(tasks.named(BUF_BUILD_TASK_NAME))
             }
         }
     }
 }
+
+val Project.bufBuildPublicationFile
+    get() = File(bufbuildDir, BUF_BUILD_PUBLICATION_FILE_NAME)

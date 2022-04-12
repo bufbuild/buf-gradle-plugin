@@ -87,16 +87,3 @@ internal fun Task.execBuf(args: Iterable<Any>) {
         }
     }
 }
-
-internal fun Project.qualifyFile(name: String) =
-    qualifyFile { name }
-
-internal fun Project.qualifyFile(name: () -> String) =
-    object : Any() {
-        override fun toString() =
-            if (hasProtobufGradlePlugin()) {
-                ""
-            } else {
-                "${buildDir.name}/$BUF_BUILD_DIR/"
-            } + name()
-    }
