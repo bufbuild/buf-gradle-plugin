@@ -219,7 +219,3 @@ buf {
     toolVersion = <version>
 }
 ```
-
-### Prerequisites
-
-The plugin delegates calls to a Buf Docker image. It requires Docker to be installed wherever it is run.
