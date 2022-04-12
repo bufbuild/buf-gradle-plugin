@@ -20,6 +20,7 @@ import org.gradle.api.Task
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.ivy
 import org.gradle.kotlin.dsl.repositories
+import kotlin.reflect.KFunction
 
 const val BUF_BINARY_CONFIGURATION_NAME = "bufTool"
 

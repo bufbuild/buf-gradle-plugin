@@ -20,6 +20,8 @@ import org.gradle.api.tasks.Copy
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.register
 import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
+import java.io.File
+import java.nio.file.Paths
 
 const val BUF_BREAKING_EXTRACT_TASK_NAME = "bufBreakingExtract"
 const val BUF_BREAKING_TASK_NAME = "bufBreaking"
@@ -94,11 +96,17 @@ private fun Project.configureBreakingTask(bufBreakingFile: LazyBufBreakingFile) 
 
         execBuf(
             "breaking",
-            qualifyFile(BUF_BUILD_PUBLICATION_FILE_NAME),
+            File(bufbuildDir, BUF_BUILD_PUBLICATION_FILE_NAME),
             "--against",
-            qualifyFile { "$BREAKING_DIR/${bufBreakingFile.fileName}" }
+            lazyToString { Paths.get(bufbuildDir, BREAKING_DIR, bufBreakingFile.fileName) }
         )
     }
 }
 
 private class LazyBufBreakingFile(var fileName: String? = null)
+
+private fun lazyToString(arg: () -> Any) =
+    object : Any() {
+        override fun toString() =
+            arg().toString()
+    }
