@@ -61,7 +61,7 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
         GradleRunner.create()
             .withProjectDir(projectDir)
             .withPluginClasspath()
-            .withArguments("-PprotobufGradleVersion=0.8.18", "-PprotobufVersion=3.19.4", "--stacktrace")
+            .withArguments("-PprotobufGradleVersion=0.8.18", "-PprotobufVersion=3.19.4")
             .let { WrappedRunner(it) }
 
     override fun checkRunner() =
