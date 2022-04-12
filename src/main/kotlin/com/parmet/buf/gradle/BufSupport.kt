@@ -23,7 +23,7 @@ import org.gradle.kotlin.dsl.repositories
 
 const val BUF_BINARY_CONFIGURATION_NAME = "bufTool"
 
-internal fun Project.configureResolveBinary() {
+internal fun Project.configureBufDependency() {
     repositories {
         ivy("https://github.com") {
             patternLayout {
