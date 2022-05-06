@@ -25,36 +25,9 @@ class BufPlugin : Plugin<Project> {
         with(project) {
             createExtension()
             configurations.create(BUF_CONFIGURATION_NAME)
-
-            if (hasProtobufGradlePlugin()) {
-                failForWorkspaceAndPlugin()
-                afterEvaluate { configureBufWithProtobufGradle() }
-            } else {
-                withProtobufGradlePlugin { failForWorkspaceAndPlugin() }
-                configureBuf()
-            }
+            configureBuf()
+            withProtobufGradlePlugin { configureBufWithProtobufGradle() }
         }
-    }
-
-    private fun Project.failForWorkspaceAndPlugin() {
-        check(!hasWorkspace()) {
-            """
-                A project cannot use both the protobuf-gradle-plugin and a Buf workspace.
-                If you have multiple protobuf source directories and you would like to
-                use the protobuf-gradle-plugin, configure the protobuf-gradle-plugin to use
-                those directories as source directories in the appropriate source set. If you
-                would like to use a Buf workspace, you must configure dependency resolution and
-                code generation using Buf. There is no (easy) way to reconcile the two
-                configurations for linting, breakage, and code generation steps.
-            """.trimIndent().replace('\n', ' ')
-        }
-    }
-
-    private fun Project.configureBufWithProtobufGradle() {
-        configureCreateSymLinksToModules()
-        configureCopyBufConfig()
-        configureWriteWorkspaceYaml()
-        configureBuf()
     }
 
     private fun Project.configureBuf() {
@@ -72,6 +45,29 @@ class BufPlugin : Plugin<Project> {
                     configureBreaking(it)
                 }
             }
+        }
+    }
+
+    private fun Project.configureBufWithProtobufGradle() {
+        failForWorkspaceAndPlugin()
+        afterEvaluate {
+            configureCreateSymLinksToModules()
+            configureCopyBufConfig()
+            configureWriteWorkspaceYaml()
+        }
+    }
+
+    private fun Project.failForWorkspaceAndPlugin() {
+        check(!hasWorkspace()) {
+            """
+                A project cannot use both the protobuf-gradle-plugin and a Buf workspace.
+                If you have multiple protobuf source directories and you would like to
+                use the protobuf-gradle-plugin, configure the protobuf-gradle-plugin to use
+                those directories as source directories in the appropriate source set. If you
+                would like to use a Buf workspace, you must configure dependency resolution and
+                code generation using Buf. There is no (easy) way to reconcile the two
+                configurations for linting, breakage, and code generation steps.
+            """.trimIndent().replace('\n', ' ')
         }
     }
 }
