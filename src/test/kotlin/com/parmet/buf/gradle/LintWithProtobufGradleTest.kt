@@ -19,6 +19,11 @@ import org.junit.jupiter.api.Test
 
 class LintWithProtobufGradleTest : ConfigOverrideableLintTests, AbstractLintTest() {
     @Test
+    fun `lint with protobuf plugin applied after buf plugin`() {
+        assertSuccess()
+    }
+
+    @Test
     fun `lint a separate protobuf source directory through the protobuf-gradle-plugin`() {
         assertSuccess()
     }
