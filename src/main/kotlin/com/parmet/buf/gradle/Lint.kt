@@ -16,7 +16,7 @@
 package com.parmet.buf.gradle
 
 import org.gradle.api.Project
-import org.gradle.api.plugins.JavaBasePlugin.CHECK_TASK_NAME
+import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
 import java.nio.file.Path
 
 const val BUF_LINT_TASK_NAME = "bufLint"
