@@ -21,21 +21,15 @@ import org.gradle.testkit.runner.TaskOutcome.FAILED
 import org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import org.junit.jupiter.api.Test
 
-abstract class AbstractFormatTest : AbstractBufIntegrationTest() {
+abstract class AbstractFormatCheckTest : AbstractBufIntegrationTest() {
     @Test
-    fun `lint a correct message`() {
+    fun `format a correct message`() {
         assertSuccess()
     }
 
     @Test
-    fun `lint an incorrect message`() {
-        assertBadWhitespace()
-    }
-
-    private fun assertBadWhitespace() {
-        val result = checkRunner().buildAndFail()
-        assertThat(result.task(":$BUF_FORMAT_CHECK_TASK_NAME")?.outcome).isEqualTo(FAILED)
-        assertThat(result.output).contains(
+    fun `format an incorrect message`() {
+        assertBadWhitespace(
             """
                 -message Foo {
                 -
@@ -45,7 +39,13 @@ abstract class AbstractFormatTest : AbstractBufIntegrationTest() {
         )
     }
 
-    private fun assertSuccess() {
+    protected fun assertBadWhitespace(diff: String) {
+        val result = checkRunner().buildAndFail()
+        assertThat(result.task(":$BUF_FORMAT_CHECK_TASK_NAME")?.outcome).isEqualTo(FAILED)
+        assertThat(result.output).contains(diff)
+    }
+
+    protected fun assertSuccess() {
         assertThat(checkRunner().build().task(":$CHECK_TASK_NAME")?.outcome).isEqualTo(SUCCESS)
     }
 }
