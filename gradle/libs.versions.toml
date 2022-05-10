@@ -14,7 +14,7 @@
 [versions]
 # plugins
 animalsniffer = "1.5.4"
-pluginPublish = "0.20.0"
+pluginPublish = "0.21.0"
 spotless = "6.5.2"
 
 # signature
