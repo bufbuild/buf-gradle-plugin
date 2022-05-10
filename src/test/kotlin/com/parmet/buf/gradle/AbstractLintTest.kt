@@ -16,6 +16,7 @@
 package com.parmet.buf.gradle
 
 import com.google.common.truth.Truth.assertThat
+import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
 import org.gradle.testkit.runner.TaskOutcome.FAILED
 import org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import org.junit.jupiter.api.Test
@@ -38,13 +39,13 @@ abstract class AbstractLintTest : LintTestUtilities, AbstractBufIntegrationTest(
 
     private fun assertLocationFailure() {
         val result = checkRunner().buildAndFail()
-        assertThat(result.task(":bufLint")?.outcome).isEqualTo(FAILED)
+        assertThat(result.task(":$BUF_LINT_TASK_NAME")?.outcome).isEqualTo(FAILED)
         assertThat(result.output).contains("must be within a directory \"parmet/buf/test/v1\"")
     }
 }
 
 interface LintTestUtilities : IntegrationTest {
     fun assertSuccess() {
-        assertThat(checkRunner().build().task(":check")?.outcome).isEqualTo(SUCCESS)
+        assertThat(checkRunner().build().task(":$CHECK_TASK_NAME")?.outcome).isEqualTo(SUCCESS)
     }
 }

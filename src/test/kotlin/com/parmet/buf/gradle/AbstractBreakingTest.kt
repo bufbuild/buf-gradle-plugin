@@ -47,7 +47,7 @@ abstract class AbstractBreakingTest : AbstractBufIntegrationTest() {
     @Test
     fun `breaking schema fails with latest-release and previousVersion`() {
         val result = checkRunner().buildAndFail()
-        assertThat(result.output).contains("Cannot configure bufBreaking against latest release and a previous version.")
+        assertThat(result.output).contains("Cannot configure $BUF_BREAKING_TASK_NAME against latest release and a previous version.")
     }
 
     private fun checkBreaking() {
@@ -58,7 +58,7 @@ abstract class AbstractBreakingTest : AbstractBufIntegrationTest() {
         breakSchema()
 
         val result = checkRunner().buildAndFail()
-        assertThat(result.task(":bufBreaking")?.outcome).isEqualTo(FAILED)
+        assertThat(result.task(":$BUF_BREAKING_TASK_NAME")?.outcome).isEqualTo(FAILED)
         assertThat(result.output).contains("Previously present message \"BasicMessage\" was deleted from file.")
     }
 

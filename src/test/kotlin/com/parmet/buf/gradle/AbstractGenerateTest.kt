@@ -15,16 +15,17 @@
 
 package com.parmet.buf.gradle
 
+import org.gradle.language.base.plugins.LifecycleBasePlugin.BUILD_TASK_NAME
 import org.junit.jupiter.api.Test
 
 abstract class AbstractGenerateTest : AbstractBufIntegrationTest() {
     @Test
     fun `generate java`() {
-        gradleRunner().withArguments("build").build()
+        gradleRunner().withArguments(BUILD_TASK_NAME).build()
     }
 
     @Test
     fun `generate java with kotlin dsl`() {
-        gradleRunner().withArguments("build").build()
+        gradleRunner().withArguments(BUILD_TASK_NAME).build()
     }
 }
