@@ -42,6 +42,12 @@ open class BufExtension {
     var checkSchemaAgainstLatestRelease = false
 
     /**
+     * Enables format checking via `buf format`. Apply formatting suggestions automatically with the `bufFormatApply`
+     * task.
+     */
+    var enforceFormat = true
+
+    /**
      * Specify the version of Buf.
      */
     var toolVersion: String = "1.4.0"

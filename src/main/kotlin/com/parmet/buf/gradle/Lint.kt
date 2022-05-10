@@ -25,7 +25,7 @@ const val BUF_LINT_TASK_NAME = "bufLint"
 internal fun Project.configureLint() {
     tasks.register(BUF_LINT_TASK_NAME) {
         group = VERIFICATION_GROUP
-        description = "Checks that Protobuf API definitions are consistent with your chosen best practices."
+        description = "Checks that a Protobuf schema conforms to the Buf lint configuration."
 
         fun lintWithArgs(path: Path? = null) =
             listOfNotNull("lint", path?.let(::mangle)) +
