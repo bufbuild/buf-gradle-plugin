@@ -70,6 +70,10 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
 
     fun publishRunner() =
         gradleRunner().withArguments("publish")
+
+    fun File.replace(oldValue: String, newValue: String) {
+        writeText(readText().replace(oldValue, newValue))
+    }
 }
 
 interface IntegrationTest {

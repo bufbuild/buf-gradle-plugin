@@ -18,7 +18,6 @@ package com.parmet.buf.gradle
 import com.google.common.truth.Truth.assertThat
 import org.gradle.testkit.runner.TaskOutcome.FAILED
 import org.junit.jupiter.api.Test
-import java.io.File
 import java.nio.file.Path
 
 abstract class AbstractBreakingTest : AbstractBufIntegrationTest() {
@@ -68,8 +67,4 @@ abstract class AbstractBreakingTest : AbstractBufIntegrationTest() {
     }
 
     protected abstract fun protoFile(): Path
-
-    protected fun File.replace(oldValue: String, newValue: String) {
-        writeText(readText().replace(oldValue, newValue))
-    }
 }

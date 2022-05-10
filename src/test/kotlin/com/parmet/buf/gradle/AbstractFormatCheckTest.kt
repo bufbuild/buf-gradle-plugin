@@ -29,6 +29,19 @@ abstract class AbstractFormatCheckTest : AbstractBufIntegrationTest() {
 
     @Test
     fun `format an incorrect message`() {
+        baseAssertBadWhitespace()
+    }
+
+    @Test
+    fun `do not format an incorrect message when enforcement is disabled`() {
+        baseAssertBadWhitespace()
+
+        buildFile.replace("enforceFormat = true", "enforceFormat = false")
+
+        assertSuccess()
+    }
+
+    private fun baseAssertBadWhitespace() {
         assertBadWhitespace(
             """
                 -message Foo {

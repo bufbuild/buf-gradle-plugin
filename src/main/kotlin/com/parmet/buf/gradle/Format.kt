@@ -23,8 +23,10 @@ const val BUF_FORMAT_CHECK_TASK_NAME = "bufFormatCheck"
 const val BUF_FORMAT_APPLY_TASK_NAME = "bufFormatApply"
 
 internal fun Project.configureFormat() {
-    if (getExtension().enforceFormat) {
-        configureBufFormatCheck()
+    afterEvaluate {
+        if (getExtension().enforceFormat) {
+            configureBufFormatCheck()
+        }
     }
     configureBufFormatApply()
 }
@@ -36,6 +38,8 @@ private fun Project.configureBufFormatCheck() {
 
         configureDirectorySpecificBufExecution("format", "-d", "--exit-code")
     }
+
+    tasks.named(CHECK_TASK_NAME).dependsOn(BUF_FORMAT_CHECK_TASK_NAME)
 }
 
 private fun Project.configureBufFormatApply() {
@@ -45,6 +49,4 @@ private fun Project.configureBufFormatApply() {
 
         configureDirectorySpecificBufExecution("format", "-w")
     }
-
-    tasks.named(CHECK_TASK_NAME).dependsOn(BUF_FORMAT_CHECK_TASK_NAME)
 }
