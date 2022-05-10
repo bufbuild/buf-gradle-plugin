@@ -36,6 +36,25 @@ private fun Project.configureBufFormatCheck() {
         description = "Checks that a Protobuf schema is formatted according to Buf's formatting rules."
 
         fun formatWithArgs(path: Path? = null) =
+            listOfNotNull("format", "-d", "--exit-code", path?.let(::mangle))
+
+        when {
+            hasProtobufGradlePlugin() ->
+                srcProtoDirs().forEach { execBuf(formatWithArgs(it)) }
+            hasWorkspace() ->
+                execBuf("format", "-d", "--exit-code")
+            else ->
+                execBuf(formatWithArgs())
+        }
+    }
+}
+
+private fun Project.configureBufFormatApply() {
+    tasks.register(BUF_FORMAT_APPLY_TASK_NAME) {
+        group = VERIFICATION_GROUP
+        description = "Formats a Protobuf schema according to Buf's formatting rules."
+
+        fun formatWithArgs(path: Path? = null) =
             listOfNotNull("format", "-w", path?.let(::mangle))
 
         when {
@@ -49,23 +68,4 @@ private fun Project.configureBufFormatCheck() {
     }
 
     tasks.named(CHECK_TASK_NAME).dependsOn(BUF_FORMAT_CHECK_TASK_NAME)
-}
-
-private fun Project.configureBufFormatApply() {
-    tasks.register(BUF_FORMAT_APPLY_TASK_NAME) {
-        group = VERIFICATION_GROUP
-        description = "Formats a Protobuf schema according to Buf's formatting rules."
-
-        fun formatWithArgs(path: Path? = null) =
-            listOfNotNull("format", "-d", "--exit-code", path?.let(::mangle))
-
-        when {
-            hasProtobufGradlePlugin() ->
-                srcProtoDirs().forEach { execBuf(formatWithArgs(it)) }
-            hasWorkspace() ->
-                execBuf("format", "-d", "--exit-code")
-            else ->
-                execBuf(formatWithArgs())
-        }
-    }
 }
