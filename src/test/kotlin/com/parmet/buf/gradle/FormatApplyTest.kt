@@ -13,26 +13,11 @@
  * limitations under the License.
  */
 
-plugins {
-  id 'java'
-  id 'com.google.protobuf' version "$protobufGradleVersion"
-  id 'com.parmet.buf'
-}
+package com.parmet.buf.gradle
 
-repositories { mavenCentral() }
+import java.nio.file.Paths
 
-protobuf {
-  protoc {
-    artifact = "com.google.protobuf:protoc:$protobufVersion"
-  }
-}
-
-compileJava.enabled = false
-
-sourceSets {
-  main {
-    proto {
-      srcDir 'subdir'
-    }
-  }
+class FormatApplyTest : AbstractFormatApplyTest() {
+    override fun protoFile() =
+        Paths.get(projectDir.path, "parmet", "buf", "test", "v1", "test.proto")
 }

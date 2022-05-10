@@ -15,24 +15,5 @@
 
 plugins {
   id 'java'
-  id 'com.google.protobuf' version "$protobufGradleVersion"
   id 'com.parmet.buf'
-}
-
-repositories { mavenCentral() }
-
-protobuf {
-  protoc {
-    artifact = "com.google.protobuf:protoc:$protobufVersion"
-  }
-}
-
-compileJava.enabled = false
-
-sourceSets {
-  main {
-    proto {
-      srcDir 'subdir'
-    }
-  }
 }
