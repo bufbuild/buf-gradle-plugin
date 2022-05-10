@@ -17,13 +17,15 @@ package com.parmet.buf.gradle
 
 import org.gradle.api.Project
 import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
+import org.gradle.language.base.plugins.LifecycleBasePlugin.VERIFICATION_GROUP
 import java.nio.file.Path
 
 const val BUF_LINT_TASK_NAME = "bufLint"
 
 internal fun Project.configureLint() {
     tasks.register(BUF_LINT_TASK_NAME) {
-        group = CHECK_TASK_NAME
+        group = VERIFICATION_GROUP
+        description = "Checks that Protobuf API definitions are consistent with your chosen best practices."
 
         fun lintWithArgs(path: Path? = null) =
             listOfNotNull("lint", path?.let(::mangle)) +
