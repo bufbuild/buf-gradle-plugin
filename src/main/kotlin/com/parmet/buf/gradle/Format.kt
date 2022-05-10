@@ -23,11 +23,7 @@ const val BUF_FORMAT_CHECK_TASK_NAME = "bufFormatCheck"
 const val BUF_FORMAT_APPLY_TASK_NAME = "bufFormatApply"
 
 internal fun Project.configureFormat() {
-    afterEvaluate {
-        if (getExtension().enforceFormat) {
-            configureBufFormatCheck()
-        }
-    }
+    configureBufFormatCheck()
     configureBufFormatApply()
 }
 
@@ -35,6 +31,7 @@ private fun Project.configureBufFormatCheck() {
     tasks.register(BUF_FORMAT_CHECK_TASK_NAME) {
         group = VERIFICATION_GROUP
         description = "Checks that a Protobuf schema is formatted according to Buf's formatting rules."
+        enabled = getExtension().enforceFormat
 
         configureDirectorySpecificBufExecution("format", "-d", "--exit-code")
     }
