@@ -28,8 +28,8 @@ abstract class AbstractLintTest : LintTestUtilities, AbstractBufIntegrationTest(
     }
 
     @Test
-    fun `lint a basic incorrect message with wrong location`() {
-        assertLocationFailure()
+    fun `lint a basic incorrect message with bad enum`() {
+        assertBadEnumSuffix()
     }
 
     @Test
@@ -37,10 +37,10 @@ abstract class AbstractLintTest : LintTestUtilities, AbstractBufIntegrationTest(
         assertSuccess()
     }
 
-    private fun assertLocationFailure() {
+    private fun assertBadEnumSuffix() {
         val result = checkRunner().buildAndFail()
         assertThat(result.task(":$BUF_LINT_TASK_NAME")?.outcome).isEqualTo(FAILED)
-        assertThat(result.output).contains("must be within a directory \"parmet/buf/test/v1\"")
+        assertThat(result.output).contains("Enum zero value name \"TEST_FOO\" should be suffixed with \"_UNSPECIFIED\"")
     }
 }
 

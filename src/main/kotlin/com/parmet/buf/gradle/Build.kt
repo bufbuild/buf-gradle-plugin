@@ -20,6 +20,7 @@ import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.the
+import org.gradle.language.base.plugins.LifecycleBasePlugin.BUILD_GROUP
 import java.io.File
 
 const val BUF_BUILD_TASK_NAME = "bufBuild"
@@ -28,6 +29,9 @@ const val BUF_IMAGE_PUBLICATION_NAME = "bufImagePublication"
 
 internal fun Project.configureBuild() {
     tasks.register(BUF_BUILD_TASK_NAME) {
+        group = BUILD_GROUP
+        description = "Builds a Buf image from a Protobuf schema."
+
         if (hasProtobufGradlePlugin()) {
             dependsOn(COPY_BUF_CONFIG_TASK_NAME)
         } else {

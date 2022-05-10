@@ -16,6 +16,7 @@
 package com.parmet.buf.gradle
 
 import org.gradle.api.Project
+import org.gradle.language.base.plugins.LifecycleBasePlugin.BUILD_GROUP
 import java.io.File
 
 const val BUF_GENERATE_TASK_NAME = "bufGenerate"
@@ -25,6 +26,9 @@ const val GENERATED_DIR = "generated"
 internal fun Project.configureGenerate() {
     if (hasGenerate()) {
         tasks.register(BUF_GENERATE_TASK_NAME) {
+            group = BUILD_GROUP
+            description = "Generates code from a Protobuf schema."
+
             createsOutput()
             execBuf("generate", "--output", File(bufbuildDir, GENERATED_DIR))
         }
