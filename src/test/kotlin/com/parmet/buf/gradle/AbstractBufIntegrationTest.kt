@@ -16,6 +16,7 @@
 package com.parmet.buf.gradle
 
 import com.google.common.truth.Truth.assertWithMessage
+import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.TestInfo
@@ -65,7 +66,7 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
             .let { WrappedRunner(it) }
 
     override fun checkRunner() =
-        gradleRunner().withArguments("check")
+        gradleRunner().withArguments(CHECK_TASK_NAME)
 
     fun publishRunner() =
         gradleRunner().withArguments("publish")
