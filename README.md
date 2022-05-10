@@ -3,9 +3,9 @@
 [![Maven Central](https://img.shields.io/badge/dynamic/xml?color=orange&label=maven-central&prefix=v&query=%2F%2Fmetadata%2Fversioning%2Flatest&url=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fcom%2Fparmet%2Fbuf-gradle-plugin%2Fmaven-metadata.xml)](https://search.maven.org/artifact/com.parmet/buf-gradle-plugin)
 [![Gradle Portal](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/com/parmet/buf-gradle-plugin/maven-metadata.xml.svg?label=gradle-portal&color=yellowgreen)](https://plugins.gradle.org/plugin/com.parmet.buf)
 
-Linting, code generation, and breakage-check integration for [Buf](https://github.com/bufbuild/buf) with Gradle. Supports integration purely between Buf and Gradle or additionally with the [protobuf-gradle-plugin](https://github.com/google/protobuf-gradle-plugin).
+Integration for [Buf](https://github.com/bufbuild/buf) with Gradle. Supports integration purely between Buf and Gradle or additionally with the [protobuf-gradle-plugin](https://github.com/google/protobuf-gradle-plugin).
 
-This plugin supports straightforward usage of `buf lint` and `buf generate` and a self-contained integration between `buf build` and `buf breaking`.
+This plugin supports straightforward usage of `buf lint`, `buf format`, and `buf generate`, and a self-contained integration between `buf build` and `buf breaking`.
 
 ## Usage
 
@@ -35,7 +35,9 @@ buildscript {
 apply(plugin = "com.parmet.buf")
 ```
 
-When applied the plugin creates several tasks:
+When applied the plugin creates tasks:
+- `bufFormatApply` applies Buf's formatter to protobuf code
+- `bufFormatCheck` validates protobuf code using Buf's formatter
 - `bufLint` lints protobuf code
 - `bufBreaking` checks protobuf against a previous version for backwards-incompatible changes
 - `bufGenerate` generates protobuf code
@@ -101,9 +103,21 @@ publishing {
 
 Projects with Buf workspaces must configure their workspaces as described in the Buf documentation; no configuration for linting will be overrideable. A `buf.yaml` in the project root or specified in the extension will be used for breakage checks only.
 
+### `bufFormatApply` and `bufFormatCheck`
+
+`bufFormatApply` is run manually and has no configuration.
+
+`bufFormatCheck` is run automatically during the `check` task if `enforceFormat` is enabled. It has no other configuration.
+
+```kotlin
+buf {
+    enforceFormat = true // true by default
+}
+```
+
 ### `bufLint`
 
-`bufLint` is configured by creating `buf.yaml` in basic projects or projects using the `protobuf-gradle-plugin`. Lint configuration at the Gradle plugin level is not supported for projects using a Buf workspace.
+`bufLint` is configured by creating `buf.yaml` in basic projects or projects using the `protobuf-gradle-plugin`. It is run automatically during the `check` task. Specification of `buf.yaml` is not supported for projects using a workspace.
 
 ### `bufBreaking`
 
