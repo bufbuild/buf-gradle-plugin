@@ -56,6 +56,7 @@ abstract class AbstractFormatCheckTest : AbstractBufIntegrationTest() {
         val result = checkRunner().buildAndFail()
         assertThat(result.task(":$BUF_FORMAT_CHECK_TASK_NAME")?.outcome).isEqualTo(FAILED)
         assertThat(result.output).contains(diff)
+        assertThat(result.output).contains("Run './gradlew :bufFormatApply' to fix these violations.")
     }
 
     protected fun assertSuccess() {
