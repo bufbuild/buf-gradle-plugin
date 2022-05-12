@@ -29,34 +29,32 @@ abstract class AbstractFormatCheckTest : AbstractBufIntegrationTest() {
 
     @Test
     fun `format an incorrect message`() {
-        baseAssertBadWhitespace()
+        assertBadWhitespace()
     }
 
     @Test
     fun `do not format an incorrect message when enforcement is disabled`() {
-        baseAssertBadWhitespace()
+        assertBadWhitespace()
 
         buildFile.replace("enforceFormat = true", "enforceFormat = false")
 
         assertSuccess()
     }
 
-    private fun baseAssertBadWhitespace() {
-        assertBadWhitespace(
-            """
-                -message Foo {
-                -
-                -}
-                +message Foo {}
-            """.trimIndent()
-        )
-    }
-
-    protected fun assertBadWhitespace(diff: String) {
+    protected fun assertBadWhitespace() {
         val result = checkRunner().buildAndFail()
         assertThat(result.task(":$BUF_FORMAT_CHECK_TASK_NAME")?.outcome).isEqualTo(FAILED)
-        assertThat(result.output).contains(diff)
-        assertThat(result.output).contains("Run './gradlew :bufFormatApply' to fix these violations.")
+        assertThat(result.output)
+            .contains(
+                """
+                    |  -message Foo {
+                    |  -
+                    |  -}
+                    |  +message Foo {}
+                    |  
+                    |  Run './gradlew :bufFormatApply' to fix these violations.
+                """.trimMargin()
+            )
     }
 
     protected fun assertSuccess() {
