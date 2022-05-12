@@ -35,15 +35,7 @@ class FormatCheckWithProtobufGradleTest : AbstractFormatCheckTest() {
 
     @Test
     fun `format a bad separate protobuf source directory through the protobuf-gradle-plugin`() {
-        assertBadWhitespace(
-            """
-                -message BasicMessage {
-                -
-                -
-                -}
-                +message BasicMessage {}
-            """.trimIndent()
-        )
+        assertBadWhitespace()
     }
 
     @Test
@@ -53,15 +45,6 @@ class FormatCheckWithProtobufGradleTest : AbstractFormatCheckTest() {
 
     @Test
     fun `format a bad file with a protobuf dependency and a google dependency with the protobuf-gradle-plugin`() {
-        assertBadWhitespace(
-            """
-                 message BasicMessage {
-                -
-                -
-                   google.protobuf.Any any = 1;
-                   protokt.ProtoktFileOptions protokt_file_options = 2;
-                 }
-            """.trimIndent()
-        )
+        assertBadWhitespace()
     }
 }

@@ -58,6 +58,12 @@ abstract class AbstractBreakingTest : AbstractBufIntegrationTest() {
 
         val result = checkRunner().buildAndFail()
         assertThat(result.task(":$BUF_BREAKING_TASK_NAME")?.outcome).isEqualTo(FAILED)
+        assertThat(result.output).contains(
+            """
+                Execution failed for task ':bufBreaking'.
+                > Some Protobuf files had breaking changes:
+            """.trimIndent()
+        )
         assertThat(result.output).contains("Previously present message \"BasicMessage\" was deleted from file.")
     }
 

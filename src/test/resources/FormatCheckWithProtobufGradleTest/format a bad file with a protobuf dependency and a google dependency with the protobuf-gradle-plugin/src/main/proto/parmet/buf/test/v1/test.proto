@@ -19,8 +19,10 @@ import "google/protobuf/any.proto";
 import "protokt/protokt.proto";
 
 message BasicMessage {
-
-
   google.protobuf.Any any = 1;
   protokt.ProtoktFileOptions protokt_file_options = 2;
+}
+
+message Foo {
+
 }

@@ -33,7 +33,13 @@ private fun Project.configureBufFormatCheck() {
         description = "Checks that a Protobuf schema is formatted according to Buf's formatting rules."
         enabled = getExtension().enforceFormat
 
-        configureDirectorySpecificBufExecution("format", "-d", "--exit-code")
+        configureDirectorySpecificBufExecution("format", "-d", "--exit-code") {
+            """
+                 |Some Protobuf files had format violations:
+                 |$it
+                 |Run './gradlew :bufFormatApply' to fix these violations.
+            """.trimMargin()
+        }
     }
 
     tasks.named(CHECK_TASK_NAME).dependsOn(BUF_FORMAT_CHECK_TASK_NAME)

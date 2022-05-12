@@ -19,31 +19,34 @@ import org.gradle.api.Task
 import java.nio.file.Path
 
 internal fun Task.configureDirectorySpecificBufExecution(
-    vararg bufCommand: String
+    vararg bufCommand: String,
+    customErrorMessage: ((String) -> String)? = null
 ) {
-    configureDirectorySpecificBufExecution(bufCommand.asList(), emptyList())
+    configureDirectorySpecificBufExecution(bufCommand.asList(), emptyList(), customErrorMessage)
 }
 
 internal fun Task.configureDirectorySpecificBufExecution(
     bufCommand: String,
-    extraArgs: Iterable<String>
+    extraArgs: Iterable<String>,
+    customErrorMessage: ((String) -> String)
 ) {
-    configureDirectorySpecificBufExecution(listOf(bufCommand), extraArgs)
+    configureDirectorySpecificBufExecution(listOf(bufCommand), extraArgs, customErrorMessage)
 }
 
 private fun Task.configureDirectorySpecificBufExecution(
     bufCommand: Iterable<String>,
-    extraArgs: Iterable<String>
+    extraArgs: Iterable<String>,
+    customErrorMessage: ((String) -> String)? = null
 ) {
-    fun lintWithArgs(path: Path? = null) =
+    fun runWithArgs(path: Path? = null) =
         bufCommand + listOfNotNull(path?.let(::mangle)) + extraArgs
 
     when {
         project.hasProtobufGradlePlugin() ->
-            project.srcProtoDirs().forEach { execBuf(lintWithArgs(it)) }
+            project.srcProtoDirs().forEach { execBuf(runWithArgs(it), customErrorMessage) }
         project.hasWorkspace() ->
-            execBuf(bufCommand)
+            execBuf(bufCommand, customErrorMessage)
         else ->
-            execBuf(lintWithArgs())
+            execBuf(runWithArgs(), customErrorMessage)
     }
 }

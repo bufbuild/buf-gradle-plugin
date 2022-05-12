@@ -29,7 +29,12 @@ internal fun Project.configureLint() {
         configureDirectorySpecificBufExecution(
             "lint",
             bufConfigFile()?.let { listOf("--config", it.readText()) }.orEmpty()
-        )
+        ) {
+            """
+                 |Some Protobuf files had lint violations:
+                 |$it
+            """.trimMargin()
+        }
     }
 
     tasks.named(CHECK_TASK_NAME).dependsOn(BUF_LINT_TASK_NAME)
