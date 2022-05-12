@@ -44,8 +44,7 @@ internal fun Project.configureBufDependency() {
     val archPart =
         when (val arch = System.getProperty("os.arch").toLowerCase()) {
             in setOf("x86_64", "amd64") -> "x86_64"
-            "aarch64" -> "aarch64"
-            "arm64" -> "arm64"
+            in setOf("arm64", "aarch64") -> "arm64"
             else -> error("unsupported arch: $arch")
         }
 
