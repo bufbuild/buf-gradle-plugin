@@ -24,3 +24,7 @@ kotlin {
     nodejs()
   }
 }
+
+repositories {
+  mavenCentral()
+}
