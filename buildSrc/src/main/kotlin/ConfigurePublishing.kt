@@ -30,6 +30,13 @@ object ProjectInfo {
 fun Project.configurePublishing() {
     apply(plugin = "com.vanniktech.maven.publish.base")
 
+    if (isRelease()) {
+        setProperty("signingInMemoryKey", System.getenv("PGP_KEY")?.replace('$', '\n'))
+        setProperty("signingInMemoryPassword", System.getenv("PGP_PASSWORD"))
+        setProperty("mavenCentralUsername", System.getenv("OSSRH_USERNAME"))
+        setProperty("mavenCentralPassword", System.getenv("OSSRH_PASSWORD"))
+    }
+
     configure<MavenPublishBaseExtension> {
         configure(KotlinJvm(JavadocJar.Empty()))
         publishToMavenCentral(SonatypeHost.DEFAULT)
@@ -53,13 +60,6 @@ fun Project.configurePublishing() {
                 }
             }
         }
-    }
-
-    if (isRelease()) {
-        setProperty("signingInMemoryKey", System.getenv("PGP_KEY")?.replace('$', '\n'))
-        setProperty("signingInMemoryPassword", System.getenv("PGP_PASSWORD"))
-        setProperty("mavenCentralUsername", System.getenv("OSSRH_USERNAME"))
-        setProperty("mavenCentralPassword", System.getenv("OSSRH_PASSWORD"))
     }
 }
 
