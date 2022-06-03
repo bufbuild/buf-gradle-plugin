@@ -20,6 +20,7 @@ import com.vanniktech.maven.publish.SonatypeHost
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.extra
 
 object ProjectInfo {
     const val name = "Buf Gradle Plugin"
@@ -56,10 +57,10 @@ fun Project.configurePublishing() {
     }
 
     if (isRelease()) {
-        setProperty("signingInMemoryKey", System.getenv("PGP_KEY")?.replace('$', '\n'))
-        setProperty("signingInMemoryPassword", System.getenv("PGP_PASSWORD"))
-        setProperty("mavenCentralUsername", System.getenv("OSSRH_USERNAME"))
-        setProperty("mavenCentralPassword", System.getenv("OSSRH_PASSWORD"))
+        extra.set("signingInMemoryKey", System.getenv("PGP_KEY")?.replace('$', '\n'))
+        extra.set("signingInMemoryPassword", System.getenv("PGP_PASSWORD"))
+        extra.set("mavenCentralUsername", System.getenv("OSSRH_USERNAME"))
+        extra.set("mavenCentralPassword", System.getenv("OSSRH_PASSWORD"))
     }
 }
 
