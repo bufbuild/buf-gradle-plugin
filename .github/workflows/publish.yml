@@ -33,13 +33,16 @@ jobs:
         with:
           arguments: |
             publish
+            closeAndReleaseRepository
             publishPlugins
             -Dorg.gradle.internal.http.socketTimeout=120000
             -Dorg.gradle.internal.network.retry.max.attempts=1
             -Dorg.gradle.internal.publish.checksums.insecure=true
+            --no-daemon
+            --no-parallel
         env:
-          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.OSSRH_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.OSSRH_PASSWORD }}
           PGP_KEY: ${{ secrets.PGP_KEY }}
           PGP_PASSWORD: ${{ secrets.PGP_PASSWORD }}
           GRADLE_PORTAL_PUBLISH_KEY: ${{ secrets.GRADLE_PORTAL_PUBLISH_KEY }}

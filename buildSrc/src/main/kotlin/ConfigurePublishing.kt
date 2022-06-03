@@ -19,11 +19,9 @@ import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import com.vanniktech.maven.publish.SonatypeHost
 import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
-import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.the
-import org.gradle.kotlin.dsl.withType
 import org.gradle.plugins.signing.SigningExtension
 
 object ProjectInfo {
@@ -36,9 +34,6 @@ fun Project.configurePublishing() {
     apply(plugin = "com.vanniktech.maven.publish.base")
 
     if (isRelease()) {
-        setProperty("mavenCentralUsername", System.getenv("OSSRH_USERNAME"))
-        setProperty("mavenCentralPassword", System.getenv("OSSRH_PASSWORD"))
-
         apply(plugin = "signing")
 
         configure<SigningExtension> {
@@ -47,13 +42,9 @@ fun Project.configurePublishing() {
                 System.getenv("PGP_PASSWORD")
             )
 
-            the<PublishingExtension>().publications.withType<MavenPublication> {
-                sign(this)
-            }
+            sign(the<PublishingExtension>().publications)
         }
     }
-
-    println("signing key length: " + properties["signingInMemoryKey"]?.toString()?.length)
 
     configure<MavenPublishBaseExtension> {
         configure(KotlinJvm(JavadocJar.Empty()))
