@@ -28,6 +28,11 @@ abstract class AbstractLintTest : LintTestUtilities, AbstractBufIntegrationTest(
     }
 
     @Test
+    fun `lint a basic correct message with default config and the kotlin plugin`() {
+        assertSuccess()
+    }
+
+    @Test
     fun `lint a basic incorrect message with bad enum`() {
         assertBadEnumSuffix()
     }
