@@ -17,12 +17,17 @@ package com.parmet.buf.gradle
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.plugins.BasePlugin
+import org.gradle.kotlin.dsl.apply
 
 const val BUF_CONFIGURATION_NAME = "buf"
 
 class BufPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         with(project) {
+            // make sure there's a `clean` and a `check`
+            apply<BasePlugin>()
+
             createExtension()
             configurations.create(BUF_CONFIGURATION_NAME)
             configureBuf()

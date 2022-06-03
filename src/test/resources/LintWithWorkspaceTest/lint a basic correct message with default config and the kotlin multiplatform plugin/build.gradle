@@ -13,13 +13,11 @@
  * limitations under the License.
  */
 
-package com.parmet.buf.gradle
+plugins {
+  id 'org.jetbrains.kotlin.multiplatform' version "$kotlinVersion"
+  id 'com.parmet.buf'
+}
 
-import org.junit.jupiter.api.Test
-
-class LintWithWorkspaceTest : NonProtobufGradlePluginLintTests, AbstractLintTest() {
-    @Test
-    fun `lint with a config in workspace`() {
-        assertSuccess()
-    }
+kotlin {
+  jvm()
 }

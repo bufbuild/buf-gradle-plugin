@@ -13,7 +13,30 @@
  * limitations under the License.
  */
 
+buildscript {
+  repositories {
+    gradlePluginPortal()
+    google()
+  }
+
+  dependencies {
+    classpath "com.android.tools.build:gradle:$androidGradleVersion"
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+  }
+}
+
 plugins {
-  id 'org.jetbrains.kotlin.android' version "$kotlinVersion"
   id 'com.parmet.buf'
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'org.jetbrains.kotlin.android'
+
+android {
+  compileSdkVersion 31
+}
+
+repositories {
+  mavenCentral()
+  google()
 }

@@ -15,4 +15,4 @@
 
 package com.parmet.buf.gradle
 
-class LintTest : ConfigOverrideableLintTests, AbstractLintTest()
+class LintTest : ConfigOverrideableLintTests, NonProtobufGradlePluginLintTests, AbstractLintTest()

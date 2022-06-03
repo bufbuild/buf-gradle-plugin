@@ -28,7 +28,17 @@ abstract class AbstractLintTest : LintTestUtilities, AbstractBufIntegrationTest(
     }
 
     @Test
-    fun `lint a basic correct message with default config and the kotlin plugin`() {
+    fun `lint a basic correct message with default config before java plugin`() {
+        assertSuccess()
+    }
+
+    @Test
+    fun `lint a basic correct message with default config and the kotlin jvm plugin`() {
+        assertSuccess()
+    }
+
+    @Test
+    fun `lint a basic correct message with default config and the kotlin android plugin`() {
         assertSuccess()
     }
 

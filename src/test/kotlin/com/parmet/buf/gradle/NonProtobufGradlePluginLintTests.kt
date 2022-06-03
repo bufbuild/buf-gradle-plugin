@@ -17,9 +17,19 @@ package com.parmet.buf.gradle
 
 import org.junit.jupiter.api.Test
 
-class LintWithWorkspaceTest : NonProtobufGradlePluginLintTests, AbstractLintTest() {
+interface NonProtobufGradlePluginLintTests : LintTestUtilities {
     @Test
-    fun `lint with a config in workspace`() {
+    fun `lint a basic correct message with default config as solo plugin`() {
+        assertSuccess()
+    }
+
+    @Test
+    fun `lint a basic correct message with default config and the kotlin js plugin`() {
+        assertSuccess()
+    }
+
+    @Test
+    fun `lint a basic correct message with default config and the kotlin multiplatform plugin`() {
         assertSuccess()
     }
 }
