@@ -18,8 +18,13 @@ import com.vanniktech.maven.publish.KotlinJvm
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import com.vanniktech.maven.publish.SonatypeHost
 import org.gradle.api.Project
+import org.gradle.api.publish.PublishingExtension
+import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.the
+import org.gradle.kotlin.dsl.withType
+import org.gradle.plugins.signing.SigningExtension
 
 object ProjectInfo {
     const val name = "Buf Gradle Plugin"
@@ -31,10 +36,21 @@ fun Project.configurePublishing() {
     apply(plugin = "com.vanniktech.maven.publish.base")
 
     if (isRelease()) {
-        setProperty("signingInMemoryKey", System.getenv("PGP_KEY")?.replace('$', '\n'))
-        setProperty("signingInMemoryPassword", System.getenv("PGP_PASSWORD"))
         setProperty("mavenCentralUsername", System.getenv("OSSRH_USERNAME"))
         setProperty("mavenCentralPassword", System.getenv("OSSRH_PASSWORD"))
+
+        apply(plugin = "signing")
+
+        configure<SigningExtension> {
+            useInMemoryPgpKeys(
+                System.getenv("PGP_KEY")?.replace('$', '\n'),
+                System.getenv("PGP_PASSWORD")
+            )
+
+            the<PublishingExtension>().publications.withType<MavenPublication> {
+                sign(this)
+            }
+        }
     }
 
     println("signing key length: " + properties["signingInMemoryKey"]?.toString()?.length)
@@ -42,7 +58,6 @@ fun Project.configurePublishing() {
     configure<MavenPublishBaseExtension> {
         configure(KotlinJvm(JavadocJar.Empty()))
         publishToMavenCentral(SonatypeHost.DEFAULT)
-        signAllPublications()
         pom {
             name.set(ProjectInfo.name)
             description.set(ProjectInfo.description)
