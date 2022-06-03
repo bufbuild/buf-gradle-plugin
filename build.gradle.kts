@@ -45,7 +45,6 @@ allprojects {
 
 group = "com.parmet"
 configurePublishing()
-configureStagingRepoTasks()
 
 gradlePlugin {
     isAutomatedPublishing = false
