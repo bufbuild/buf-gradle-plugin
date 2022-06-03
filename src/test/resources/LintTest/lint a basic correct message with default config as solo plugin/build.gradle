@@ -13,13 +13,6 @@
  * limitations under the License.
  */
 
-package com.parmet.buf.gradle
-
-import org.junit.jupiter.api.Test
-
-class LintWithWorkspaceTest : NonProtobufGradlePluginLintTests, AbstractLintTest() {
-    @Test
-    fun `lint with a config in workspace`() {
-        assertSuccess()
-    }
+plugins {
+  id 'com.parmet.buf'
 }

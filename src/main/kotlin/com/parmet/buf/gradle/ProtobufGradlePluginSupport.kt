@@ -92,13 +92,14 @@ internal fun Project.allProtoDirs(): List<Path> =
     (srcProtoDirs() + extractProtoDirs()).filter { anyProtos(it) }
 
 internal fun Project.srcProtoDirs() =
-    the<SourceSetContainer>()["main"]
-        .extensions
-        .getByName("proto")
-        .let { it as SourceDirectorySet }
-        .srcDirs
-        .map { projectDir.toPath().relativize(it.toPath()) }
-        .filter { anyProtos(it) }
+    the<SourceSetContainer>().flatMap { sourceSet ->
+        sourceSet.extensions
+            .getByName("proto")
+            .let { it as SourceDirectorySet }
+            .srcDirs
+            .map { projectDir.toPath().relativize(it.toPath()) }
+            .filter { anyProtos(it) }
+    }
 
 private fun extractProtoDirs() =
     listOf(
