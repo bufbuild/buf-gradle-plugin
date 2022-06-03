@@ -37,6 +37,8 @@ fun Project.configurePublishing() {
         setProperty("mavenCentralPassword", System.getenv("OSSRH_PASSWORD"))
     }
 
+    println("signing key length: " + properties["signingInMemoryKey"]?.toString()?.length)
+
     configure<MavenPublishBaseExtension> {
         configure(KotlinJvm(JavadocJar.Empty()))
         publishToMavenCentral(SonatypeHost.DEFAULT)
