@@ -50,7 +50,7 @@ open class BufExtension {
     /**
      * Specify the version of Buf.
      */
-    var toolVersion: String = "1.5.0"
+    var toolVersion: String = "1.6.0"
 
     internal var imageArtifactDetails: ArtifactDetails? = null
 
