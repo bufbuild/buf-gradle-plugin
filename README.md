@@ -103,6 +103,10 @@ publishing {
 
 Projects with Buf workspaces must configure their workspaces as described in the Buf documentation; no configuration for linting will be overrideable. A `buf.yaml` in the project root or specified in the extension will be used for breakage checks only.
 
+### Dependencies
+
+If your `buf.yaml` declares any dependencies using the `deps` key, you must run `buf mod update` to create a `buf.lock` file manually. The `buf-gradle-plugin` does not (yet) support creating the dependency lock file.
+
 ### `bufFormatApply` and `bufFormatCheck`
 
 `bufFormatApply` is run manually and has no configuration.
