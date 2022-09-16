@@ -30,10 +30,19 @@ internal fun Project.configureGenerate() {
             description = "Generates code from a Protobuf schema."
 
             createsOutput()
-            execBuf("generate", "--output", File(bufbuildDir, GENERATED_DIR))
+
+            val args = listOf("generate", "--output", File(bufbuildDir, GENERATED_DIR))
+            execBuf(args + additionalArgs())
         }
     }
 }
 
 private fun Project.hasGenerate() =
     file("buf.gen.yaml").let { it.exists() && it.isFile }
+
+private fun Project.additionalArgs() =
+    if (getExtension().generateOptions?.includeImports == true) {
+        listOf("--include-imports")
+    } else {
+        emptyList()
+    }
