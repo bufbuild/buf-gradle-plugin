@@ -78,5 +78,9 @@ class ArtifactDetails(
 )
 
 class GenerateOptions(
+    /**
+     * If you specify any dependencies in `buf.yaml`, you must create a `buf.lock` file using `buf mod update` for
+     * dependency resolution to succeed.
+     */
     var includeImports: Boolean? = null
 )
