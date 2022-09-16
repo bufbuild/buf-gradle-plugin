@@ -24,7 +24,7 @@ const val BUF_GENERATE_TASK_NAME = "bufGenerate"
 const val GENERATED_DIR = "generated"
 
 internal fun Project.configureGenerate() {
-    if (hasGenerate() || getExtension().generateOptions != null) {
+    if (hasGenerate()) {
         tasks.register(BUF_GENERATE_TASK_NAME) {
             group = BUILD_GROUP
             description = "Generates code from a Protobuf schema."
