@@ -15,8 +15,10 @@
 
 package com.parmet.buf.gradle
 
+import com.google.common.truth.Truth.assertThat
 import org.gradle.language.base.plugins.LifecycleBasePlugin.BUILD_TASK_NAME
 import org.junit.jupiter.api.Test
+import java.nio.file.Paths
 
 abstract class AbstractGenerateTest : AbstractBufIntegrationTest() {
     @Test
@@ -27,5 +29,13 @@ abstract class AbstractGenerateTest : AbstractBufIntegrationTest() {
     @Test
     fun `generate java with kotlin dsl`() {
         gradleRunner().withArguments(BUILD_TASK_NAME).build()
+    }
+
+    @Test
+    fun `generate java with --include-imports`() {
+        gradleRunner().withArguments(BUILD_TASK_NAME).build()
+        val generatedPathElements =
+            listOf("build", "bufbuild", "generated", "java", "com", "google", "type", "DateTime.java")
+        assertThat(Paths.get(projectDir.absolutePath, *generatedPathElements.toTypedArray()).toFile().exists()).isTrue()
     }
 }

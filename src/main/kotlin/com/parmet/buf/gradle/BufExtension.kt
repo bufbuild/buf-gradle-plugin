@@ -60,10 +60,23 @@ open class BufExtension {
     fun imageArtifact(configure: Action<ArtifactDetails>) {
         imageArtifactDetails = (imageArtifactDetails ?: ArtifactDetails()).apply(configure::execute)
     }
+
+    internal var generateOptions: GenerateOptions? = null
+
+    /**
+     * Generate code using `buf generate`. Configure any options with the provided [configure] closure.
+     */
+    fun generate(configure: Action<GenerateOptions>) {
+        generateOptions = (generateOptions ?: GenerateOptions()).apply(configure::execute)
+    }
 }
 
 class ArtifactDetails(
     var groupId: String? = null,
     var artifactId: String? = null,
     var version: String? = null
+)
+
+class GenerateOptions(
+    var includeImports: Boolean? = null
 )
