@@ -230,7 +230,7 @@ dependencies {
 
 #### Generating Dependencies
 
-If you'd like to additionally generate code for your dependencies, configure the `bufGenerate` task:
+If you'd like to generate code for your dependencies, configure the `bufGenerate` task:
 
 ``` kotlin
 // build.gradle.kts
