@@ -46,9 +46,10 @@ allprojects {
             ktlint()
         }
     }
-}
 
-group = "com.parmet"
+    group = "com.parmet"
+    version = rootProject.version
+}
 
 dependencies {
     signature(libs.java8Signature) { artifact { type = "signature" } }
