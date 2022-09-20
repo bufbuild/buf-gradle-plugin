@@ -14,7 +14,9 @@
 [versions]
 # plugins
 animalsniffer = "1.5.4"
-pluginPublish = "0.21.0"
+kotlin = "1.6.20"
+pluginPublish = "1.0.0"
+publishing = "0.22.0"
 spotless = "6.5.2"
 
 # signature
@@ -26,7 +28,9 @@ truth = "1.1.3"
 
 [plugins]
 animalsniffer = { id = "ru.vyarus.animalsniffer", version.ref = "animalsniffer" }
+kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 pluginPublish = { id = "com.gradle.plugin-publish", version.ref = "pluginPublish" }
+publishing = { id = "com.vanniktech.maven.publish.base", version.ref = "publishing" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 [libraries]
