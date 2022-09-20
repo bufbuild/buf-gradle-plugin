@@ -35,6 +35,8 @@ plugins {
     alias(libs.plugins.publishing)
 }
 
+group = "com.parmet"
+
 allprojects {
     spotless {
         kotlin {
@@ -46,9 +48,6 @@ allprojects {
             ktlint()
         }
     }
-
-    group = "com.parmet"
-    version = rootProject.version
 }
 
 dependencies {
