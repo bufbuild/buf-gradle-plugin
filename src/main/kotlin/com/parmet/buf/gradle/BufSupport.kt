@@ -19,7 +19,6 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.kotlin.dsl.ivy
 import org.gradle.kotlin.dsl.repositories
-import java.io.ByteArrayOutputStream
 import java.nio.charset.StandardCharsets
 
 const val BUF_BINARY_CONFIGURATION_NAME = "bufTool"
@@ -67,41 +66,29 @@ internal fun Task.execBuf(args: Iterable<Any>, customErrorMessage: ((String) -> 
     }
     doLast {
         with(project) {
-            val out = ByteArrayOutputStream()
+            val executable = singleFileFromConfiguration(BUF_BINARY_CONFIGURATION_NAME)
 
-            exec {
-                val executable = singleFileFromConfiguration(BUF_BINARY_CONFIGURATION_NAME)
+            if (!executable.canExecute()) {
+                executable.setExecutable(true)
+            }
 
-                if (!executable.canExecute()) {
-                    executable.setExecutable(true)
-                }
-
-                workingDir(
-                    if (hasProtobufGradlePlugin()) {
-                        bufbuildDir
-                    } else {
-                        projectDir
-                    }
-                )
-
-                commandLine(executable)
-                setArgs(args)
-                isIgnoreExitValue = true
-
-                if (customErrorMessage != null) {
-                    standardOutput = out
-                }
-
-                logger.info("Running buf from $workingDir: `buf ${args.joinToString(" ")}`")
-            }.also {
-                if (customErrorMessage == null) {
-                    it.assertNormalExitValue()
+            val workingDir =
+                if (hasProtobufGradlePlugin()) {
+                    bufbuildDir
                 } else {
-                    if (it.exitValue != 0) {
-                        throw IllegalStateException(
-                            customErrorMessage(out.toByteArray().toString(StandardCharsets.UTF_8))
-                        )
-                    }
+                    projectDir
+                }
+
+            val processArgs = listOf(executable.absolutePath) + args
+
+            logger.info("Running buf from $workingDir: `buf ${args.joinToString(" ")}`")
+            val result = ProcessRunner().use { it.shell(workingDir, processArgs) }
+
+            if (result.exitCode != 0) {
+                if (customErrorMessage != null) {
+                    error(customErrorMessage(result.stdOut.toString(StandardCharsets.UTF_8)))
+                } else {
+                    error(result.toString())
                 }
             }
         }
