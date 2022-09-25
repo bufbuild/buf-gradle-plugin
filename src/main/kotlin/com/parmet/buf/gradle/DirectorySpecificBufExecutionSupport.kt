@@ -18,22 +18,22 @@ package com.parmet.buf.gradle
 import org.gradle.api.Task
 import java.nio.file.Path
 
-internal fun Task.configureDirectorySpecificBufExecution(
+internal fun Task.execBufInSpecificDirectory(
     vararg bufCommand: String,
     customErrorMessage: ((String) -> String)? = null
 ) {
-    configureDirectorySpecificBufExecution(bufCommand.asList(), emptyList(), customErrorMessage)
+    execBufInSpecificDirectory(bufCommand.asList(), emptyList(), customErrorMessage)
 }
 
-internal fun Task.configureDirectorySpecificBufExecution(
+internal fun Task.execBufInSpecificDirectory(
     bufCommand: String,
     extraArgs: Iterable<String>,
     customErrorMessage: ((String) -> String)
 ) {
-    configureDirectorySpecificBufExecution(listOf(bufCommand), extraArgs, customErrorMessage)
+    execBufInSpecificDirectory(listOf(bufCommand), extraArgs, customErrorMessage)
 }
 
-private fun Task.configureDirectorySpecificBufExecution(
+private fun Task.execBufInSpecificDirectory(
     bufCommand: Iterable<String>,
     extraArgs: Iterable<String>,
     customErrorMessage: ((String) -> String)? = null

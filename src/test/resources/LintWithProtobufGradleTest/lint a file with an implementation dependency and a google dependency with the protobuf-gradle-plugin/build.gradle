@@ -28,3 +28,8 @@ protobuf {
 }
 
 compileJava.enabled = false
+
+dependencies {
+  implementation "com.google.protobuf:protobuf-java:$protobufVersion"
+  implementation "com.toasttab.protokt:protokt-runtime:0.6.5"
+}

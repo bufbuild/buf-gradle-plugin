@@ -16,6 +16,7 @@
 package com.parmet.buf.gradle
 
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.dependencies
 
@@ -30,3 +31,6 @@ internal fun Project.createConfigurationWithDependency(configuration: String, no
 
 internal fun Project.singleFileFromConfiguration(configuration: String) =
     configurations.getByName(configuration).singleFile
+
+internal fun Task.singleFileFromConfiguration(configuration: String) =
+    project.singleFileFromConfiguration(configuration)

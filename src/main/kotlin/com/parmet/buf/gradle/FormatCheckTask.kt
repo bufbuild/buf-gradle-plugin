@@ -13,18 +13,20 @@
  * limitations under the License.
  */
 
-plugins {
-  id 'java'
-  id 'com.google.protobuf' version "$protobufGradleVersion"
-  id 'com.parmet.buf'
+package com.parmet.buf.gradle
+
+import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.TaskAction
+
+abstract class FormatCheckTask : DefaultTask() {
+    @TaskAction
+    fun bufFormatCheck() {
+        execBufInSpecificDirectory("format", "-d", "--exit-code") {
+            """
+                 |Some Protobuf files had format violations:
+                 |$it
+                 |Run './gradlew :bufFormatApply' to fix these violations.
+            """.trimMargin()
+        }
+    }
 }
-
-repositories { mavenCentral() }
-
-protobuf {
-  protoc {
-    artifact = "com.google.protobuf:protoc:$protobufVersion"
-  }
-}
-
-compileJava.enabled = false

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Andrew Parmet
+ * Copyright (c) 2022 Andrew Parmet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,13 @@
 
 package com.parmet.buf.gradle
 
-import org.gradle.api.Project
-import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
-import org.gradle.language.base.plugins.LifecycleBasePlugin.VERIFICATION_GROUP
+import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.TaskAction
 
-const val BUF_LINT_TASK_NAME = "bufLint"
-
-internal fun Project.configureLint() {
-    tasks.register(BUF_LINT_TASK_NAME) {
-        group = VERIFICATION_GROUP
-        description = "Checks that a Protobuf schema conforms to the Buf lint configuration."
-
-        configureDirectorySpecificBufExecution(
+abstract class LintTask : DefaultTask() {
+    @TaskAction
+    fun bufLint() {
+        execBufInSpecificDirectory(
             "lint",
             bufConfigFile()?.let { listOf("--config", it.readText()) }.orEmpty()
         ) {
@@ -36,6 +31,4 @@ internal fun Project.configureLint() {
             """.trimMargin()
         }
     }
-
-    tasks.named(CHECK_TASK_NAME).dependsOn(BUF_LINT_TASK_NAME)
 }

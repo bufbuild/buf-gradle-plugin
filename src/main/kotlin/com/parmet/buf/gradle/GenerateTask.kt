@@ -13,18 +13,23 @@
  * limitations under the License.
  */
 
-plugins {
-  id 'java'
-  id 'com.google.protobuf' version "$protobufGradleVersion"
-  id 'com.parmet.buf'
+package com.parmet.buf.gradle
+
+import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.TaskAction
+import java.io.File
+
+abstract class GenerateTask : DefaultTask() {
+    @TaskAction
+    fun bufGenerate() {
+        val args = listOf("generate", "--output", File(bufbuildDir, GENERATED_DIR))
+        execBuf(args + additionalArgs())
+    }
+
+    private fun additionalArgs() =
+        if (getExtension().generateOptions?.includeImports == true) {
+            listOf("--include-imports")
+        } else {
+            emptyList()
+        }
 }
-
-repositories { mavenCentral() }
-
-protobuf {
-  protoc {
-    artifact = "com.google.protobuf:protoc:$protobufVersion"
-  }
-}
-
-compileJava.enabled = false

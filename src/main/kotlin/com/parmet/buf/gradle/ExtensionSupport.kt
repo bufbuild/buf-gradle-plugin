@@ -16,6 +16,7 @@
 package com.parmet.buf.gradle
 
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.getByName
 
@@ -27,6 +28,9 @@ internal fun Project.createExtension() {
 
 internal fun Project.getExtension() =
     extensions.getByName<BufExtension>(BUF_EXTENSION_NAME)
+
+internal fun Task.getExtension() =
+    project.getExtension()
 
 internal fun Project.runBreakageCheck() =
     with(getExtension()) {
