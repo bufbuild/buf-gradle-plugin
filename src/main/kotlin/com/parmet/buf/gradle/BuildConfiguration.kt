@@ -20,7 +20,6 @@ import org.gradle.api.Task
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.kotlin.dsl.create
-import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.the
 import org.gradle.language.base.plugins.LifecycleBasePlugin.BUILD_GROUP
 import java.io.File
