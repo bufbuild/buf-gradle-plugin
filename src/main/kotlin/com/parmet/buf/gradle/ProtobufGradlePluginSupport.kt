@@ -22,6 +22,7 @@ import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.plugins.AppliedPlugin
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.the
 import java.io.File
@@ -32,6 +33,7 @@ import java.nio.file.Paths
 const val CREATE_SYM_LINKS_TO_MODULES_TASK_NAME = "createSymLinksToModules"
 const val WRITE_WORKSPACE_YAML_TASK_NAME = "writeWorkspaceYaml"
 
+private const val EXTRACT_INCLUDE_PROTO_TASK_NAME = "extractIncludeProto"
 private const val EXTRACT_PROTO_TASK_NAME = "extractProto"
 
 private val BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN =
@@ -91,7 +93,7 @@ abstract class WriteWorkspaceYamlTask : DefaultTask() {
 }
 
 private fun Task.workspaceCommonConfig() {
-    // dependsOn(EXTRACT_INCLUDE_PROTO_TASK_NAME)
+    dependsOn(EXTRACT_INCLUDE_PROTO_TASK_NAME)
     dependsOn(EXTRACT_PROTO_TASK_NAME)
     createsOutput()
 }
@@ -123,3 +125,17 @@ private fun Project.anyProtos(path: Path) =
 
 internal fun mangle(name: Path) =
     name.toString().replace("-", "--").replace(File.separator, "-")
+
+internal inline fun <reified T : Task> Project.registerBufTask(
+    name: String,
+    noinline configuration: T.() -> Unit
+): TaskProvider<T> {
+    val taskProvider = tasks.register(name, configuration)
+    withProtobufGradlePlugin {
+        afterEvaluate {
+            taskProvider.dependsOn(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME)
+            taskProvider.dependsOn(WRITE_WORKSPACE_YAML_TASK_NAME)
+        }
+    }
+    return taskProvider
+}

@@ -15,10 +15,11 @@
 
 package com.parmet.buf.gradle
 
+import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 
-abstract class GenerateTask : AbstractBufTask() {
+abstract class GenerateTask : DefaultTask() {
     @TaskAction
     fun bufGenerate() {
         val args = listOf("generate", "--output", File(bufbuildDir, GENERATED_DIR))

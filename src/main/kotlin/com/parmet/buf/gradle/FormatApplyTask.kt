@@ -15,9 +15,10 @@
 
 package com.parmet.buf.gradle
 
+import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
-abstract class FormatApplyTask : AbstractBufTask() {
+abstract class FormatApplyTask : DefaultTask() {
     @TaskAction
     fun bufFormatApply() {
         execBufInSpecificDirectory("format", "-w")

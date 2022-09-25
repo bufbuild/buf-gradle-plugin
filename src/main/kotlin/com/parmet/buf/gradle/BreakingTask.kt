@@ -15,9 +15,10 @@
 
 package com.parmet.buf.gradle
 
+import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
-abstract class BreakingTask : AbstractBufTask() {
+abstract class BreakingTask : DefaultTask() {
     @TaskAction
     fun bufBreaking() {
         execBuf(

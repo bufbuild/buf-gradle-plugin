@@ -15,9 +15,10 @@
 
 package com.parmet.buf.gradle
 
+import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
-abstract class BuildTask : AbstractBufTask() {
+abstract class BuildTask : DefaultTask() {
     @TaskAction
     fun bufBuild() {
         execBuf("build", "--output", bufBuildPublicationFile)
