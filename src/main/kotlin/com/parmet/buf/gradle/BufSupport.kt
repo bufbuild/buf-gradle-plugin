@@ -35,11 +35,11 @@ internal fun Project.configureBufDependency() {
     }
 
     val os = System.getProperty("os.name").toLowerCase()
-    val osPart =
+    val (osPart, archExt) =
         when {
-            os.startsWith("windows") -> "Windows"
-            os.startsWith("linux") -> "Linux"
-            os.startsWith("mac") -> "Darwin"
+            os.startsWith("windows") -> "Windows" to ".exe"
+            os.startsWith("linux") -> "Linux" to ""
+            os.startsWith("mac") -> "Darwin" to ""
             else -> error("unsupported os: $os")
         }
 
@@ -52,7 +52,7 @@ internal fun Project.configureBufDependency() {
 
     createConfigurationWithDependency(
         BUF_BINARY_CONFIGURATION_NAME,
-        "bufbuild:buf:${getExtension().toolVersion}:$osPart@$archPart"
+        "bufbuild:buf:${getExtension().toolVersion}:$osPart@${archPart + archExt}"
     )
 }
 
