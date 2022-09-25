@@ -20,7 +20,6 @@ import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
 import org.gradle.testkit.runner.TaskOutcome.FAILED
 import org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import org.junit.jupiter.api.Test
-import java.io.File
 
 abstract class AbstractLintTest : LintTestUtilities, AbstractBufIntegrationTest() {
     @Test
