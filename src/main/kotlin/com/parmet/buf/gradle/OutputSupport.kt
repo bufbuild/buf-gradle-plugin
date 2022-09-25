@@ -9,6 +9,9 @@ const val BUF_BUILD_DIR = "bufbuild"
 internal val Project.bufbuildDir
     get() = File(buildDir, BUF_BUILD_DIR)
 
+internal val Task.bufbuildDir
+    get() = project.bufbuildDir
+
 internal fun Task.createsOutput() {
     doFirst { project.bufbuildDir.mkdirs() }
 }

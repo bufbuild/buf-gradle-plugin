@@ -16,9 +16,11 @@
 package com.parmet.buf.gradle
 
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.the
 import org.gradle.language.base.plugins.LifecycleBasePlugin.BUILD_GROUP
 import java.io.File
@@ -28,7 +30,7 @@ const val BUF_BUILD_PUBLICATION_FILE_NAME = "image.json"
 const val BUF_IMAGE_PUBLICATION_NAME = "bufImagePublication"
 
 internal fun Project.configureBuild() {
-    tasks.register(BUF_BUILD_TASK_NAME) {
+    tasks.register<BuildTask>(BUF_BUILD_TASK_NAME) {
         group = BUILD_GROUP
         description = "Builds a Buf image from a Protobuf schema."
 
@@ -38,8 +40,6 @@ internal fun Project.configureBuild() {
             // Called already during workspace configuration if the protobuf-gradle-plugin has been applied
             createsOutput()
         }
-
-        execBuf("build", "--output", bufBuildPublicationFile)
     }
 }
 
@@ -61,3 +61,6 @@ internal fun Project.configureImagePublication(artifactDetails: ArtifactDetails)
 
 val Project.bufBuildPublicationFile
     get() = File(bufbuildDir, BUF_BUILD_PUBLICATION_FILE_NAME)
+
+val Task.bufBuildPublicationFile
+    get() = project.bufBuildPublicationFile

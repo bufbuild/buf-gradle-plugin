@@ -15,12 +15,14 @@
 
 package com.parmet.buf.gradle
 
+import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.plugins.AppliedPlugin
 import org.gradle.api.tasks.SourceSetContainer
-import org.gradle.kotlin.dsl.get
+import org.gradle.api.tasks.TaskAction
+import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.the
 import java.io.File
 import java.nio.file.Files
@@ -30,7 +32,6 @@ import java.nio.file.Paths
 const val CREATE_SYM_LINKS_TO_MODULES_TASK_NAME = "createSymLinksToModules"
 const val WRITE_WORKSPACE_YAML_TASK_NAME = "writeWorkspaceYaml"
 
-private const val EXTRACT_INCLUDE_PROTO_TASK_NAME = "extractIncludeProto"
 private const val EXTRACT_PROTO_TASK_NAME = "extractProto"
 
 private val BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN =
@@ -46,50 +47,60 @@ internal fun Project.withProtobufGradlePlugin(action: (AppliedPlugin) -> Unit) =
     pluginManager.withPlugin("com.google.protobuf", action)
 
 internal fun Project.configureCreateSymLinksToModules() {
-    tasks.register(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME) {
+    tasks.register<CreateSymLinksToModulesTask>(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME) {
         workspaceCommonConfig()
-        doLast { allProtoDirs().forEach { createSymLink(it) } }
     }
 }
 
-private fun Project.createSymLink(protoDir: Path) {
-    val symLinkFile = File(bufbuildDir, mangle(protoDir))
-    if (!symLinkFile.exists()) {
-        logger.info("Creating symlink for $protoDir at $symLinkFile")
-        Files.createSymbolicLink(symLinkFile.toPath(), bufbuildDir.toPath().relativize(file(protoDir).toPath()))
-    }
-}
-
-internal fun Project.configureWriteWorkspaceYaml() {
-    tasks.register(WRITE_WORKSPACE_YAML_TASK_NAME) {
-        workspaceCommonConfig()
-
-        doLast {
-            val bufWork =
-                """
-                    |version: v1
-                    |directories:
-                    ${workspaceSymLinkEntries()}
-                """.trimMargin()
-
-            logger.info("Writing generated buf.work.yaml:\n$bufWork")
-
-            File(bufbuildDir, "buf.work.yaml").writeText(bufWork)
+abstract class CreateSymLinksToModulesTask : DefaultTask() {
+    @TaskAction
+    fun createSymLinksToModules() {
+        allProtoDirs().forEach {
+            val symLinkFile = File(bufbuildDir, mangle(it))
+            if (!symLinkFile.exists()) {
+                logger.info("Creating symlink for $it at $symLinkFile")
+                Files.createSymbolicLink(
+                    symLinkFile.toPath(),
+                    bufbuildDir.toPath().relativize(project.file(it).toPath())
+                )
+            }
         }
     }
 }
 
+internal fun Project.configureWriteWorkspaceYaml() {
+    tasks.register<WriteWorkspaceYamlTask>(WRITE_WORKSPACE_YAML_TASK_NAME) {
+        workspaceCommonConfig()
+    }
+}
+
+abstract class WriteWorkspaceYamlTask : DefaultTask() {
+    @TaskAction
+    fun writeWorkspaceYaml() {
+        val bufWork =
+            """
+                |version: v1
+                |directories:
+                ${workspaceSymLinkEntries()}
+            """.trimMargin()
+
+        logger.info("Writing generated buf.work.yaml:\n$bufWork")
+
+        File(bufbuildDir, "buf.work.yaml").writeText(bufWork)
+    }
+}
+
 private fun Task.workspaceCommonConfig() {
-    dependsOn(EXTRACT_INCLUDE_PROTO_TASK_NAME)
+    // dependsOn(EXTRACT_INCLUDE_PROTO_TASK_NAME)
     dependsOn(EXTRACT_PROTO_TASK_NAME)
     createsOutput()
 }
 
-private fun Project.workspaceSymLinkEntries() =
+private fun Task.workspaceSymLinkEntries() =
     allProtoDirs().joinToString("\n") { "|  - ${mangle(it)}" }
 
-internal fun Project.allProtoDirs(): List<Path> =
-    (srcProtoDirs() + extractProtoDirs()).filter { anyProtos(it) }
+private fun Task.allProtoDirs(): List<Path> =
+    (project.srcProtoDirs() + extractProtoDirs()).filter { project.anyProtos(it) }
 
 internal fun Project.srcProtoDirs() =
     the<SourceSetContainer>().flatMap { sourceSet ->

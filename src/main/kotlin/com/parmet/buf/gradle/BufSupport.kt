@@ -60,36 +60,30 @@ internal fun Task.execBuf(vararg args: Any, customErrorMessage: ((String) -> Str
 }
 
 internal fun Task.execBuf(args: Iterable<Any>, customErrorMessage: ((String) -> String)? = null) {
-    if (project.hasProtobufGradlePlugin()) {
-        dependsOn(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME)
-        dependsOn(WRITE_WORKSPACE_YAML_TASK_NAME)
-    }
-    doLast {
-        with(project) {
-            val executable = singleFileFromConfiguration(BUF_BINARY_CONFIGURATION_NAME)
+    with(project) {
+        val executable = singleFileFromConfiguration(BUF_BINARY_CONFIGURATION_NAME)
 
-            if (!executable.canExecute()) {
-                executable.setExecutable(true)
+        if (!executable.canExecute()) {
+            executable.setExecutable(true)
+        }
+
+        val workingDir =
+            if (hasProtobufGradlePlugin()) {
+                bufbuildDir
+            } else {
+                projectDir
             }
 
-            val workingDir =
-                if (hasProtobufGradlePlugin()) {
-                    bufbuildDir
-                } else {
-                    projectDir
-                }
+        val processArgs = listOf(executable.absolutePath) + args
 
-            val processArgs = listOf(executable.absolutePath) + args
+        logger.info("Running buf from $workingDir: `buf ${args.joinToString(" ")}`")
+        val result = ProcessRunner().use { it.shell(workingDir, processArgs) }
 
-            logger.info("Running buf from $workingDir: `buf ${args.joinToString(" ")}`")
-            val result = ProcessRunner().use { it.shell(workingDir, processArgs) }
-
-            if (result.exitCode != 0) {
-                if (customErrorMessage != null) {
-                    error(customErrorMessage(result.stdOut.toString(StandardCharsets.UTF_8)))
-                } else {
-                    error(result.toString())
-                }
+        if (result.exitCode != 0) {
+            if (customErrorMessage != null) {
+                error(customErrorMessage(result.stdOut.toString(StandardCharsets.UTF_8)))
+            } else {
+                error(result.toString())
             }
         }
     }

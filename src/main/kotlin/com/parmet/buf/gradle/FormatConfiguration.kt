@@ -16,6 +16,7 @@
 package com.parmet.buf.gradle
 
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.register
 import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
 import org.gradle.language.base.plugins.LifecycleBasePlugin.VERIFICATION_GROUP
 
@@ -28,28 +29,18 @@ internal fun Project.configureFormat() {
 }
 
 private fun Project.configureBufFormatCheck() {
-    tasks.register(BUF_FORMAT_CHECK_TASK_NAME) {
+    tasks.register<FormatCheckTask>(BUF_FORMAT_CHECK_TASK_NAME) {
         group = VERIFICATION_GROUP
         description = "Checks that a Protobuf schema is formatted according to Buf's formatting rules."
         enabled = getExtension().enforceFormat
-
-        configureDirectorySpecificBufExecution("format", "-d", "--exit-code") {
-            """
-                 |Some Protobuf files had format violations:
-                 |$it
-                 |Run './gradlew :bufFormatApply' to fix these violations.
-            """.trimMargin()
-        }
     }
 
     tasks.named(CHECK_TASK_NAME).dependsOn(BUF_FORMAT_CHECK_TASK_NAME)
 }
 
 private fun Project.configureBufFormatApply() {
-    tasks.register(BUF_FORMAT_APPLY_TASK_NAME) {
+    tasks.register<FormatApplyTask>(BUF_FORMAT_APPLY_TASK_NAME) {
         group = VERIFICATION_GROUP
         description = "Formats a Protobuf schema according to Buf's formatting rules."
-
-        configureDirectorySpecificBufExecution("format", "-w")
     }
 }

@@ -15,24 +15,17 @@
 
 package com.parmet.buf.gradle
 
-import org.gradle.api.Project
-import org.gradle.kotlin.dsl.register
-import org.gradle.language.base.plugins.LifecycleBasePlugin.BUILD_GROUP
+import org.gradle.api.tasks.TaskAction
 
-const val BUF_GENERATE_TASK_NAME = "bufGenerate"
-
-const val GENERATED_DIR = "generated"
-
-internal fun Project.configureGenerate() {
-    if (hasGenerate()) {
-        tasks.register<GenerateTask>(BUF_GENERATE_TASK_NAME) {
-            group = BUILD_GROUP
-            description = "Generates code from a Protobuf schema."
-
-            createsOutput()
+abstract class FormatCheckTask : AbstractBufTask() {
+    @TaskAction
+    fun bufFormatCheck() {
+        execBufInSpecificDirectory("format", "-d", "--exit-code") {
+            """
+                 |Some Protobuf files had format violations:
+                 |$it
+                 |Run './gradlew :bufFormatApply' to fix these violations.
+            """.trimMargin()
         }
     }
 }
-
-private fun Project.hasGenerate() =
-    file("buf.gen.yaml").let { it.exists() && it.isFile }

@@ -20,6 +20,7 @@ import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
 import org.gradle.testkit.runner.TaskOutcome.FAILED
 import org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import org.junit.jupiter.api.Test
+import java.io.File
 
 abstract class AbstractLintTest : LintTestUtilities, AbstractBufIntegrationTest() {
     @Test
@@ -49,7 +50,13 @@ abstract class AbstractLintTest : LintTestUtilities, AbstractBufIntegrationTest(
 
     @Test
     fun `lint a file with a google dependency`() {
-        assertSuccess()
+        try {
+            assertSuccess()
+        } finally {
+            File(projectDir, "build").walkTopDown().forEach {
+                println(it)
+            }
+        }
     }
 
     private fun assertBadEnumSuffix() {
