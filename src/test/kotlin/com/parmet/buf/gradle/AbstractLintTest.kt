@@ -50,13 +50,7 @@ abstract class AbstractLintTest : LintTestUtilities, AbstractBufIntegrationTest(
 
     @Test
     fun `lint a file with a google dependency`() {
-        try {
-            assertSuccess()
-        } finally {
-            File(projectDir, "build").walkTopDown().forEach {
-                println(it)
-            }
-        }
+        assertSuccess()
     }
 
     private fun assertBadEnumSuffix() {
