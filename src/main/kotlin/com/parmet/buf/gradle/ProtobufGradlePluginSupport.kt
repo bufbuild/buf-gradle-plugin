@@ -33,9 +33,6 @@ import java.nio.file.Paths
 const val CREATE_SYM_LINKS_TO_MODULES_TASK_NAME = "createSymLinksToModules"
 const val WRITE_WORKSPACE_YAML_TASK_NAME = "writeWorkspaceYaml"
 
-private const val EXTRACT_INCLUDE_PROTO_TASK_NAME = "extractIncludeProto"
-private const val EXTRACT_PROTO_TASK_NAME = "extractProto"
-
 private val BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN =
     listOf("build", "extracted-include-protos", "main").joinToString(File.separator)
 
@@ -93,8 +90,11 @@ abstract class WriteWorkspaceYamlTask : DefaultTask() {
 }
 
 private fun Task.workspaceCommonConfig() {
-    dependsOn(EXTRACT_INCLUDE_PROTO_TASK_NAME)
-    dependsOn(EXTRACT_PROTO_TASK_NAME)
+    dependsOn(
+        project
+            .tasks
+            .matching { it::class.java.name == "com.google.protobuf.gradle.ProtobufExtract_Decorated" }
+    )
     createsOutput()
 }
 

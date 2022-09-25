@@ -19,6 +19,8 @@ plugins {
   id 'com.parmet.buf'
 }
 
+repositories { mavenCentral() }
+
 protobuf {
   protoc {
     artifact = "com.google.protobuf:protoc:$protobufVersion"
