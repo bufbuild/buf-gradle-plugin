@@ -4,3 +4,5 @@
 # These are explicitly windows files and should use crlf
 *.bat           text eol=crlf
 
+# Leave proto files alone while `buf format` insists that lines end with lf and not crlf
+*.proto binary

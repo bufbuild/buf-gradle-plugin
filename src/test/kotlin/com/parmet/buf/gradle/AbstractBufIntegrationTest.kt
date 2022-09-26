@@ -84,3 +84,6 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
 interface IntegrationTest {
     fun checkRunner(): AbstractBufIntegrationTest.WrappedRunner
 }
+
+fun String.osIndependent() =
+    replace("\n", System.getProperty("line.separator"))
