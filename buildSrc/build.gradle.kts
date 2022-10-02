@@ -22,5 +22,5 @@ repositories {
 }
 
 dependencies {
-    implementation("io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.30.0")
+    implementation("io.github.gradle-nexus:publish-plugin:1.1.0")
 }

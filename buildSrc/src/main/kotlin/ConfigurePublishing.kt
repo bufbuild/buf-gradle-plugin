@@ -13,12 +13,11 @@
  * limitations under the License.
  */
 
-import io.codearte.gradle.nexus.NexusStagingExtension
+import io.github.gradlenexus.publishplugin.NexusPublishExtension
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
-import org.gradle.api.publish.maven.tasks.PublishToMavenRepository
 import org.gradle.jvm.tasks.Jar
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
@@ -46,8 +45,6 @@ private object Remote {
     val password by lazy {
         System.getenv("OSSRH_PASSWORD")
     }
-
-    val url = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
 }
 
 object ProjectInfo {
@@ -56,7 +53,56 @@ object ProjectInfo {
     const val description = "Buf plugin for Gradle"
 }
 
-fun MavenPublication.standardPom() {
+fun Project.configurePublishing() {
+    apply(plugin = "io.github.gradle-nexus.publish-plugin")
+
+    configure<NexusPublishExtension> {
+        repositories {
+            sonatype {
+                username.set(Remote.username)
+                password.set(Remote.password)
+            }
+        }
+        packageGroup.set("com.parmet")
+    }
+
+    configure<JavaPluginExtension> {
+        withSourcesJar()
+    }
+
+    tasks.register<Jar>("javadocJar") {
+        from("$rootDir/README.md")
+        archiveClassifier.set("javadoc")
+    }
+
+    if (isRelease()) {
+        apply(plugin = "signing")
+
+        configure<SigningExtension> {
+            useInMemoryPgpKeys(Pgp.key, Pgp.password)
+
+            the<PublishingExtension>().publications.withType<MavenPublication> {
+                standardPom()
+                sign(this)
+            }
+        }
+    }
+
+    configure<PublishingExtension> {
+        publications {
+            create<MavenPublication>("main") {
+                from(components.getByName("java"))
+                artifact(tasks.getByName("javadocJar"))
+
+                artifactId = project.name
+                version = project.version.toString()
+                groupId = project.group.toString()
+            }
+        }
+    }
+}
+
+private fun MavenPublication.standardPom() {
     pom {
         name.set(ProjectInfo.name)
         description.set(ProjectInfo.description)
@@ -81,87 +127,3 @@ fun MavenPublication.standardPom() {
 }
 
 fun Project.isRelease() = !version.toString().endsWith("-SNAPSHOT")
-
-fun Project.configurePublishing() {
-    apply(plugin = "maven-publish")
-
-    configure<PublishingExtension> {
-        repositories {
-            if (isRelease()) {
-                maven {
-                    name = "remote"
-                    setUrl(Remote.url)
-                    credentials {
-                        username = Remote.username
-                        password = Remote.password
-                    }
-                }
-            }
-        }
-    }
-
-    configure<JavaPluginExtension> {
-        withSourcesJar()
-    }
-
-    tasks.register<Jar>("javadocJar") {
-        from("$rootDir/README.md")
-        archiveClassifier.set("javadoc")
-    }
-
-    configure<PublishingExtension> {
-        publications {
-            create<MavenPublication>("main") {
-                from(components.getByName("java"))
-                artifact(tasks.getByName("javadocJar"))
-
-                artifactId = project.name
-                version = project.version.toString()
-                groupId = project.group.toString()
-            }
-        }
-    }
-
-    if (isRelease()) {
-        apply(plugin = "signing")
-
-        configure<SigningExtension> {
-            useInMemoryPgpKeys(Pgp.key, Pgp.password)
-
-            the<PublishingExtension>().publications.withType<MavenPublication> {
-                standardPom()
-                sign(this)
-            }
-        }
-    }
-
-    tasks.register("publishToRemote") {
-        enabled = isRelease()
-        group = "publishing"
-
-        if (enabled) {
-            dependsOn(
-                tasks.withType<PublishToMavenRepository>()
-                    .matching { it.repositoryIs("remote") }
-            )
-        }
-    }
-}
-
-fun PublishToMavenRepository.repositoryIs(name: String) =
-    repository == project.the<PublishingExtension>().repositories.getByName(name)
-
-fun Project.configureStagingRepoTasks() {
-    if (isRelease()) {
-        apply(plugin = "io.codearte.nexus-staging")
-
-        configure<NexusStagingExtension> {
-            username = Remote.username
-            password = Remote.password
-            packageGroup = "com.parmet"
-            numberOfRetries = 50
-        }
-    } else {
-        tasks.register("closeAndReleaseRepository")
-    }
-}

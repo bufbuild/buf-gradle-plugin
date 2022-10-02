@@ -32,8 +32,8 @@ plugins {
 }
 
 group = "com.parmet"
-configurePublishing()
-configureStagingRepoTasks()
+//configurePublishing()
+//configureStagingRepoTasks()
 
 allprojects {
     spotless {
