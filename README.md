@@ -7,6 +7,26 @@ Integration for [Buf](https://github.com/bufbuild/buf) with Gradle. Supports int
 
 This plugin supports straightforward usage of `buf lint`, `buf format`, and `buf generate`, and a self-contained integration between `buf build` and `buf breaking`.
 
+<!--ts-->
+* [buf-gradle-plugin](#buf-gradle-plugin)
+   * [Usage](#usage)
+   * [Configuration](#configuration)
+      * [Dependencies](#dependencies)
+      * [bufLint](#buflint)
+      * [bufBreaking](#bufbreaking)
+         * [Checking against the latest published version](#checking-against-the-latest-published-version)
+         * [Checking against a static version](#checking-against-a-static-version)
+         * [Artifact details](#artifact-details)
+      * [bufGenerate](#bufgenerate)
+         * [Generating Dependencies](#generating-dependencies)
+   * [Additional Configuration](#additional-configuration)
+
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: andrewparmet, at: Sun Oct  2 15:29:09 EDT 2022 -->
+
+<!--te-->
+<!-- Regenerate with `./gh-md-toc --insert README.md` -->
+
 ## Usage
 
 By default this plugin assumes that Buf is configured for the project root (with or without a workspace `buf.work.yaml`). It will scan all top-level directories for protobuf sources.
