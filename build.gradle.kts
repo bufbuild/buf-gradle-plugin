@@ -78,9 +78,16 @@ pluginBundle {
     tags = listOf("protobuf", "kotlin", "buf")
 }
 
+ext[GRADLE_PUBLISH_KEY] = System.getenv("GRADLE_PORTAL_PUBLISH_KEY")
+ext[GRADLE_PUBLISH_SECRET] = System.getenv("GRADLE_PORTAL_PUBLISH_SECRET")
+
 val targetJavaVersion = JavaVersion.VERSION_1_8
 
 tasks {
+    named("publishPlugins") {
+        enabled = isRelease()
+    }
+
     withType<Test> {
         useJUnitPlatform()
     }
