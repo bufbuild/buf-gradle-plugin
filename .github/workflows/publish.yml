@@ -32,14 +32,15 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: |
-            publish
+            publishToRemote
             closeAndReleaseRepository
             publishPlugins
-            --no-daemon
-            --no-parallel
+            -Dorg.gradle.internal.http.socketTimeout=120000
+            -Dorg.gradle.internal.network.retry.max.attempts=1
+            -Dorg.gradle.internal.publish.checksums.insecure=true
         env:
-          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.OSSRH_USERNAME }}
-          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.OSSRH_PASSWORD }}
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
           PGP_KEY: ${{ secrets.PGP_KEY }}
           PGP_PASSWORD: ${{ secrets.PGP_PASSWORD }}
           GRADLE_PORTAL_PUBLISH_KEY: ${{ secrets.GRADLE_PORTAL_PUBLISH_KEY }}
