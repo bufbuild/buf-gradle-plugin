@@ -7,8 +7,11 @@ Integration for [Buf](https://github.com/bufbuild/buf) with Gradle. Supports int
 
 This plugin supports straightforward usage of `buf lint`, `buf format`, and `buf generate`, and a self-contained integration between `buf build` and `buf breaking`.
 
+## Table of Contents
+
 <!--ts-->
 * [buf-gradle-plugin](#buf-gradle-plugin)
+   * [Table of Contents](#table-of-contents)
    * [Usage](#usage)
    * [Configuration](#configuration)
       * [Dependencies](#dependencies)
@@ -22,7 +25,7 @@ This plugin supports straightforward usage of `buf lint`, `buf format`, and `buf
    * [Additional Configuration](#additional-configuration)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: andrewparmet, at: Sun Oct  2 15:29:09 EDT 2022 -->
+<!-- Added by: andrewparmet, at: Sun Oct  2 15:32:56 EDT 2022 -->
 
 <!--te-->
 <!-- Regenerate with `./gh-md-toc --insert README.md` -->
