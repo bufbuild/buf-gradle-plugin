@@ -108,20 +108,17 @@ private fun Task.allProtoDirs(): List<Path> =
     (project.srcProtoDirs() + extractProtoDirs()).filter { project.anyProtos(it) }
 
 internal fun Project.srcProtoDirs() =
-    the<SourceSetContainer>().flatMap { sourceSet ->
-        sourceSet.extensions
-            .getByName<SourceDirectorySet>("proto")
-            .srcDirs
-            .map { projectDir.toPath().relativize(it.toPath()) }
-            .filter { anyProtos(it) }
-    } + androidSrcProtoDirs()
+    the<SourceSetContainer>().flatMap { it.protoDirs(this) } + androidSrcProtoDirs()
 
 private fun Project.androidSrcProtoDirs() =
     extensions.getByName<BaseExtension>("android")
         .sourceSets
-        .flatMap { (it as ExtensionAware).extensions.getByName<SourceDirectorySet>("proto").srcDirs }
-        .map { projectDir.toPath().relativize(it.toPath()) }
-        .filter { anyProtos(it) }
+        .flatMap { (it as ExtensionAware).protoDirs(this) }
+
+private fun ExtensionAware.protoDirs(project: Project) =
+    extensions.getByName<SourceDirectorySet>("proto").srcDirs
+        .map { project.projectDir.toPath().relativize(it.toPath()) }
+        .filter { project.anyProtos(it) }
 
 private fun extractProtoDirs() =
     listOf(
