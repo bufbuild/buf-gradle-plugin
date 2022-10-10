@@ -15,7 +15,6 @@
 
 package com.parmet.buf.gradle
 
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 class FormatCheckWithProtobufGradleTest : AbstractFormatCheckTest() {
@@ -50,7 +49,6 @@ class FormatCheckWithProtobufGradleTest : AbstractFormatCheckTest() {
     }
 
     @Test
-    @Disabled("TODO: Discover Android source sets properly")
     fun `format an incorrect message with the android library plugin`() {
         assertBadWhitespace()
     }
