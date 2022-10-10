@@ -15,14 +15,17 @@
 
 package com.parmet.buf.gradle
 
+import com.android.build.gradle.BaseExtension
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.plugins.AppliedPlugin
+import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
+import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.the
 import java.io.File
@@ -107,12 +110,18 @@ private fun Task.allProtoDirs(): List<Path> =
 internal fun Project.srcProtoDirs() =
     the<SourceSetContainer>().flatMap { sourceSet ->
         sourceSet.extensions
-            .getByName("proto")
-            .let { it as SourceDirectorySet }
+            .getByName<SourceDirectorySet>("proto")
             .srcDirs
             .map { projectDir.toPath().relativize(it.toPath()) }
             .filter { anyProtos(it) }
-    }
+    } + androidSrcProtoDirs()
+
+private fun Project.androidSrcProtoDirs() =
+    extensions.getByName<BaseExtension>("android")
+        .sourceSets
+        .flatMap { (it as ExtensionAware).extensions.getByName<SourceDirectorySet>("proto").srcDirs }
+        .map { projectDir.toPath().relativize(it.toPath()) }
+        .filter { anyProtos(it) }
 
 private fun extractProtoDirs() =
     listOf(

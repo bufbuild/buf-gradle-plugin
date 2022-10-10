@@ -19,6 +19,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 repositories {
     gradlePluginPortal()
+    google()
 }
 
 plugins {
@@ -50,6 +51,8 @@ allprojects {
 
 dependencies {
     signature(libs.java8Signature) { artifact { type = "signature" } }
+
+    implementation(libs.androidGradlePlugin)
 
     testImplementation(libs.junit)
     testImplementation(libs.truth)

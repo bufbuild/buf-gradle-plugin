@@ -49,6 +49,9 @@ protobuf {
 
 android {
   compileSdkVersion 31
+  sourceSets.each {
+    logger.quiet("source set: " + it)
+  }
 }
 
 repositories {
