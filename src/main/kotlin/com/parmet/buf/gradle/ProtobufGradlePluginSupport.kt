@@ -111,8 +111,9 @@ internal fun Project.srcProtoDirs() =
     the<SourceSetContainer>().flatMap { it.protoDirs(this) } + androidSrcProtoDirs()
 
 private fun Project.androidSrcProtoDirs() =
-    extensions.getByName<BaseExtension>("android")
-        .sourceSets
+    (extensions.findByName("android") as? BaseExtension)
+        ?.sourceSets
+        .orEmpty()
         .flatMap { (it as ExtensionAware).protoDirs(this) }
 
 private fun ExtensionAware.protoDirs(project: Project) =
