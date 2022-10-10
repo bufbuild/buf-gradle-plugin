@@ -15,7 +15,6 @@
 
 package com.parmet.buf.gradle
 
-import com.android.build.gradle.BaseExtension
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -32,6 +31,8 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import kotlin.reflect.KProperty1
+import kotlin.reflect.full.declaredMemberProperties
 
 const val CREATE_SYM_LINKS_TO_MODULES_TASK_NAME = "createSymLinksToModules"
 const val WRITE_WORKSPACE_YAML_TASK_NAME = "writeWorkspaceYaml"
@@ -111,10 +112,14 @@ internal fun Project.srcProtoDirs() =
     the<SourceSetContainer>().flatMap { it.protoDirs(this) } + androidSrcProtoDirs()
 
 private fun Project.androidSrcProtoDirs() =
-    (extensions.findByName("android") as? BaseExtension)
-        ?.sourceSets
+    extensions.findByName("android")
+        ?.let { baseExtension ->
+            val prop = baseExtension::class.declaredMemberProperties.single { it.name == "sourceSets" }
+            @Suppress("UNCHECKED_CAST")
+            (prop as KProperty1<Any, Set<ExtensionAware>>).get(baseExtension)
+        }
         .orEmpty()
-        .flatMap { (it as ExtensionAware).protoDirs(this) }
+        .flatMap { it.protoDirs(this) }
 
 private fun ExtensionAware.protoDirs(project: Project) =
     extensions.getByName<SourceDirectorySet>("proto").srcDirs

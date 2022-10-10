@@ -22,9 +22,6 @@ spotless = "6.5.2"
 # signature
 java8Signature = "1.0"
 
-# libraries
-androidGradlePlugin = "7.3.0"
-
 # test
 junit = "5.8.2"
 truth = "1.1.3"
@@ -39,9 +36,6 @@ spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 [libraries]
 # signature
 java8Signature = { module = "org.codehaus.mojo.signature:java18", version.ref = "java8Signature" }
-
-# libraries
-androidGradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "androidGradlePlugin" }
 
 # test
 junit = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
