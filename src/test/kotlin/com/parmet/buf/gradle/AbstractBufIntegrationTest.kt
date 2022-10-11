@@ -63,10 +63,11 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
             .withProjectDir(projectDir)
             .withPluginClasspath()
             .withArguments(
-                "-PprotobufGradleVersion=0.8.18",
-                "-PprotobufVersion=3.19.4",
-                "-PkotlinVersion=1.6.21",
-                "-PandroidGradleVersion=7.2.1"
+                "org.gradle.jvmargs=-Xmx2g",
+                "-PprotobufGradleVersion=0.8.19",
+                "-PprotobufVersion=3.21.7",
+                "-PkotlinVersion=1.7.20",
+                "-PandroidGradleVersion=7.3.0"
             )
             .let { WrappedRunner(it) }
 
