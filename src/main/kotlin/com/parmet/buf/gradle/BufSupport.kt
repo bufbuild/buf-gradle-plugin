@@ -25,7 +25,7 @@ const val BUF_BINARY_CONFIGURATION_NAME = "bufTool"
 
 internal fun Project.configureBufDependency() {
     repositories {
-        maven(url = "https://oss.sonatype.org/content/repositories/comparmet-1102")
+        maven(url = "https://oss.sonatype.org/content/repositories/comparmet-1104")
     }
 
     val os = System.getProperty("os.name").toLowerCase()
@@ -44,13 +44,15 @@ internal fun Project.configureBufDependency() {
             else -> error("unsupported arch: $arch")
         }
 
+    val extension = getExtension()
+
     createConfigurationWithDependency(
         BUF_BINARY_CONFIGURATION_NAME,
         mapOf(
             "group" to "com.parmet.buf",
             "name" to "buf",
-            "version" to getExtension().toolVersion,
-            "classifier" to "$osPart-$archPart",
+            "version" to extension.toolArtifactVersion,
+            "classifier" to "${extension.toolVersion}-$osPart-$archPart",
             "ext" to "exe"
         )
     )
