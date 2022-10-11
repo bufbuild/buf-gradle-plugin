@@ -22,7 +22,6 @@ repositories {
 }
 
 plugins {
-    `java-gradle-plugin`
     `kotlin-dsl`
     alias(libs.plugins.kotlin)
     alias(libs.plugins.pluginPublish)
