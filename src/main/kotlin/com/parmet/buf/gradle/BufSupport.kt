@@ -17,17 +17,11 @@ package com.parmet.buf.gradle
 
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.kotlin.dsl.maven
-import org.gradle.kotlin.dsl.repositories
 import java.nio.charset.StandardCharsets
 
 const val BUF_BINARY_CONFIGURATION_NAME = "bufTool"
 
 internal fun Project.configureBufDependency() {
-    repositories {
-        maven(url = "https://oss.sonatype.org/content/repositories/comparmet-1104")
-    }
-
     val os = System.getProperty("os.name").toLowerCase()
     val osPart =
         when {
