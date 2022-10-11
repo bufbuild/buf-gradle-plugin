@@ -28,9 +28,6 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
     @TempDir
     lateinit var projectDir: File
 
-    private val settingsFile
-        get() = File(projectDir, "settings.gradle")
-
     val buildFile
         get() = File(projectDir, "build.gradle").takeIf { it.exists() } ?: File(projectDir, "build.gradle.kts")
 
@@ -39,7 +36,8 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
 
     @BeforeEach
     fun setup(testInfo: TestInfo) {
-        settingsFile.writeText("rootProject.name = 'testing'")
+        File(projectDir, "settings.gradle").writeText("rootProject.name = 'testing'")
+        File(projectDir, "gradle.properties").writeText("org.gradle.jvmargs=-Xmx5g")
 
         val fixture = File("src/test/resources/${testInfo.testClass.get().simpleName}/${testInfo.testMethod.get().name}")
         assertWithMessage("Failed to copy test fixture files").that(fixture.copyRecursively(projectDir)).isTrue()
@@ -63,7 +61,6 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
             .withProjectDir(projectDir)
             .withPluginClasspath()
             .withArguments(
-                "-Porg.gradle.jvmargs=-Xmx4g",
                 "-PprotobufGradleVersion=0.8.19",
                 "-PprotobufVersion=3.21.7",
                 "-PkotlinVersion=1.7.20",
