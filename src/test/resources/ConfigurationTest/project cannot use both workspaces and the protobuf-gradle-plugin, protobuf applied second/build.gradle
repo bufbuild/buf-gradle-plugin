@@ -18,3 +18,7 @@ plugins {
   id 'com.parmet.buf'
   id 'com.google.protobuf' version "$protobufGradleVersion"
 }
+
+repositories {
+  mavenCentral()
+}

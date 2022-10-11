@@ -19,7 +19,9 @@ plugins {
   id 'com.google.protobuf' version "$protobufGradleVersion"
 }
 
-repositories { mavenCentral() }
+repositories {
+  mavenCentral()
+}
 
 protobuf {
   protoc {

@@ -19,7 +19,9 @@ plugins {
   id 'com.parmet.buf'
 }
 
-repositories { mavenCentral() }
+repositories {
+  mavenCentral()
+}
 
 protobuf {
   protoc {

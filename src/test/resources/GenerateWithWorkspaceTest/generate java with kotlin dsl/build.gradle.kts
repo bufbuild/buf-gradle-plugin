@@ -21,7 +21,9 @@ plugins {
     id("com.parmet.buf")
 }
 
-repositories { mavenCentral() }
+repositories {
+    mavenCentral()
+}
 
 tasks.named("compileJava").configure { dependsOn("bufGenerate") }
 

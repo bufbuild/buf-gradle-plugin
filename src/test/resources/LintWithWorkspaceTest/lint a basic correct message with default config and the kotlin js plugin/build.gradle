@@ -18,13 +18,13 @@ plugins {
   id 'com.parmet.buf'
 }
 
+repositories {
+  mavenCentral()
+}
+
 kotlin {
   js {
     browser()
     nodejs()
   }
-}
-
-repositories {
-  mavenCentral()
 }

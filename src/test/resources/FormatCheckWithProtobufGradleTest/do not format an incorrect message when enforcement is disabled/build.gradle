@@ -23,7 +23,9 @@ buf {
   enforceFormat = true
 }
 
-repositories { mavenCentral() }
+repositories {
+  mavenCentral()
+}
 
 protobuf {
   protoc {

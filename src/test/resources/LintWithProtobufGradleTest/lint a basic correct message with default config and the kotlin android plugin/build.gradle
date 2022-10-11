@@ -34,6 +34,11 @@ apply plugin: 'com.android.library'
 apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'com.google.protobuf'
 
+repositories {
+  mavenCentral()
+  google()
+}
+
 protobuf {
   protoc {
     artifact = "com.google.protobuf:protoc:$protobufVersion"
@@ -51,11 +56,6 @@ protobuf {
 
 android {
   compileSdkVersion 31
-}
-
-repositories {
-  mavenCentral()
-  google()
 }
 
 dependencies {
