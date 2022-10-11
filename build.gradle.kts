@@ -59,8 +59,6 @@ configure<JavaPluginExtension> {
 }
 
 gradlePlugin {
-    isAutomatedPublishing = false
-
     plugins {
         create("buf") {
             id = "com.parmet.buf"

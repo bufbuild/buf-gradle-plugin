@@ -70,11 +70,6 @@ fun Project.configurePublishing() {
         withSourcesJar()
     }
 
-    tasks.register<Jar>("javadocJar") {
-        from("$rootDir/README.md")
-        archiveClassifier.set("javadoc")
-    }
-
     if (isRelease()) {
         apply(plugin = "signing")
 
@@ -92,8 +87,6 @@ fun Project.configurePublishing() {
         publications {
             create<MavenPublication>("main") {
                 from(components.getByName("java"))
-                artifact(tasks.getByName("javadocJar"))
-
                 artifactId = project.name
                 version = project.version.toString()
                 groupId = project.group.toString()
