@@ -13,6 +13,7 @@ This plugin supports straightforward usage of `buf lint`, `buf format`, and `buf
 * [buf-gradle-plugin](#buf-gradle-plugin)
    * [Table of Contents](#table-of-contents)
    * [Usage](#usage)
+      * [Examples](#examples)
    * [Configuration](#configuration)
       * [Dependencies](#dependencies)
       * [bufLint](#buflint)
@@ -64,6 +65,10 @@ When applied the plugin creates tasks:
 - `bufLint` lints protobuf code
 - `bufBreaking` checks protobuf against a previous version for backwards-incompatible changes
 - `bufGenerate` generates protobuf code
+
+### Examples
+
+Each [integration test](src/test/resources) in this project is an example usage.
 
 ## Configuration
 
