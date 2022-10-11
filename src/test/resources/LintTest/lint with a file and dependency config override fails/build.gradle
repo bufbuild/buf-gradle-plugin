@@ -18,6 +18,10 @@ plugins {
   id 'com.parmet.buf'
 }
 
+repositories {
+  mavenCentral()
+}
+
 buf {
   configFileLocation = project.file('subdir/buf.yaml')
 }

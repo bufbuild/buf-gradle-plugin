@@ -18,7 +18,9 @@ plugins {
   id 'com.parmet.buf'
 }
 
-repositories { mavenCentral() }
+repositories {
+  mavenCentral()
+}
 
 buf {
   generate {

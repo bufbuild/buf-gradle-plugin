@@ -17,28 +17,17 @@ package com.parmet.buf.gradle
 
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.kotlin.dsl.ivy
-import org.gradle.kotlin.dsl.repositories
 import java.nio.charset.StandardCharsets
 
 const val BUF_BINARY_CONFIGURATION_NAME = "bufTool"
 
 internal fun Project.configureBufDependency() {
-    repositories {
-        ivy("https://github.com") {
-            patternLayout {
-                artifact("/[organization]/[module]/releases/download/v[revision]/buf-[classifier]-[ext]")
-            }
-            metadataSources { artifact() }
-        }
-    }
-
     val os = System.getProperty("os.name").toLowerCase()
-    val (osPart, archExt) =
+    val osPart =
         when {
-            os.startsWith("windows") -> "Windows" to ".exe"
-            os.startsWith("linux") -> "Linux" to ""
-            os.startsWith("mac") -> "Darwin" to ""
+            os.startsWith("windows") -> "windows"
+            os.startsWith("linux") -> "linux"
+            os.startsWith("mac") -> "osx"
             else -> error("unsupported os: $os")
         }
 
@@ -49,9 +38,17 @@ internal fun Project.configureBufDependency() {
             else -> error("unsupported arch: $arch")
         }
 
+    val extension = getExtension()
+
     createConfigurationWithDependency(
         BUF_BINARY_CONFIGURATION_NAME,
-        "bufbuild:buf:${getExtension().toolVersion}:$osPart@${archPart + archExt}"
+        mapOf(
+            "group" to "com.parmet.buf",
+            "name" to "buf",
+            "version" to extension.toolArtifactVersion,
+            "classifier" to "${extension.toolVersion}-$osPart-$archPart",
+            "ext" to "exe"
+        )
     )
 }
 

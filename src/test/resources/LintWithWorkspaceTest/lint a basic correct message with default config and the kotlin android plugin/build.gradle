@@ -32,11 +32,11 @@ plugins {
 apply plugin: 'com.android.library'
 apply plugin: 'org.jetbrains.kotlin.android'
 
-android {
-  compileSdkVersion 31
-}
-
 repositories {
   mavenCentral()
   google()
+}
+
+android {
+  compileSdkVersion 31
 }
