@@ -63,7 +63,7 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
             .withProjectDir(projectDir)
             .withPluginClasspath()
             .withArguments(
-                "org.gradle.jvmargs=-Xmx2g",
+                "-Porg.gradle.jvmargs=-Xmx2g",
                 "-PprotobufGradleVersion=0.8.19",
                 "-PprotobufVersion=3.21.7",
                 "-PkotlinVersion=1.7.20",
