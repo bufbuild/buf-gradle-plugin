@@ -8,7 +8,7 @@ import java.nio.charset.StandardCharsets
 import java.util.concurrent.Executors
 
 // See https://github.com/diffplug/spotless/blob/0fd20bb80c6c426d20e0a3157c3c2b89317032da/lib/src/main/java/com/diffplug/spotless/ProcessRunner.java
-class ProcessRunner : Closeable {
+internal class ProcessRunner : Closeable {
     private val threadStdOut = Executors.newSingleThreadExecutor()
     private val threadStdErr = Executors.newSingleThreadExecutor()
     private val bufStdOut = ByteArrayOutputStream()
