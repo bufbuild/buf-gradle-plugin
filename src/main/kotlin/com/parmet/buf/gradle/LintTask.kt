@@ -38,7 +38,7 @@ abstract class LintTask : DefaultTask() {
     private fun File.readAndStripComments() =
         lines(toPath()).use { lines ->
             lines.asSequence()
-                .filterNot { it.matches("( ?)#.*".toRegex()) }
+                .filterNot { it.startsWith('#') }
                 .joinToString(separator = lineSeparator)
         }
 }
