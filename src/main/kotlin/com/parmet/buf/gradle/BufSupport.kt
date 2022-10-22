@@ -80,7 +80,11 @@ internal fun Task.execBuf(args: Iterable<Any>, customErrorMessage: ((String) -> 
             if (customErrorMessage != null) {
                 val stdOut = result.stdOut.toString(StandardCharsets.UTF_8)
                 val stdErr = result.stdErr.toString(StandardCharsets.UTF_8)
-                error(customErrorMessage(stdOut) + "\n" + "stderr: $stdErr")
+                val ex = IllegalStateException(customErrorMessage(stdOut))
+                if (stdErr.isNotEmpty()) {
+                    ex.addSuppressed(IllegalStateException("stderr:${System.getProperty("line.separator")}$stdErr"))
+                }
+                throw ex
             } else {
                 error(result.toString())
             }
