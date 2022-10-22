@@ -82,7 +82,7 @@ internal fun Task.execBuf(args: Iterable<Any>, customErrorMessage: ((String) -> 
                 val stdErr = result.stdErr.toString(StandardCharsets.UTF_8)
                 val ex = IllegalStateException(customErrorMessage(stdOut))
                 if (stdErr.isNotEmpty()) {
-                    ex.addSuppressed(IllegalStateException("stderr:${System.getProperty("line.separator")}$stdErr"))
+                    ex.addSuppressed(IllegalStateException(result.toString()))
                 }
                 throw ex
             } else {

@@ -18,6 +18,8 @@ package com.parmet.buf.gradle
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import java.io.File
+import java.nio.file.Files.lines
+import kotlin.streams.asSequence
 
 abstract class LintTask : DefaultTask() {
     @TaskAction
@@ -34,8 +36,9 @@ abstract class LintTask : DefaultTask() {
     }
 
     private fun File.readAndStripComments() =
-        readText()
-            .lines()
-            .filterNot { it.startsWith('#') }
-            .joinToString(separator = System.getProperty("line.separator"))
+        lines(toPath()).use { lines ->
+            lines.asSequence()
+                .filterNot { it.startsWith('#') }
+                .joinToString(separator = lineSeparator)
+        }
 }
