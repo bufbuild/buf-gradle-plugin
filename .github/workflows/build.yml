@@ -36,9 +36,16 @@ jobs:
         with:
           arguments: build --info
 
-      - name: Publish unit test results
+      - name: Publish unit test results (Ubuntu)
         uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
+        if: always() && matrix.os == 'ubuntu-latest'
+        with:
+          files: "**/test-results/**/*.xml"
+          comment_mode: off
+
+      - name: Publish unit test results (Windows and MacOS)
+        uses: EnricoMi/publish-unit-test-result-action/composite@v2
+        if: always() && matrix.os != 'ubuntu-latest'
         with:
           files: "**/test-results/**/*.xml"
           comment_mode: off
