@@ -37,9 +37,8 @@ jobs:
           arguments: build --info
 
       - name: Publish unit test results
-        uses: EnricoMi/publish-unit-test-result-action@v1
-        if: always() && matrix.os == 'ubuntu-latest'
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
           files: "**/test-results/**/*.xml"
           comment_mode: off
