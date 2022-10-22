@@ -42,7 +42,7 @@ jobs:
         with:
           files: "**/test-results/**/*.xml"
           comment_mode: off
-          check_name: "Test Result (Ubuntu)"
+          check_name: "Test Results (Ubuntu)"
 
       - name: Publish unit test results (Windows)
         uses: EnricoMi/publish-unit-test-result-action/composite@v2
