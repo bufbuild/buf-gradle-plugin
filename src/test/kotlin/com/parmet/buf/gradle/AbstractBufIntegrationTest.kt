@@ -84,4 +84,4 @@ interface IntegrationTest {
 }
 
 fun String.osIndependent() =
-    replace("\n", System.getProperty("line.separator"))
+    replace("\n", lineSeparator)

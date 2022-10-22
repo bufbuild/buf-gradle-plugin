@@ -58,8 +58,8 @@ internal fun Project.configureImagePublication(artifactDetails: ArtifactDetails)
     }
 }
 
-val Project.bufBuildPublicationFile
+internal val Project.bufBuildPublicationFile
     get() = File(bufbuildDir, BUF_BUILD_PUBLICATION_FILE_NAME)
 
-val Task.bufBuildPublicationFile
+internal val Task.bufBuildPublicationFile
     get() = project.bufBuildPublicationFile

@@ -17,13 +17,16 @@ package com.parmet.buf.gradle
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
+import java.io.File
+import java.nio.file.Files.lines
+import kotlin.streams.asSequence
 
 abstract class LintTask : DefaultTask() {
     @TaskAction
     fun bufLint() {
         execBufInSpecificDirectory(
             "lint",
-            bufConfigFile()?.let { listOf("--config", it.readText()) }.orEmpty()
+            bufConfigFile()?.let { listOf("--config", it.readAndStripComments()) }.orEmpty()
         ) {
             """
                  |Some Protobuf files had lint violations:
@@ -31,4 +34,11 @@ abstract class LintTask : DefaultTask() {
             """.trimMargin()
         }
     }
+
+    private fun File.readAndStripComments() =
+        lines(toPath()).use { lines ->
+            lines.asSequence()
+                .filterNot { it.startsWith('#') }
+                .joinToString(separator = lineSeparator)
+        }
 }

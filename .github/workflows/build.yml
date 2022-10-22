@@ -36,10 +36,26 @@ jobs:
         with:
           arguments: build --info
 
-      - name: Publish unit test results
-        uses: EnricoMi/publish-unit-test-result-action@v1
+      - name: Publish unit test results (Ubuntu)
+        uses: EnricoMi/publish-unit-test-result-action@v2
         if: always() && matrix.os == 'ubuntu-latest'
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
           files: "**/test-results/**/*.xml"
           comment_mode: off
+          check_name: "Test Results (Ubuntu)"
+
+      - name: Publish unit test results (Windows)
+        uses: EnricoMi/publish-unit-test-result-action/composite@v2
+        if: always() && matrix.os == 'windows-latest'
+        with:
+          files: "**/test-results/**/*.xml"
+          comment_mode: off
+          check_name: "Test Results (Windows)"
+
+      - name: Publish unit test results (MacOS)
+        uses: EnricoMi/publish-unit-test-result-action/composite@v2
+        if: always() && matrix.os == 'macos-latest'
+        with:
+          files: "**/test-results/**/*.xml"
+          comment_mode: off
+          check_name: "Test Results (MacOS)"

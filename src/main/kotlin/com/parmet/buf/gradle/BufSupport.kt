@@ -78,7 +78,13 @@ internal fun Task.execBuf(args: Iterable<Any>, customErrorMessage: ((String) -> 
 
         if (result.exitCode != 0) {
             if (customErrorMessage != null) {
-                error(customErrorMessage(result.stdOut.toString(StandardCharsets.UTF_8)))
+                val stdOut = result.stdOut.toString(StandardCharsets.UTF_8)
+                val stdErr = result.stdErr.toString(StandardCharsets.UTF_8)
+                val ex = IllegalStateException(customErrorMessage(stdOut))
+                if (stdErr.isNotEmpty()) {
+                    ex.addSuppressed(IllegalStateException(result.toString()))
+                }
+                throw ex
             } else {
                 error(result.toString())
             }
