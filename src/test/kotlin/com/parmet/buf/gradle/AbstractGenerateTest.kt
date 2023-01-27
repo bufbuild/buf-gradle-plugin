@@ -38,4 +38,9 @@ abstract class AbstractGenerateTest : AbstractBufIntegrationTest() {
             listOf("build", "bufbuild", "generated", "java", "com", "google", "type", "DateTime.java")
         assertThat(Paths.get(projectDir.absolutePath, *generatedPathElements.toTypedArray()).toFile().exists()).isTrue()
     }
+
+    @Test
+    fun `generate java with gen file override`() {
+        gradleRunner().withArguments(BUILD_TASK_NAME).build()
+    }
 }

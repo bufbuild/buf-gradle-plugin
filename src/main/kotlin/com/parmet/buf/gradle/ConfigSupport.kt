@@ -48,8 +48,16 @@ internal fun Project.bufConfigFile() =
         }
     }
 
+internal fun Project.bufGenFile(): File? {
+    val ext = getExtension()
+    return listOf(ext.generateOptions?.configFileLocation, file("buf.gen.yaml"))
+        .firstOrNull { it != null && it.exists() && it.isFile }
+}
 internal fun Task.bufConfigFile() =
     project.bufConfigFile()
+
+internal fun Task.bufGenConfigFile() =
+    project.bufGenFile()
 
 private fun Project.resolveConfig(): File? {
     val ext = getExtension()

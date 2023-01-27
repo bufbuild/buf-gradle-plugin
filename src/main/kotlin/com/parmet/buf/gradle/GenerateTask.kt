@@ -26,10 +26,21 @@ abstract class GenerateTask : DefaultTask() {
         execBuf(args + additionalArgs())
     }
 
-    private fun additionalArgs() =
-        if (getExtension().generateOptions?.includeImports == true) {
+    private fun additionalArgs(): List<String> {
+        val importOptions = if (getExtension().generateOptions?.includeImports == true) {
             listOf("--include-imports")
         } else {
             emptyList()
         }
+
+        val configOptions = bufGenConfigFile().let {
+            if (it != null) {
+                listOf("--template", it.absolutePath)
+            } else {
+                emptyList()
+            }
+        }
+
+        return importOptions + configOptions
+    }
 }

@@ -13,22 +13,29 @@
  * limitations under the License.
  */
 
-package com.parmet.buf.gradle
-
-import org.gradle.api.Project
-import org.gradle.language.base.plugins.LifecycleBasePlugin.BUILD_GROUP
-
-const val BUF_GENERATE_TASK_NAME = "bufGenerate"
-
-const val GENERATED_DIR = "generated"
-
-internal fun Project.configureGenerate() {
-    this.bufGenFile()?.let {
-        registerBufTask<GenerateTask>(BUF_GENERATE_TASK_NAME) {
-            group = BUILD_GROUP
-            description = "Generates code from a Protobuf schema."
-
-            createsOutput()
-        }
-    }
+plugins {
+  id 'java'
+  id 'com.parmet.buf'
 }
+
+repositories {
+  mavenCentral()
+}
+
+buf {
+  generate {
+    configFileLocation = project.file("subdir/buf.gen.yaml")
+  }
+}
+
+compileJava.dependsOn 'bufGenerate'
+
+sourceSets.main.java {
+  srcDir 'build/bufbuild/generated/java'
+}
+
+dependencies {
+  buf(fileTree('subdir') { include '*.yaml' })
+  implementation "com.google.protobuf:protobuf-java:$protobufVersion"
+}
+
