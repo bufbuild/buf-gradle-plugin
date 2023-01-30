@@ -89,7 +89,6 @@ class GenerateOptions(
      */
     var includeImports: Boolean? = null,
 
-
     /**
      * Specify the location of buf.gen.yaml.
      */
