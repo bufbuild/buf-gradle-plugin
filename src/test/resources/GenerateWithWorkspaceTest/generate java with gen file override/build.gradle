@@ -35,6 +35,5 @@ sourceSets.main.java {
 }
 
 dependencies {
-  buf(fileTree('subdir') { include '*.yaml' })
   implementation "com.google.protobuf:protobuf-java:$protobufVersion"
 }
