@@ -27,19 +27,16 @@ abstract class GenerateTask : DefaultTask() {
     }
 
     private fun additionalArgs(): List<String> {
-        val importOptions = if (getExtension().generateOptions?.includeImports == true) {
+        val generateOptions = getExtension().generateOptions
+        val importOptions = if (generateOptions?.includeImports == true) {
             listOf("--include-imports")
         } else {
             emptyList()
         }
 
-        val configOptions = bufGenConfigFile().let {
-            if (it != null) {
-                listOf("--template", it.absolutePath)
-            } else {
-                emptyList()
-            }
-        }
+        val configOptions = generateOptions?.genFileLocation?.let {
+            listOf("--template", it.absolutePath)
+        } ?: emptyList()
 
         return importOptions + configOptions
     }

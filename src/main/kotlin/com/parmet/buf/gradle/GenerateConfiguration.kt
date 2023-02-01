@@ -23,12 +23,10 @@ const val BUF_GENERATE_TASK_NAME = "bufGenerate"
 const val GENERATED_DIR = "generated"
 
 internal fun Project.configureGenerate() {
-    this.bufGenFile()?.let {
-        registerBufTask<GenerateTask>(BUF_GENERATE_TASK_NAME) {
-            group = BUILD_GROUP
-            description = "Generates code from a Protobuf schema."
+    registerBufTask<GenerateTask>(BUF_GENERATE_TASK_NAME) {
+        group = BUILD_GROUP
+        description = "Generates code from a Protobuf schema."
 
-            createsOutput()
-        }
+        createsOutput()
     }
 }

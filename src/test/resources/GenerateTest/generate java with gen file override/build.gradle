@@ -24,7 +24,7 @@ repositories {
 
 buf {
   generate {
-    configFileLocation = project.file("subdir/buf.gen.yaml")
+    genFileLocation = project.file("subdir/buf.gen.yaml")
   }
 }
 
@@ -35,7 +35,5 @@ sourceSets.main.java {
 }
 
 dependencies {
-  buf(fileTree('subdir') { include '*.yaml' })
   implementation "com.google.protobuf:protobuf-java:$protobufVersion"
 }
-

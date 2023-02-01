@@ -277,7 +277,7 @@ You can optionally specify a different `buf.gen.yaml` file as well:
 
 buf {
     generate {
-        configFileLocation = rootProject.file("buf.gen.yaml")
+        genFileLocation = rootProject.file("buf.gen.yaml")
     }
 }
 ```

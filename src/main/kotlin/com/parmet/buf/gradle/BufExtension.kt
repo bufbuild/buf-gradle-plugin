@@ -92,5 +92,5 @@ class GenerateOptions(
     /**
      * Specify the location of buf.gen.yaml.
      */
-    var configFileLocation: File? = null
+    var genFileLocation: File? = null
 )
