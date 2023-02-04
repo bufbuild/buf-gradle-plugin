@@ -43,6 +43,9 @@ class BufPlugin : Plugin<Project> {
         configureGenerate()
 
         afterEvaluate {
+            if (runGenerateCheck()) {
+                configureCheckBufGenTask()
+            }
             getArtifactDetails()?.let {
                 if (publishSchema()) {
                     configureImagePublication(it)
