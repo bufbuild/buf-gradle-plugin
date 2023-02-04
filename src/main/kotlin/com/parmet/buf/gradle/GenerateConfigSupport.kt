@@ -22,7 +22,7 @@ private fun Project.checkGenConfig() {
         check(selectedGenFiles.isNotEmpty()) {
             "No buf.gen.yaml file found in the root directory or with genFileLocation."
         }
-        check(selectedGenFiles.size < 2) {
+        check(selectedGenFiles.size == 1) {
             "Buf gen configuration file specified in the root directory as well as with genFileLocation; pick one."
         }
     }
