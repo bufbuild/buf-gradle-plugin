@@ -43,4 +43,16 @@ abstract class AbstractGenerateTest : AbstractBufIntegrationTest() {
     fun `generate java with gen file override`() {
         gradleRunner().withArguments(BUILD_TASK_NAME).build()
     }
+
+    @Test
+    fun `generate java with gen file override fails with no files`() {
+        val result = gradleRunner().withArguments(BUILD_TASK_NAME).buildAndFail()
+        assertThat(result.output).contains("No buf.gen.yaml file found in the root directory or with genFileLocation")
+    }
+
+    @Test
+    fun `generate java with gen file override fails with two files`() {
+        val result = gradleRunner().withArguments(BUILD_TASK_NAME).buildAndFail()
+        assertThat(result.output).contains("Buf gen configuration file specified in the root directory as well as with genFileLocation")
+    }
 }

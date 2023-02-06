@@ -34,10 +34,26 @@ abstract class GenerateTask : DefaultTask() {
             emptyList()
         }
 
-        val configOptions = generateOptions?.genFileLocation?.let {
+        val configOptions = genConfigFile()?.let {
             listOf("--template", it.absolutePath)
         } ?: emptyList()
 
         return importOptions + configOptions
+    }
+
+    private fun genConfigFile(): File? {
+        return getExtension().generateOptions?.let { generateOptions ->
+            val selectedGenFiles = listOfNotNull(generateOptions.genFileLocation, project.file("buf.gen.yaml")).filter {
+                it.exists() && it.isFile
+            }
+            check(selectedGenFiles.isNotEmpty()) {
+                "No buf.gen.yaml file found in the root directory or with genFileLocation."
+            }
+            check(selectedGenFiles.size == 1) {
+                "Buf gen configuration file specified in the root directory as well as with genFileLocation; pick one."
+            }
+
+            selectedGenFiles.single()
+        }
     }
 }

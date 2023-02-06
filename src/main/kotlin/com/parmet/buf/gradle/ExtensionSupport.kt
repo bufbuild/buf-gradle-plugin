@@ -37,10 +37,5 @@ internal fun Project.runBreakageCheck() =
         checkSchemaAgainstLatestRelease || previousVersion != null
     }
 
-internal fun Project.runGenerateCheck() =
-    with(getExtension()) {
-        generateOptions != null
-    }
-
 internal fun Project.publishSchema() =
     getExtension().publishSchema
