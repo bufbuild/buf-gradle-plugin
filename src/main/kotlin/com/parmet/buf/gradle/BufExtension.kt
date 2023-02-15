@@ -90,7 +90,7 @@ class GenerateOptions(
     var includeImports: Boolean? = null,
 
     /**
-     * Specify the location of buf.gen.yaml.
+     * Specify the location of buf.gen.yaml if not using one in the project root.
      */
-    var genFileLocation: File? = null
+    var templateFileLocation: File? = null
 )

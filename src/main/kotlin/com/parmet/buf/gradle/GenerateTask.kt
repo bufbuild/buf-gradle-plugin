@@ -43,17 +43,17 @@ abstract class GenerateTask : DefaultTask() {
 
     private fun genConfigFile(): File? {
         return getExtension().generateOptions?.let { generateOptions ->
-            val selectedGenFiles = listOfNotNull(generateOptions.genFileLocation, project.file("buf.gen.yaml")).filter {
+            val selectedTemplateFiles = listOfNotNull(generateOptions.templateFileLocation, project.file("buf.gen.yaml")).filter {
                 it.exists() && it.isFile
             }
-            check(selectedGenFiles.isNotEmpty()) {
-                "No buf.gen.yaml file found in the root directory or with genFileLocation."
+            check(selectedTemplateFiles.isNotEmpty()) {
+                "No buf.gen.yaml file found in the root directory or with templateFileLocation."
             }
-            check(selectedGenFiles.size == 1) {
-                "Buf gen configuration file specified in the root directory as well as with genFileLocation; pick one."
+            check(selectedTemplateFiles.size == 1) {
+                "Buf gen template file specified in the root directory as well as with templateFileLocation; pick one."
             }
 
-            selectedGenFiles.single()
+            selectedTemplateFiles.single()
         }
     }
 }

@@ -24,7 +24,7 @@ repositories {
 
 buf {
   generate {
-    genFileLocation = project.file("subdir/buf.gen.yaml")
+    templateFileLocation = project.file("subdir/buf.gen.yaml")
   }
 }
 

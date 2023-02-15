@@ -283,7 +283,7 @@ By default, the `bufGenerate` task will attempt to read a `buf.gen.yaml` from th
 
 buf {
     generate {
-        genFileLocation = rootProject.file("subdir/buf.gen.yaml")
+        templateFileLocation = rootProject.file("subdir/buf.gen.yaml")
     }
 }
 ```
