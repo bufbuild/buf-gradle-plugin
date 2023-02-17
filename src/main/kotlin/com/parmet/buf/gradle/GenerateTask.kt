@@ -47,13 +47,25 @@ abstract class GenerateTask : DefaultTask() {
                 it.exists() && it.isFile
             }
             check(selectedTemplateFiles.isNotEmpty()) {
-                "No buf.gen.yaml file found in the root directory or with templateFileLocation."
+                if (generateOptions.templateFileLocation != null) {
+                    "Specified templateFileLocation does not exist."
+                } else {
+                    "No buf.gen.yaml file found in the root directory."
+                }
             }
             check(selectedTemplateFiles.size == 1) {
                 "Buf gen template file specified in the root directory as well as with templateFileLocation; pick one."
             }
 
-            selectedTemplateFiles.single()
+            val templateFile = selectedTemplateFiles.single()
+            if (generateOptions.templateFileLocation != null && templateFile != generateOptions.templateFileLocation) {
+                logger.warn(
+                    "Buf generation template file specified in templateFileLocation does not exist. " +
+                            "Falling back to buf.gen.yaml in the root directory instead."
+                )
+            }
+
+            templateFile
         }
     }
 }
