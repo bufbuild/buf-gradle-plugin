@@ -50,12 +50,12 @@ open class BufExtension {
     /**
      * Specify the version of Buf.
      */
-    var toolVersion = "1.9.0"
+    var toolVersion = "1.13.1"
 
     /**
      * Specify the version of the Buf executable artifact.
      */
-    var toolArtifactVersion = "1.0.2"
+    var toolArtifactVersion = "1.0.3"
 
     internal var imageArtifactDetails: ArtifactDetails? = null
 
