@@ -45,13 +45,6 @@ abstract class AbstractGenerateTest : AbstractBufIntegrationTest() {
     }
 
     @Test
-    fun `buf generate when falling back to root template file when override does not exist`() {
-        val result = gradleRunner().withArguments(BUILD_TASK_NAME).build()
-        assertThat(result.output).contains("Buf generation template file specified in templateFileLocation does not exist.")
-        assertThat(result.output).contains("Falling back to buf.gen.yaml in the root directory instead.")
-    }
-
-    @Test
     fun `buf generate fails with a nonexistent specified template file`() {
         val result = gradleRunner().withArguments(BUF_GENERATE_TASK_NAME).buildAndFail()
         assertThat(result.output).contains("Specified templateFileLocation does not exist.")
@@ -67,5 +60,11 @@ abstract class AbstractGenerateTest : AbstractBufIntegrationTest() {
     fun `buf generate fails with both default and specified buf gen template files`() {
         val result = gradleRunner().withArguments(BUF_GENERATE_TASK_NAME).buildAndFail()
         assertThat(result.output).contains("Buf gen template file specified in the root directory as well as with templateFileLocation")
+    }
+
+    @Test
+    fun `buf generate fails when specified template file does not exist but default one does`() {
+        val result = gradleRunner().withArguments(BUF_GENERATE_TASK_NAME).buildAndFail()
+        assertThat(result.output).contains("Specified templateFileLocation does not exist.")
     }
 }
