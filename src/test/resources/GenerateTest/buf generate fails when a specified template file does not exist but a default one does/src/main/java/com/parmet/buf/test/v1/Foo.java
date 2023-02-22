@@ -13,27 +13,10 @@
  * limitations under the License.
  */
 
-plugins {
-  id 'java'
-  id 'com.parmet.buf'
-}
+package com.parmet.buf.test.v1;
 
-repositories {
-  mavenCentral()
-}
-
-buf {
-  generate {
-    //templateFileLocation = project.file("subdir/buf.gen.yaml")
-  }
-}
-
-compileJava.dependsOn 'bufGenerate'
-
-sourceSets.main.java {
-  srcDir 'build/bufbuild/generated/java'
-}
-
-dependencies {
-  implementation "com.google.protobuf:protobuf-java:$protobufVersion"
+public class Foo {
+    public static void test() {
+        Test.BasicMessage.newBuilder().build();
+    }
 }
