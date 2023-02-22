@@ -34,35 +34,34 @@ abstract class GenerateTask : DefaultTask() {
             emptyList()
         }
 
-        val configOptions = genConfigFile()?.let {
+        val templateFileOption = resolveTemplateFile()?.let {
             listOf("--template", it.absolutePath)
         } ?: emptyList()
 
-        return importOptions + configOptions
+        return importOptions + templateFileOption
     }
 
-    private fun genConfigFile(): File? {
+    private fun resolveTemplateFile(): File? {
         return getExtension().generateOptions?.let { generateOptions ->
-            val selectedTemplateFiles = listOfNotNull(generateOptions.templateFileLocation, project.file("buf.gen.yaml")).filter {
-                it.exists() && it.isFile
-            }
-            check(selectedTemplateFiles.isNotEmpty()) {
-                if (generateOptions.templateFileLocation != null) {
+            val defaultTemplateFile = project.file("buf.gen.yaml").validOrNull()
+            if (generateOptions.templateFileLocation != null) {
+                val specifiedTemplateFile = generateOptions.templateFileLocation.validOrNull()
+                check(specifiedTemplateFile != null) {
                     "Specified templateFileLocation does not exist."
-                } else {
-                    "No buf.gen.yaml file found in the root directory."
                 }
+                check(defaultTemplateFile == null) {
+                    "Buf gen template file specified in the project directory as well as with templateFileLocation; pick one."
+                }
+                specifiedTemplateFile
+            } else {
+                check(defaultTemplateFile != null) {
+                    "No buf.gen.yaml file found in the project directory."
+                }
+                defaultTemplateFile
             }
-            check(selectedTemplateFiles.size == 1) {
-                "Buf gen template file specified in the root directory as well as with templateFileLocation; pick one."
-            }
-
-            val templateFile = selectedTemplateFiles.single()
-            check(generateOptions.templateFileLocation == null || templateFile == generateOptions.templateFileLocation) {
-                "Specified templateFileLocation does not exist."
-            }
-
-            templateFile
         }
     }
+
+    private fun File?.validOrNull() =
+        this?.takeIf { it.isFile && it.exists() }
 }
