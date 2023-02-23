@@ -26,10 +26,42 @@ abstract class GenerateTask : DefaultTask() {
         execBuf(args + additionalArgs())
     }
 
-    private fun additionalArgs() =
-        if (getExtension().generateOptions?.includeImports == true) {
+    private fun additionalArgs(): List<String> {
+        val generateOptions = getExtension().generateOptions
+        val importOptions = if (generateOptions?.includeImports == true) {
             listOf("--include-imports")
         } else {
             emptyList()
         }
+
+        val templateFileOption = resolveTemplateFile()?.let {
+            listOf("--template", it.absolutePath)
+        } ?: emptyList()
+
+        return importOptions + templateFileOption
+    }
+
+    private fun resolveTemplateFile(): File? {
+        return getExtension().generateOptions?.let { generateOptions ->
+            val defaultTemplateFile = project.file("buf.gen.yaml").validOrNull()
+            if (generateOptions.templateFileLocation != null) {
+                val specifiedTemplateFile = generateOptions.templateFileLocation.validOrNull()
+                check(specifiedTemplateFile != null) {
+                    "Specified templateFileLocation does not exist."
+                }
+                check(defaultTemplateFile == null) {
+                    "Buf gen template file specified in the project directory as well as with templateFileLocation; pick one."
+                }
+                specifiedTemplateFile
+            } else {
+                check(defaultTemplateFile != null) {
+                    "No buf.gen.yaml file found in the project directory."
+                }
+                defaultTemplateFile
+            }
+        }
+    }
+
+    private fun File?.validOrNull() =
+        this?.takeIf { it.isFile && it.exists() }
 }

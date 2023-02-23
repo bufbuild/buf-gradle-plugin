@@ -13,20 +13,10 @@
  * limitations under the License.
  */
 
-package com.parmet.buf.gradle
+package com.parmet.buf.test.v1;
 
-import org.gradle.api.Project
-import org.gradle.language.base.plugins.LifecycleBasePlugin.BUILD_GROUP
-
-const val BUF_GENERATE_TASK_NAME = "bufGenerate"
-
-const val GENERATED_DIR = "generated"
-
-internal fun Project.configureGenerate() {
-    registerBufTask<GenerateTask>(BUF_GENERATE_TASK_NAME) {
-        group = BUILD_GROUP
-        description = "Generates code from a Protobuf schema."
-
-        createsOutput()
+public class Foo {
+    public static void test() {
+        Test.BasicMessage.newBuilder().build();
     }
 }

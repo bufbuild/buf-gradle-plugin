@@ -87,5 +87,10 @@ class GenerateOptions(
      * If you specify any dependencies in `buf.yaml`, you must create a `buf.lock` file using `buf mod update` for
      * dependency resolution to succeed.
      */
-    var includeImports: Boolean? = null
+    var includeImports: Boolean? = null,
+
+    /**
+     * Specify the location of buf.gen.yaml if not using one in the project root.
+     */
+    var templateFileLocation: File? = null
 )
