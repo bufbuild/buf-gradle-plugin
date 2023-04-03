@@ -38,7 +38,14 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
         File(projectDir, "settings.gradle").writeText("rootProject.name = 'testing'")
         File(projectDir, "gradle.properties").writeText("org.gradle.jvmargs=-Xmx5g")
 
-        val fixture = File("src/test/resources/${testInfo.testClass.get().simpleName}/${testInfo.testMethod.get().name}")
+        // TODO: The test name is dependent on the directory name.
+        // There was a change to clean the directory names to be compatible
+        // with Buf's license-header tool.
+        val testName = testInfo.testMethod.get().name
+            .replace(" ", "")
+            .replace("--", "")
+            .replace(",", "")
+        val fixture = File("src/test/resources/${testInfo.testClass.get().simpleName}/$testName")
         assertWithMessage("Failed to copy test fixture files").that(fixture.copyRecursively(projectDir)).isTrue()
     }
 
