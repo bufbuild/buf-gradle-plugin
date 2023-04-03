@@ -1,5 +1,3 @@
-
-
 import com.gradle.publish.PublishTask.GRADLE_PUBLISH_KEY
 import com.gradle.publish.PublishTask.GRADLE_PUBLISH_SECRET
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile

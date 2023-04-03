@@ -1,5 +1,3 @@
-
-
 plugins {
   id 'org.jetbrains.kotlin.multiplatform' version "$kotlinVersion"
   id 'com.parmet.buf'

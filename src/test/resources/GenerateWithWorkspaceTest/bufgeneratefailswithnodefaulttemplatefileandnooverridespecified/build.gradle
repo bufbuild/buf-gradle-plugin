@@ -1,5 +1,3 @@
-
-
 plugins {
   id 'com.parmet.buf'
 }

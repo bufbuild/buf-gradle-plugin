@@ -1,5 +1,3 @@
-
-
 plugins {
   id 'java'
   id 'com.google.protobuf' version "$protobufGradleVersion"
@@ -19,7 +17,6 @@ protobuf {
 }
 
 compileJava.enabled = false
-
 publishing {
   repositories {
     maven { url 'build/repos/test' }
