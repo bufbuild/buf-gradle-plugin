@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
-
 import io.github.gradlenexus.publishplugin.NexusPublishExtension
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension

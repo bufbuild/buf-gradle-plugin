@@ -7,7 +7,7 @@ MAKEFLAGS += --warn-undefined-variables
 MAKEFLAGS += --no-builtin-rules
 MAKEFLAGS += --no-print-directory
 BIN := .tmp/bin
-LICENSE_IGNORE := -e .tmp\/ -e src\/test\/resources\/
+LICENSE_IGNORE := -e .tmp\/
 LICENSE_HEADER_YEAR_RANGE := 2023
 LICENSE_HEADER_VERSION := v1.16.0
 
