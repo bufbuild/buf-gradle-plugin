@@ -7,8 +7,9 @@ MAKEFLAGS += --warn-undefined-variables
 MAKEFLAGS += --no-builtin-rules
 MAKEFLAGS += --no-print-directory
 BIN := .tmp/bin
+LICENSE_IGNORE := -e .tmp\/ -e src\/test\/resources\/
 LICENSE_HEADER_YEAR_RANGE := 2023
-LICENSE_HEADER_VERSION := v1.12.0
+LICENSE_HEADER_VERSION := v1.16.0
 
 $(BIN)/license-headers: Makefile
 	mkdir -p $(@D)
@@ -21,7 +22,7 @@ help: ## Describe useful make targets.
 .PHONY: licenseheaders
 licenseheaders: $(BIN)/license-headers ## Format all files, adding license headers.
 	comm -23 \
-		<(git ls-files --cached --modified --others --no-empty-directory --exclude-standard | sort -u ) \
+		<(git ls-files --cached --modified --others --no-empty-directory --exclude-standard | sort -u | grep -v $(LICENSE_IGNORE)) \
 		<(git ls-files --deleted | sort -u) | \
 		xargs $(BIN)/license-header \
 			--license-type "apache" \
