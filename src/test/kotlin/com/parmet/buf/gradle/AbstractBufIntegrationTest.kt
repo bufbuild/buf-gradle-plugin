@@ -40,7 +40,7 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
         File(projectDir, "gradle.properties").writeText("org.gradle.jvmargs=-Xmx5g")
 
         // TODO: The test name is dependent on the directory name.
-        // There was a change to clean the directory names to be compatible
+        // There is a change to sanitize the directory names to be compatible
         // with Buf's license-header tool.
         val testName = testInfo.testMethod.get().name
             .replace(" ", "")
