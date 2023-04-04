@@ -46,6 +46,8 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
             .replace("--", "")
             .replace(",", "")
         val fixture = File("src/test/resources/${testInfo.testClass.get().simpleName}/$testName")
+        val testDirectory = File("src/test/resources/${testInfo.testClass.get().simpleName}")
+        assertWithMessage("Parent directory ${testDirectory.path} does not exist").that(testDirectory.exists()).isTrue()
         assertWithMessage("Directory ${fixture.path} does not exist").that(fixture.exists()).isTrue()
         assertWithMessage("Failed to copy test fixture files").that(fixture.copyRecursively(projectDir)).isTrue()
     }
