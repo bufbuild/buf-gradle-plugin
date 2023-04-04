@@ -37,7 +37,7 @@ jobs:
       - name: Build
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: build --info --stacktrace
+          arguments: build --info
 
       - name: Publish unit test results (Ubuntu)
         uses: EnricoMi/publish-unit-test-result-action@v2
