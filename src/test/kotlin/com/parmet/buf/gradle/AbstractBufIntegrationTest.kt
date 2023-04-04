@@ -43,9 +43,10 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
         // There is a change to sanitize the directory names to be compatible
         // with Buf's license-header tool.
         val testName = testInfo.testMethod.get().name
-            .replace(" ", "")
-            .replace("--", "")
             .replace(",", "")
+            .replace("--", "")
+            .replace(" ", "_")
+            .replace("-", "_")
             .toLowerCase(Locale.US)
         val fixture = File("src/test/resources/${testInfo.testClass.get().simpleName}/$testName")
         assertWithMessage("Directory ${fixture.path} does not exist").that(fixture.exists()).isTrue()
