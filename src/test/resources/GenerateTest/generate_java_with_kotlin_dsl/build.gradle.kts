@@ -1,7 +1,7 @@
 
 
-import com.parmet.buf.gradle.BUF_BUILD_DIR
-import com.parmet.buf.gradle.GENERATED_DIR
+import build.buf.gradle.BUF_BUILD_DIR
+import build.buf.gradle.GENERATED_DIR
 
 plugins {
     `java`
