@@ -1,5 +1,3 @@
-
-
 import com.parmet.buf.gradle.BUF_BUILD_DIR
 import com.parmet.buf.gradle.GENERATED_DIR
 
