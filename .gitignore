@@ -1,5 +1,6 @@
+/**/build/*
+!/**/src/**/build/*
 .tmp
 .gradle
 .idea
-build
 out

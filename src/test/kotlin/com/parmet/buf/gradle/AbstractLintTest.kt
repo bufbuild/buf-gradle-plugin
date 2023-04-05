@@ -14,6 +14,7 @@
 
 package com.parmet.buf.gradle
 
+import build.buf.gradle.BUF_LINT_TASK_NAME
 import com.google.common.truth.Truth.assertThat
 import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
 import org.gradle.testkit.runner.TaskOutcome.FAILED

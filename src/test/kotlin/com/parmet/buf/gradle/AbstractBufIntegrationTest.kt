@@ -14,6 +14,7 @@
 
 package com.parmet.buf.gradle
 
+import build.buf.gradle.lineSeparator
 import com.google.common.truth.Truth.assertWithMessage
 import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
 import org.gradle.testkit.runner.GradleRunner

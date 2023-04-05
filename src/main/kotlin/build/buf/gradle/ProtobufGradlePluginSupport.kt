@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.parmet.buf.gradle
+package build.buf.gradle
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project

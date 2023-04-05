@@ -12,15 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.parmet.buf.gradle
+package build.buf.gradle
 
-import org.gradle.api.Project
-import org.gradle.api.artifacts.Dependency
-import org.gradle.api.artifacts.dsl.DependencyHandler
-import org.gradle.kotlin.dsl.configure
+import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.TaskAction
 
-fun Project.buf(cfg: BufExtension.() -> Unit) =
-    configure(cfg)
-
-fun DependencyHandler.buf(dependencyNotation: Any): Dependency? =
-    add(BUF_CONFIGURATION_NAME, dependencyNotation)
+abstract class FormatApplyTask : DefaultTask() {
+    @TaskAction
+    fun bufFormatApply() {
+        execBufInSpecificDirectory("format", "-w")
+    }
+}

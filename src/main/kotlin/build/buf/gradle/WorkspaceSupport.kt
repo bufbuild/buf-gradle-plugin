@@ -12,20 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.parmet.buf.gradle
+package build.buf.gradle
 
 import org.gradle.api.Project
-import org.gradle.language.base.plugins.LifecycleBasePlugin.BUILD_GROUP
 
-const val BUF_GENERATE_TASK_NAME = "bufGenerate"
-
-const val GENERATED_DIR = "generated"
-
-internal fun Project.configureGenerate() {
-    registerBufTask<GenerateTask>(BUF_GENERATE_TASK_NAME) {
-        group = BUILD_GROUP
-        description = "Generates code from a Protobuf schema."
-
-        createsOutput()
-    }
-}
+internal fun Project.hasWorkspace() =
+    file("buf.work.yaml").let { it.exists() && it.isFile }

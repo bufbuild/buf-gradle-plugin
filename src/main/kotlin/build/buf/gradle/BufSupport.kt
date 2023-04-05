@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.parmet.buf.gradle
+package build.buf.gradle
 
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -42,7 +42,7 @@ internal fun Project.configureBufDependency() {
     createConfigurationWithDependency(
         BUF_BINARY_CONFIGURATION_NAME,
         mapOf(
-            "group" to "com.parmet.buf",
+            "group" to "build.buf",
             "name" to "buf",
             "version" to extension.toolArtifactVersion,
             "classifier" to "${extension.toolVersion}-$osPart-$archPart",

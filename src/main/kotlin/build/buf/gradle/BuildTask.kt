@@ -12,23 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.parmet.buf.gradle
+package build.buf.gradle
 
-import org.gradle.api.Project
-import org.gradle.api.Task
-import java.io.File
+import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.TaskAction
 
-const val BUF_BUILD_DIR = "bufbuild"
-
-internal val Project.bufbuildDir
-    get() = File(buildDir, BUF_BUILD_DIR)
-
-internal val Task.bufbuildDir
-    get() = project.bufbuildDir
-
-internal fun Task.createsOutput() {
-    doFirst { project.bufbuildDir.mkdirs() }
+abstract class BuildTask : DefaultTask() {
+    @TaskAction
+    fun bufBuild() {
+        execBuf("build", "--output", bufBuildPublicationFile)
+    }
 }
-
-internal fun ArtifactDetails.groupAndArtifact() =
-    "$groupId:$artifactId"

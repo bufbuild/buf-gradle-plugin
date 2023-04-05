@@ -12,33 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.parmet.buf.gradle
+package build.buf.gradle
 
 import org.gradle.api.Project
 import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
 import org.gradle.language.base.plugins.LifecycleBasePlugin.VERIFICATION_GROUP
 
-const val BUF_FORMAT_CHECK_TASK_NAME = "bufFormatCheck"
-const val BUF_FORMAT_APPLY_TASK_NAME = "bufFormatApply"
+const val BUF_LINT_TASK_NAME = "bufLint"
 
-internal fun Project.configureFormat() {
-    configureBufFormatCheck()
-    configureBufFormatApply()
-}
-
-private fun Project.configureBufFormatCheck() {
-    registerBufTask<FormatCheckTask>(BUF_FORMAT_CHECK_TASK_NAME) {
+internal fun Project.configureLint() {
+    registerBufTask<LintTask>(BUF_LINT_TASK_NAME) {
         group = VERIFICATION_GROUP
-        description = "Checks that a Protobuf schema is formatted according to Buf's formatting rules."
-        enabled = getExtension().enforceFormat
+        description = "Checks that a Protobuf schema conforms to the Buf lint configuration."
     }
 
-    tasks.named(CHECK_TASK_NAME).dependsOn(BUF_FORMAT_CHECK_TASK_NAME)
-}
-
-private fun Project.configureBufFormatApply() {
-    registerBufTask<FormatApplyTask>(BUF_FORMAT_APPLY_TASK_NAME) {
-        group = VERIFICATION_GROUP
-        description = "Formats a Protobuf schema according to Buf's formatting rules."
-    }
+    tasks.named(CHECK_TASK_NAME).dependsOn(BUF_LINT_TASK_NAME)
 }

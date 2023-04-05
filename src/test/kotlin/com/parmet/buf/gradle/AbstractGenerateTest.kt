@@ -14,6 +14,7 @@
 
 package com.parmet.buf.gradle
 
+import build.buf.gradle.BUF_GENERATE_TASK_NAME
 import com.google.common.truth.Truth.assertThat
 import org.gradle.language.base.plugins.LifecycleBasePlugin.BUILD_TASK_NAME
 import org.junit.jupiter.api.Test

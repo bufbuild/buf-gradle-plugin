@@ -12,24 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.parmet.buf.gradle
+package build.buf.gradle
 
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.api.tasks.TaskProvider
-import org.gradle.kotlin.dsl.dependencies
+import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.getByName
 
-internal fun TaskProvider<*>.dependsOn(obj: Any) {
-    configure { dependsOn(obj) }
+const val BUF_EXTENSION_NAME = "buf"
+
+internal fun Project.createExtension() {
+    extensions.create<BufExtension>(BUF_EXTENSION_NAME)
 }
 
-internal fun Project.createConfigurationWithDependency(configuration: String, notation: Any) {
-    configurations.create(configuration)
-    dependencies { add(configuration, notation) }
-}
+internal fun Project.getExtension() =
+    extensions.getByName<BufExtension>(BUF_EXTENSION_NAME)
 
-internal fun Project.singleFileFromConfiguration(configuration: String) =
-    configurations.getByName(configuration).singleFile
+internal fun Task.getExtension() =
+    project.getExtension()
 
-internal fun Task.singleFileFromConfiguration(configuration: String) =
-    project.singleFileFromConfiguration(configuration)
+internal fun Project.runBreakageCheck() =
+    with(getExtension()) {
+        checkSchemaAgainstLatestRelease || previousVersion != null
+    }
+
+internal fun Project.publishSchema() =
+    getExtension().publishSchema

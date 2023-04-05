@@ -12,20 +12,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.parmet.buf.gradle
+package build.buf.gradle
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
+import java.io.File
+import java.nio.file.Files.lines
+import kotlin.streams.asSequence
 
-abstract class FormatCheckTask : DefaultTask() {
+abstract class LintTask : DefaultTask() {
     @TaskAction
-    fun bufFormatCheck() {
-        execBufInSpecificDirectory("format", "-d", "--exit-code") {
+    fun bufLint() {
+        execBufInSpecificDirectory(
+            "lint",
+            bufConfigFile()?.let { listOf("--config", it.readAndStripComments()) }.orEmpty()
+        ) {
             """
-                 |Some Protobuf files had format violations:
+                 |Some Protobuf files had lint violations:
                  |$it
-                 |Run './gradlew :bufFormatApply' to fix these violations.
             """.trimMargin()
         }
     }
+
+    private fun File.readAndStripComments() =
+        lines(toPath()).use { lines ->
+            lines.asSequence()
+                .filterNot { it.matches("( ?)#.*".toRegex()) }
+                .joinToString(separator = lineSeparator)
+        }
 }
