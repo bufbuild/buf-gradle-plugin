@@ -1,0 +1,22 @@
+plugins {
+  id 'java'
+  id 'com.parmet.buf'
+  id 'maven-publish'
+}
+
+repositories {
+  mavenCentral()
+  maven { url 'build/repos/test' }
+}
+
+buf {
+  publishSchema = true
+  checkSchemaAgainstLatestRelease = true
+  previousVersion = '2319'
+
+  imageArtifact {
+    groupId = 'foo'
+    artifactId = 'bar'
+    version = '2319'
+  }
+}

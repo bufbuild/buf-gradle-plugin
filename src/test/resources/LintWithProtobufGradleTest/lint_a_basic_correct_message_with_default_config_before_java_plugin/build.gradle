@@ -1,0 +1,17 @@
+plugins {
+  id 'com.parmet.buf'
+  id 'java'
+  id 'com.google.protobuf' version "$protobufGradleVersion"
+}
+
+repositories {
+  mavenCentral()
+}
+
+protobuf {
+  protoc {
+    artifact = "com.google.protobuf:protoc:$protobufVersion"
+  }
+}
+
+compileJava.enabled = false

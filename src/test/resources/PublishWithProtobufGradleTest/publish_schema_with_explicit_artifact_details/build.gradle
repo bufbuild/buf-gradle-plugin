@@ -1,0 +1,33 @@
+plugins {
+  id 'java'
+  id 'com.google.protobuf' version "$protobufGradleVersion"
+  id 'com.parmet.buf'
+  id 'maven-publish'
+}
+
+repositories {
+  mavenCentral()
+}
+
+protobuf {
+  protoc {
+    artifact = "com.google.protobuf:protoc:$protobufVersion"
+  }
+}
+
+compileJava.enabled = false
+
+buf {
+  publishSchema = true
+  imageArtifact {
+    groupId = 'foo'
+    artifactId = 'bar'
+    version = '2319'
+  }
+}
+
+publishing {
+  repositories {
+    maven { url 'build/repos/test' }
+  }
+}

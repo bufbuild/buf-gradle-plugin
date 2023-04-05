@@ -1,0 +1,13 @@
+plugins {
+  id 'java'
+  id 'com.parmet.buf'
+  id 'maven-publish'
+}
+
+repositories {
+  mavenCentral()
+}
+
+buf {
+  publishSchema = true
+}

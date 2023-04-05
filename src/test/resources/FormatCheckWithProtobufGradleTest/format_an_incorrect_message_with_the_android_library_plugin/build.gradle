@@ -1,0 +1,46 @@
+buildscript {
+  repositories {
+    gradlePluginPortal()
+    google()
+  }
+
+  dependencies {
+    classpath "com.android.tools.build:gradle:$androidGradleVersion"
+    classpath "com.google.protobuf:protobuf-gradle-plugin:$protobufGradleVersion"
+  }
+}
+
+plugins {
+  id 'com.parmet.buf'
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'com.google.protobuf'
+
+repositories {
+  mavenCentral()
+  google()
+}
+
+protobuf {
+  protoc {
+    artifact = "com.google.protobuf:protoc:$protobufVersion"
+  }
+  generateProtoTasks {
+    all().each { task ->
+      task.builtins {
+        java {
+          option "lite"
+        }
+      }
+    }
+  }
+}
+
+android {
+  compileSdkVersion 31
+}
+
+dependencies {
+  implementation "com.google.protobuf:protobuf-javalite:$protobufVersion"
+}

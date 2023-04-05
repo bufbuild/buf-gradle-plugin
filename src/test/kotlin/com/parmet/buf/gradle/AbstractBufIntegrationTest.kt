@@ -1,17 +1,16 @@
-/*
- * Copyright (c) 2021 Andrew Parmet
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2023 Buf Technologies, Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 package com.parmet.buf.gradle
 
@@ -23,6 +22,7 @@ import org.junit.jupiter.api.TestInfo
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
 import java.nio.file.Paths
+import java.util.Locale
 
 abstract class AbstractBufIntegrationTest : IntegrationTest {
     @TempDir
@@ -39,7 +39,17 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
         File(projectDir, "settings.gradle").writeText("rootProject.name = 'testing'")
         File(projectDir, "gradle.properties").writeText("org.gradle.jvmargs=-Xmx5g")
 
-        val fixture = File("src/test/resources/${testInfo.testClass.get().simpleName}/${testInfo.testMethod.get().name}")
+        // TODO: The test name is dependent on the directory name.
+        // There is a change to sanitize the directory names to be compatible
+        // with Buf's license-header tool.
+        val testName = testInfo.testMethod.get().name
+            .replace(",", "")
+            .replace("--", "")
+            .replace(" ", "_")
+            .replace("-", "_")
+            .toLowerCase(Locale.US)
+        val fixture = File("src/test/resources/${testInfo.testClass.get().simpleName}/$testName")
+        assertWithMessage("Directory ${fixture.path} does not exist").that(fixture.exists()).isTrue()
         assertWithMessage("Failed to copy test fixture files").that(fixture.copyRecursively(projectDir)).isTrue()
     }
 

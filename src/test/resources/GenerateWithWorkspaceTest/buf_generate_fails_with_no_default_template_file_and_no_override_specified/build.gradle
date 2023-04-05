@@ -1,0 +1,8 @@
+plugins {
+  id 'com.parmet.buf'
+}
+
+buf {
+  generate {
+  }
+}

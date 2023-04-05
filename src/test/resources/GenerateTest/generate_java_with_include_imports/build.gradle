@@ -1,0 +1,24 @@
+plugins {
+  id 'java'
+  id 'com.parmet.buf'
+}
+
+repositories {
+  mavenCentral()
+}
+
+buf {
+  generate {
+    includeImports = true
+  }
+}
+
+compileJava.dependsOn 'bufGenerate'
+
+sourceSets.main.java {
+  srcDir 'build/bufbuild/generated/java'
+}
+
+dependencies {
+  implementation "com.google.protobuf:protobuf-java:$protobufVersion"
+}

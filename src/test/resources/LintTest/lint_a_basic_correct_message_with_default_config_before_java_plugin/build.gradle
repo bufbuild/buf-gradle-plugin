@@ -1,0 +1,8 @@
+plugins {
+  id 'com.parmet.buf'
+  id 'java'
+}
+
+repositories {
+  mavenCentral()
+}

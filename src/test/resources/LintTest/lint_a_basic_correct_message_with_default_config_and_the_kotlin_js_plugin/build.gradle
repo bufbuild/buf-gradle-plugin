@@ -1,0 +1,15 @@
+plugins {
+  id 'org.jetbrains.kotlin.js' version "$kotlinVersion"
+  id 'com.parmet.buf'
+}
+
+kotlin {
+  js {
+    browser()
+    nodejs()
+  }
+}
+
+repositories {
+  mavenCentral()
+}

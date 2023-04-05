@@ -1,0 +1,4 @@
+version: v1
+plugins:
+  - remote: buf.build/protocolbuffers/plugins/java:v3.20.0-1
+    out: java

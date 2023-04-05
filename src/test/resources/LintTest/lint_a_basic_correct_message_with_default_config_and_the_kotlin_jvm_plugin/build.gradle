@@ -1,0 +1,8 @@
+plugins {
+  id 'org.jetbrains.kotlin.jvm' version "$kotlinVersion"
+  id 'com.parmet.buf'
+}
+
+repositories {
+  mavenCentral()
+}

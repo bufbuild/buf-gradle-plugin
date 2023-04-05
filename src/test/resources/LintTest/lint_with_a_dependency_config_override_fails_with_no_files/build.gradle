@@ -1,0 +1,12 @@
+plugins {
+  id 'java'
+  id 'com.parmet.buf'
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  buf(fileTree('subdir') { include '*.yaml' })
+}

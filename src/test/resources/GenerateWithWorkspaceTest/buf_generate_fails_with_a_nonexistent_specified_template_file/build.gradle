@@ -1,0 +1,9 @@
+plugins {
+  id 'com.parmet.buf'
+}
+
+buf {
+  generate {
+    templateFileLocation = project.file("subdir/buf.gen.yaml")
+  }
+}
