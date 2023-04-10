@@ -42,7 +42,7 @@ internal fun Project.configureBufDependency() {
     createConfigurationWithDependency(
         BUF_BINARY_CONFIGURATION_NAME,
         mapOf(
-            "group" to "build.buf",
+            "group" to "com.parmet.buf",
             "name" to "buf",
             "version" to extension.toolArtifactVersion,
             "classifier" to "${extension.toolVersion}-$osPart-$archPart",

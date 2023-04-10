@@ -15,7 +15,7 @@ plugins {
     alias(libs.plugins.publishing)
 }
 
-group = "com.parmet"
+group = "build.buf"
 configurePublishing()
 
 allprojects {
@@ -46,8 +46,8 @@ configure<JavaPluginExtension> {
 gradlePlugin {
     plugins {
         create("buf") {
-            id = "com.parmet.buf"
-            implementationClass = "com.parmet.buf.gradle.BufPlugin"
+            id = "build.buf"
+            implementationClass = "build.buf.gradle.BufPlugin"
             displayName = ProjectInfo.name
             description = ProjectInfo.description
         }
