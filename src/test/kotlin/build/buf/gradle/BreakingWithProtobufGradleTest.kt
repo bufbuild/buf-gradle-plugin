@@ -19,7 +19,7 @@ import java.nio.file.Paths
 
 class BreakingWithProtobufGradleTest : AbstractBreakingTest() {
     override fun protoFile() =
-        Paths.get(protoDir.path, "parmet", "buf", "test", "v1", "test.proto")
+        Paths.get(protoDir.path, "build", "buf", "test", "v1", "test.proto")
 
     @Test
     fun `schema with multi-directory workspace`() {

@@ -3,7 +3,7 @@ import build.buf.gradle.GENERATED_DIR
 
 plugins {
     `java`
-    id("com.parmet.buf")
+    id("build.buf")
 }
 
 repositories {

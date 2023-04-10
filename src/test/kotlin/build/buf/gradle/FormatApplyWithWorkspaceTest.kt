@@ -18,5 +18,5 @@ import java.nio.file.Paths
 
 class FormatApplyWithWorkspaceTest : AbstractFormatApplyTest() {
     override fun protoFile() =
-        Paths.get(projectDir.path, "workspace", "parmet", "buf", "test", "v1", "test.proto")
+        Paths.get(projectDir.path, "workspace", "build", "buf", "test", "v1", "test.proto")
 }

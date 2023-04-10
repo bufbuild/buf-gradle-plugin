@@ -12,7 +12,7 @@ buildscript {
 }
 
 plugins {
-  id 'com.parmet.buf'
+  id 'build.buf'
 }
 
 apply plugin: 'com.android.library'

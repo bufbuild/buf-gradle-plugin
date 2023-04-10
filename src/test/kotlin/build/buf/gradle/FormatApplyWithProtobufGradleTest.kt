@@ -38,12 +38,12 @@ class FormatApplyWithProtobufGradleTest : AbstractFormatApplyTest() {
                 
                 syntax = "proto3";
                 
-                package parmet.buf.test.v1;
+                package build.buf.test.v1;
                 
                 message BasicMessage {}
     
             """.trimIndent(),
-            Paths.get(projectDir.path, "subdir", "parmet", "buf", "test", "v1", "test.proto")
+            Paths.get(projectDir.path, "subdir", "build", "buf", "test", "v1", "test.proto")
         )
     }
 
@@ -67,7 +67,7 @@ class FormatApplyWithProtobufGradleTest : AbstractFormatApplyTest() {
                 
                 syntax = "proto3";
                 
-                package parmet.buf.test.v1;
+                package build.buf.test.v1;
                 
                 import "google/protobuf/any.proto";
                 import "protokt/protokt.proto";
@@ -82,5 +82,5 @@ class FormatApplyWithProtobufGradleTest : AbstractFormatApplyTest() {
     }
 
     override fun protoFile() =
-        Paths.get(protoDir.path, "parmet", "buf", "test", "v1", "test.proto")
+        Paths.get(protoDir.path, "build", "buf", "test", "v1", "test.proto")
 }
