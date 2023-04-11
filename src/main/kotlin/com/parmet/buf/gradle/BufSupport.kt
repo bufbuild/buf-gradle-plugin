@@ -16,9 +16,8 @@ package com.parmet.buf.gradle
 
 import org.gradle.api.Project
 import org.gradle.api.Task
+import java.io.File
 import java.nio.charset.StandardCharsets
-
-const val BUF_BINARY_CONFIGURATION_NAME = "bufTool"
 
 internal fun Project.configureBufDependency() {
     val os = System.getProperty("os.name").toLowerCase()
@@ -36,19 +35,8 @@ internal fun Project.configureBufDependency() {
             in setOf("arm64", "aarch64") -> "arm64"
             else -> error("unsupported arch: $arch")
         }
-
     val extension = getExtension()
-
-    createConfigurationWithDependency(
-        BUF_BINARY_CONFIGURATION_NAME,
-        mapOf(
-            "group" to "com.parmet.buf",
-            "name" to "buf",
-            "version" to extension.toolArtifactVersion,
-            "classifier" to "${extension.toolVersion}-$osPart-$archPart",
-            "ext" to "exe"
-        )
-    )
+    downloadBufCLI("https://github.com/bufbuild/buf/releases/download/v${extension.toolArtifactVersion}/${extension.toolVersion}-$osPart-$archPart.tar.gz", buildDir)
 }
 
 internal fun Task.execBuf(vararg args: Any, customErrorMessage: ((String) -> String)? = null) {
@@ -57,7 +45,7 @@ internal fun Task.execBuf(vararg args: Any, customErrorMessage: ((String) -> Str
 
 internal fun Task.execBuf(args: Iterable<Any>, customErrorMessage: ((String) -> String)? = null) {
     with(project) {
-        val executable = singleFileFromConfiguration(BUF_BINARY_CONFIGURATION_NAME)
+        val executable = File(buildDir, "buf")
 
         if (!executable.canExecute()) {
             executable.setExecutable(true)

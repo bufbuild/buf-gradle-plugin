@@ -1,6 +1,8 @@
 [versions]
 # plugins
 animalsniffer = "1.5.4"
+compress = "1.14"
+download = "5.4.0"
 kotlin = "1.6.20"
 pluginPublish = "1.0.0"
 publishing = "0.22.0"
@@ -19,8 +21,10 @@ kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 pluginPublish = { id = "com.gradle.plugin-publish", version.ref = "pluginPublish" }
 publishing = { id = "com.vanniktech.maven.publish.base", version.ref = "publishing" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+download = { id = "de.undercouch.download", version.ref = "download" }
 
 [libraries]
+compress = { module = "org.apache.commons:commons-compress", version.ref = "compress"}
 # signature
 java8Signature = { module = "org.codehaus.mojo.signature:java18", version.ref = "java8Signature" }
 

@@ -1,5 +1,7 @@
 import com.gradle.publish.PublishTask.GRADLE_PUBLISH_KEY
 import com.gradle.publish.PublishTask.GRADLE_PUBLISH_SECRET
+import de.undercouch.gradle.tasks.download.Download
+import de.undercouch.gradle.tasks.download.Verify
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 repositories {
@@ -8,6 +10,7 @@ repositories {
 
 plugins {
     `kotlin-dsl`
+    alias(libs.plugins.download)
     alias(libs.plugins.kotlin)
     alias(libs.plugins.pluginPublish)
     alias(libs.plugins.spotless)
@@ -33,6 +36,7 @@ allprojects {
 
 dependencies {
     signature(libs.java8Signature) { artifact { type = "signature" } }
+    implementation(libs.compress)
 
     testImplementation(libs.junit)
     testImplementation(libs.truth)
