@@ -1,7 +1,5 @@
 import com.gradle.publish.PublishTask.GRADLE_PUBLISH_KEY
 import com.gradle.publish.PublishTask.GRADLE_PUBLISH_SECRET
-import de.undercouch.gradle.tasks.download.Download
-import de.undercouch.gradle.tasks.download.Verify
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 repositories {
