@@ -16,6 +16,6 @@ syntax = "proto3";
 
 package buf.test.v1;
 
-option java_package = "build.buf.test.v1";
+option java_package = "buf.test.v1";
 
 message BasicMessage {}
