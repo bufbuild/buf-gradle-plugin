@@ -40,7 +40,7 @@ abstract class AbstractFormatApplyTest : AbstractBufIntegrationTest() {
                 
                 syntax = "proto3";
                 
-                package build.buf.test.v1;
+                package buf.test.v1;
                 
                 message Foo {}
                 

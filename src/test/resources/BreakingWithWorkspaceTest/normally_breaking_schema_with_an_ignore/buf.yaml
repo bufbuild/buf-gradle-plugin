@@ -1,4 +1,4 @@
 version: v1
 breaking:
   ignore:
-    - proto
+    - buf
