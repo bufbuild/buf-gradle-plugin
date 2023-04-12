@@ -43,7 +43,7 @@ class FormatApplyWithProtobufGradleTest : AbstractFormatApplyTest() {
                 message BasicMessage {}
     
             """.trimIndent(),
-            Paths.get(projectDir.path, "subdir","buf", "test", "v1", "test.proto")
+            Paths.get(projectDir.path, "subdir", "buf", "test", "v1", "test.proto")
         )
     }
 
@@ -82,5 +82,5 @@ class FormatApplyWithProtobufGradleTest : AbstractFormatApplyTest() {
     }
 
     override fun protoFile() =
-        Paths.get(protoDir.path,"buf", "test", "v1", "test.proto")
+        Paths.get(protoDir.path, "buf", "test", "v1", "test.proto")
 }
