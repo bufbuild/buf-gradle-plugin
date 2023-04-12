@@ -14,7 +14,7 @@
 
 package com.parmet.buf.gradle
 
-import build.buf.gradle.downloadBufCLI
+import com.parmet.buf.gradle.downloadBufCLI
 import org.gradle.api.Project
 import org.gradle.api.Task
 import java.io.File

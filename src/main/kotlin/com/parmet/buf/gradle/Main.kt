@@ -1,4 +1,4 @@
-package build.buf.gradle
+package com.parmet.buf.gradle
 
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
