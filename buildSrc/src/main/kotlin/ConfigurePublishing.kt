@@ -46,7 +46,7 @@ private object Remote {
 
 object ProjectInfo {
     const val name = "Buf Gradle Plugin"
-    const val url = "https://github.com/andrewparmet/buf-gradle-plugin"
+    const val url = "https://github.com/bufbuild/buf-gradle-plugin"
     const val description = "Buf plugin for Gradle"
 }
 
@@ -60,7 +60,7 @@ fun Project.configurePublishing() {
                 password.set(Remote.password)
             }
         }
-        packageGroup.set("com.parmet")
+        packageGroup.set("build.buf")
     }
 
     configure<JavaPluginExtension> {
