@@ -1,7 +1,7 @@
 plugins {
   id 'org.jetbrains.kotlin.jvm' version "$kotlinVersion"
   id 'com.google.protobuf' version "$protobufGradleVersion"
-  id 'com.parmet.buf'
+  id 'build.buf'
 }
 
 repositories {
