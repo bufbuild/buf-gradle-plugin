@@ -56,7 +56,7 @@ fun Project.configurePublishing() {
     configure<NexusPublishExtension> {
         repositories {
             sonatype {
-                nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+                nexusUrl.set(uri("https://s01.oss.sonatype.org/"))
                 username.set(Remote.username)
                 password.set(Remote.password)
             }
