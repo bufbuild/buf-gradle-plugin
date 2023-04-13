@@ -18,6 +18,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.BasePlugin
 import org.gradle.kotlin.dsl.apply
+import org.gradle.kotlin.dsl.repositories
 
 const val BUF_CONFIGURATION_NAME = "buf"
 
@@ -35,6 +36,11 @@ class BufPlugin : Plugin<Project> {
     }
 
     private fun Project.configureBuf() {
+        repositories {
+            maven {
+                setUrl("https://s01.oss.sonatype.org/content/repositories/snapshots")
+            }
+        }
         configureBufDependency()
         configureLint()
         configureFormat()
