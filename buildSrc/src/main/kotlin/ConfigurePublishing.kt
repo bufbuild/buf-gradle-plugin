@@ -112,6 +112,14 @@ private fun MavenPublication.standardPom() {
                 name.set("Andrew Parmet")
                 email.set("andrew@parmet.com")
             }
+            developer {
+                id.set("bufbuild")
+                name.set("Buf")
+                email.set("dev@buf.build")
+                url.set("https://buf.build")
+                organization.set("Buf Techonologies, Inc.")
+                organizationUrl.set("https://buf.build")
+            }
         }
     }
 }
