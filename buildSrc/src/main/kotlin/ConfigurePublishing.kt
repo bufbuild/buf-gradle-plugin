@@ -112,6 +112,11 @@ private fun MavenPublication.standardPom() {
                 name.set("Andrew Parmet")
                 email.set("andrew@parmet.com")
             }
+            developer {
+                id.set("Buf Engineering")
+                name.set("Buf Engineering")
+                email.set("engineering@buf.build")
+            }
         }
     }
 }
