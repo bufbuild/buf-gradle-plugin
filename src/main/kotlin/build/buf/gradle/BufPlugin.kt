@@ -36,11 +36,6 @@ class BufPlugin : Plugin<Project> {
     }
 
     private fun Project.configureBuf() {
-        repositories {
-            maven {
-                setUrl("https://s01.oss.sonatype.org/content/repositories/snapshots")
-            }
-        }
         configureBufDependency()
         configureLint()
         configureFormat()
