@@ -18,7 +18,6 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.BasePlugin
 import org.gradle.kotlin.dsl.apply
-import org.gradle.kotlin.dsl.repositories
 
 const val BUF_CONFIGURATION_NAME = "buf"
 
