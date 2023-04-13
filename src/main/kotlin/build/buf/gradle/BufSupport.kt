@@ -33,7 +33,7 @@ internal fun Project.configureBufDependency() {
     val archPart =
         when (val arch = System.getProperty("os.arch").toLowerCase()) {
             in setOf("x86_64", "amd64") -> "x86_64"
-            in setOf("arm64", "aarch64") -> "arm64"
+            in setOf("arm64", "aarch64") -> "aarch_64"
             else -> error("unsupported arch: $arch")
         }
 
@@ -42,10 +42,10 @@ internal fun Project.configureBufDependency() {
     createConfigurationWithDependency(
         BUF_BINARY_CONFIGURATION_NAME,
         mapOf(
-            "group" to "com.parmet.buf",
+            "group" to "build.buf",
             "name" to "buf",
             "version" to extension.toolArtifactVersion,
-            "classifier" to "${extension.toolVersion}-$osPart-$archPart",
+            "classifier" to "$osPart-$archPart",
             "ext" to "exe"
         )
     )
