@@ -87,7 +87,7 @@ fun Project.configurePublishing() {
 
                 from(components.getByName("java"))
                 artifactId = project.name
-                version = project.version.toString()
+                version = "0.0.1-test"
                 groupId = project.group.toString()
             }
         }
@@ -126,4 +126,4 @@ private fun MavenPublication.standardPom() {
     }
 }
 
-fun Project.isRelease() = !version.toString().endsWith("-SNAPSHOT") || true
+fun Project.isRelease() = !version.toString().endsWith("-SNAPSHOT")
