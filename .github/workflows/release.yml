@@ -29,7 +29,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: |
-            publishMainPublicationToSonatypeRepository
+            publishToSonatype
             publishPlugins
             -Dorg.gradle.internal.http.socketTimeout=120000
             -Dorg.gradle.internal.network.retry.max.attempts=1
