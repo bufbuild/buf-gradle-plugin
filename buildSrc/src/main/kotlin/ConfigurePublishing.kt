@@ -81,17 +81,16 @@ fun Project.configurePublishing() {
         }
     }
 
-    configure<PublishingExtension> {
-        publications {
-            create<MavenPublication>("main") {
-
-                from(components.getByName("java"))
-                artifactId = project.name
-                version = "0.0.1-test"
-                groupId = project.group.toString()
-            }
-        }
-    }
+//    configure<PublishingExtension> {
+//        publications {
+//            create<MavenPublication>("main") {
+//                from(components.getByName("java"))
+//                artifactId = project.name
+//                version = "0.0.1-test"
+//                groupId = project.group.toString()
+//            }
+//        }
+//    }
 }
 
 private fun MavenPublication.standardPom() {
