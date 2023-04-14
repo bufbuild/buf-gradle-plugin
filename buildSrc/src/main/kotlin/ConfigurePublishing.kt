@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import io.github.gradlenexus.publishplugin.NexusPublishExtension
+import io.github.gradlenexus.publishplugin.NexusPublishPlugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.publish.PublishingExtension
@@ -78,6 +79,10 @@ fun Project.configurePublishing() {
                 sign(this)
             }
         }
+    } else {
+        the<PublishingExtension>().publications.withType<MavenPublication> {
+            standardPom()
+        }
     }
 
     configure<PublishingExtension> {
@@ -111,6 +116,13 @@ private fun MavenPublication.standardPom() {
                 id.set("Andrew Parmet")
                 name.set("Andrew Parmet")
                 email.set("andrew@parmet.com")
+            }
+        }
+        distributionManagement {
+            relocation {
+                groupId.set("build.buf")
+                artifactId.set("buf-gradle-plugin")
+                message.set("Moved to build.buf namespace under Buf Technologies.")
             }
         }
     }
