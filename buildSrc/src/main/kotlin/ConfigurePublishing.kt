@@ -126,4 +126,4 @@ private fun MavenPublication.standardPom() {
     }
 }
 
-fun Project.isRelease() = !version.toString().endsWith("-SNAPSHOT")
+fun Project.isRelease() = !version.toString().endsWith("-SNAPSHOT") || true
