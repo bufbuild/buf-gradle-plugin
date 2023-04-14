@@ -16,6 +16,7 @@ plugins {
 }
 
 group = "build.buf"
+version = "0.0.1-test"
 configurePublishing()
 
 allprojects {
