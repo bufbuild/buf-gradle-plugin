@@ -79,10 +79,6 @@ fun Project.configurePublishing() {
                 sign(this)
             }
         }
-    } else {
-        the<PublishingExtension>().publications.withType<MavenPublication> {
-            standardPom()
-        }
     }
 
     configure<PublishingExtension> {

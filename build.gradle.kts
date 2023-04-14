@@ -12,10 +12,10 @@ plugins {
     alias(libs.plugins.pluginPublish)
     alias(libs.plugins.spotless)
     alias(libs.plugins.animalsniffer)
+    alias(libs.plugins.publishing)
 }
 
 group = "com.parmet"
-version = "0.0.0-SNAPSHOT"
 configurePublishing()
 
 allprojects {
