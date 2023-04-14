@@ -56,7 +56,8 @@ fun Project.configurePublishing() {
     configure<NexusPublishExtension> {
         repositories {
             sonatype {
-                nexusUrl.set(uri("https://s01.oss.sonatype.org/"))
+                nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+                snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
                 username.set(Remote.username)
                 password.set(Remote.password)
             }
@@ -73,7 +74,6 @@ fun Project.configurePublishing() {
 
         configure<SigningExtension> {
             useInMemoryPgpKeys(Pgp.key, Pgp.password)
-
             the<PublishingExtension>().publications.withType<MavenPublication> {
                 standardPom()
                 sign(this)
@@ -84,6 +84,7 @@ fun Project.configurePublishing() {
     configure<PublishingExtension> {
         publications {
             create<MavenPublication>("main") {
+
                 from(components.getByName("java"))
                 artifactId = project.name
                 version = project.version.toString()
