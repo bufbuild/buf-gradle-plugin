@@ -25,11 +25,24 @@ jobs:
           distribution: temurin
           java-version: 11
           check-latest: true
-      - name: Build
+      - name: Publish to Gradle Plugins
         uses: gradle/gradle-build-action@v2
         with:
           arguments: |
-            publishToSonatype
+            publishPlugins
+            -Dorg.gradle.internal.http.socketTimeout=120000
+            -Dorg.gradle.internal.network.retry.max.attempts=1
+            -Dorg.gradle.internal.publish.checksums.insecure=true
+        env:
+          PGP_KEY: ${{ secrets.GPG_KEY_ARMORED }}
+          PGP_PASSWORD: ${{ secrets.GPG_PASSPHRASE }}
+          GRADLE_PORTAL_PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}
+          GRADLE_PORTAL_PUBLISH_SECRET: ${{ secrets.GRADLE_PUBLISH_SECRET }}
+      - name: Publish to Maven
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: |
+            publishMainPublicationToSonatypeRepository
             -Dorg.gradle.internal.http.socketTimeout=120000
             -Dorg.gradle.internal.network.retry.max.attempts=1
             -Dorg.gradle.internal.publish.checksums.insecure=true
@@ -38,5 +51,3 @@ jobs:
           OSSRH_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
           PGP_KEY: ${{ secrets.GPG_KEY_ARMORED }}
           PGP_PASSWORD: ${{ secrets.GPG_PASSPHRASE }}
-          GRADLE_PORTAL_PUBLISH_KEY: ${{ secrets.ACHIU_GRADLE_PUBLISH_KEY }}
-          GRADLE_PORTAL_PUBLISH_SECRET: ${{ secrets.ACHIU_GRADLE_PUBLISH_SECRET }}
