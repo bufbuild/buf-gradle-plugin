@@ -30,7 +30,7 @@ This plugin supports straightforward usage of `buf lint`, `buf format`, and `buf
 <!-- Added by: andrewparmet, at: Sun Oct  2 15:32:56 EDT 2022 -->
 
 <!--te-->
-<!-- Regenerate with `./gh-md-toc --insert README.md` -->
+<!-- Regenerate with `./scripts/gh-md-toc --insert README.md` -->
 
 ## Usage
 
