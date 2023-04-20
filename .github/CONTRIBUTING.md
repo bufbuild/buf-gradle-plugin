@@ -35,11 +35,6 @@ git rebase upstream/main
 git checkout -b cool_new_feature
 ```
 
-Make your changes, then ensure that `make test` still passes. (Note: If you're
-changing `protoc-gen-buf-gradle-plugin`, you should also run
-`make buildplugin` and `make generate` to
-build the plugin and re-generate its outputs before running the tests).
-
 ```
 git commit -a
 git push origin cool_new_feature
