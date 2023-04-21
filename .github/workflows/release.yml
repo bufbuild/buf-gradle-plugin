@@ -25,7 +25,7 @@ jobs:
           distribution: temurin
           java-version: 11
           check-latest: true
-      - name: Publish to Gradle Plugins
+      - name: Publish
         uses: gradle/gradle-build-action@v2
         with:
           arguments: |
