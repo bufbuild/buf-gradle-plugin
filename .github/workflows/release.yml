@@ -7,6 +7,7 @@ on:
   workflow_dispatch: {} # support manual runs
 permissions:
   contents: write
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -24,7 +25,7 @@ jobs:
           distribution: temurin
           java-version: 11
           check-latest: true
-      - name: Build
+      - name: Publish
         uses: gradle/gradle-build-action@v2
         with:
           arguments: |
@@ -35,9 +36,9 @@ jobs:
             -Dorg.gradle.internal.network.retry.max.attempts=1
             -Dorg.gradle.internal.publish.checksums.insecure=true
         env:
-          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-          PGP_KEY: ${{ secrets.PGP_KEY }}
-          PGP_PASSWORD: ${{ secrets.PGP_PASSWORD }}
-          GRADLE_PORTAL_PUBLISH_KEY: ${{ secrets.GRADLE_PORTAL_PUBLISH_KEY }}
-          GRADLE_PORTAL_PUBLISH_SECRET: ${{ secrets.GRADLE_PORTAL_PUBLISH_SECRET }}
+          OSSRH_USERNAME: ${{ secrets.SONATYPE_USER }}
+          OSSRH_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          PGP_KEY: ${{ secrets.GPG_KEY_ARMORED }}
+          PGP_PASSWORD: ${{ secrets.GPG_PASSPHRASE }}
+          GRADLE_PORTAL_PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}
+          GRADLE_PORTAL_PUBLISH_SECRET: ${{ secrets.GRADLE_PUBLISH_SECRET }}
