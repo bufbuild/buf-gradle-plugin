@@ -1,7 +1,7 @@
 Contributing
 ============
 
-We'd love your help making Connect better!
+We'd love your help making the plugin better!
 
 If you'd like to add new exported APIs, please [open an issue][open-issue]
 describing your proposal &mdash; discussing API changes ahead of time makes
@@ -18,9 +18,9 @@ you to accept the CLA when you open your pull request.
 [Fork][fork], then clone the repository:
 
 ```
-git clone git@github.com:your_github_username/connect-kotlin.git
-cd connect-kotlin
-git remote add upstream https://github.com/bufbuild/connect-kotlin.git
+git clone git@github.com:your_github_username/buf-gradle-plugin.git
+cd buf-gradle-plugin
+git remote add upstream https://github.com/bufbuild/buf-gradle-plugin.git
 git fetch upstream
 ```
 
@@ -34,11 +34,6 @@ git fetch upstream
 git rebase upstream/main
 git checkout -b cool_new_feature
 ```
-
-Make your changes, then ensure that `make test` still passes. (Note: If you're
-changing `protoc-gen-connect-kotlin`, you should also run
-`make buildplugin` and `make generate` to
-build the plugin and re-generate its outputs before running the tests).
 
 ```
 git commit -a
@@ -58,7 +53,7 @@ We're much more likely to approve your changes if you:
 * Write a [good commit message][commit-message].
 * Maintain backward compatibility.
 
-[fork]: https://github.com/bufbuild/connect-kotlin/fork
-[open-issue]: https://github.com/bufbuild/connect-kotlin/issues/new
-[cla]: https://cla-assistant.io/bufbuild/connect-kotlin
+[fork]: https://github.com/bufbuild/buf-gradle-plugin/fork
+[open-issue]: https://github.com/bufbuild/buf-gradle-plugin/issues/new
+[cla]: https://cla-assistant.io/bufbuild/buf-gradle-plugin
 [commit-message]: http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
