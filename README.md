@@ -1,7 +1,7 @@
 # buf-gradle-plugin
 
-[![Maven Central](https://img.shields.io/badge/dynamic/xml?color=orange&label=maven-central&prefix=v&query=%2F%2Fmetadata%2Fversioning%2Flatest&url=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fcom%2Fparmet%2Fbuf-gradle-plugin%2Fmaven-metadata.xml)](https://search.maven.org/artifact/com.parmet/buf-gradle-plugin)
-[![Gradle Portal](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/com/parmet/buf-gradle-plugin/maven-metadata.xml.svg?label=gradle-portal&color=yellowgreen)](https://plugins.gradle.org/plugin/com.parmet.buf)
+[![Maven Central](https://img.shields.io/badge/dynamic/xml?color=orange&label=maven-central&prefix=v&query=%2F%2Fmetadata%2Fversioning%2Flatest&url=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fbuild%2Fbuf%2Fbuf-gradle-plugin%2Fmaven-metadata.xml)](https://search.maven.org/artifact/build.buf/buf-gradle-plugin)
+[![Gradle Portal](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/build/buf/buf-gradle-plugin/maven-metadata.xml.svg?label=gradle-portal&color=yellowgreen)](https://plugins.gradle.org/plugin/build.buf)
 
 Integration for [Buf](https://github.com/bufbuild/buf) with Gradle. Supports integration purely between Buf and Gradle or additionally with the [protobuf-gradle-plugin](https://github.com/google/protobuf-gradle-plugin).
 
@@ -44,7 +44,7 @@ Apply the plugin:
 
 ``` kotlin
 plugins {
-    id("com.parmet.buf") version "<version>"
+    id("build.buf") version "<version>"
 }
 ```
 
@@ -53,11 +53,11 @@ or
 ``` kotlin
 buildscript {
     dependencies {
-        classpath("com.parmet:buf-gradle-plugin:<version>")
+        classpath("build.buf:buf-gradle-plugin:<version>")
     }
 }
 
-apply(plugin = "com.parmet.buf")
+apply(plugin = "build.buf")
 ```
 
 When applied the plugin creates tasks:
@@ -98,7 +98,7 @@ Or you can share a Buf configuration across projects and specify it via the dedi
 
 ``` kotlin
 dependencies {
-    buf("com.parmet:shared-buf-configuration:0.1.0")
+    buf("build.buf:shared-buf-configuration:0.1.0")
 }
 ```
 
@@ -121,7 +121,7 @@ plugins {
 publishing {
     publications {
         create<MavenPublication>("bufconfig") {
-            groupId = "com.parmet"
+            groupId = "build.buf"
             artifactId = "shared-buf-configuration"
             version = "0.1.0"
             artifact(file("buf.yaml"))
@@ -185,7 +185,7 @@ The plugin will run Buf to check the project's current schema:
 
 ```
 > Task :bufBreaking FAILED
-src/main/proto/parmet/service/test/test.proto:9:1:Previously present field "1" with name "test_content" on message "TestMessage" was deleted.
+src/main/proto/buf/service/test/test.proto:9:1:Previously present field "1" with name "test_content" on message "TestMessage" was deleted.
 ```
 
 #### Checking against a static version
@@ -236,11 +236,11 @@ If you want to use generated code in your build you must add the generated code 
 ``` kotlin
 // build.gradle.kts
 
-import com.parmet.buf.gradle.BUF_GENERATED_DIR
+import build.buf.gradle.BUF_GENERATED_DIR
 
 plugins {
     `java`
-    id("com.parmet.buf") version "<version>"
+    id("build.buf") version "<version>"
 }
 
 // Add a task dependency for compilation
