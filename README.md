@@ -3,7 +3,7 @@
 [![Maven Central](https://img.shields.io/badge/dynamic/xml?color=orange&label=maven-central&prefix=v&query=%2F%2Fmetadata%2Fversioning%2Flatest&url=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fbuild%2Fbuf%2Fbuf-gradle-plugin%2Fmaven-metadata.xml)](https://search.maven.org/artifact/build.buf/buf-gradle-plugin)
 [![Gradle Portal](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/build/buf/buf-gradle-plugin/maven-metadata.xml.svg?label=gradle-portal&color=yellowgreen)](https://plugins.gradle.org/plugin/build.buf)
 
-Integration for [Buf][buf] with Gradle. Supports integration purely between Buf and Gradle or additionally with the [protobuf-gradle-plugin][protobuf-gradle-plugin].
+This project provides support for integrating [Buf][buf] with Gradle. It also enables integration with the [Protobuf Gradle plugin][protobuf-gradle-plugin].
 
 This plugin supports straightforward usage of `buf lint`, `buf format`, and `buf generate`, and a self-contained integration between `buf build` and `buf breaking`.
 
