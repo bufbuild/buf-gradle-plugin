@@ -129,7 +129,7 @@ buf {
 
 ### `bufBreaking`
 
-`bufBreaking` is more complicated since it requires a previous version of the Protobuf schema to validate the current version. Buf's built-in Git integration isn't quite enough since it requires a buildable protobuf source set and the `protobuf-gradle-plugin`'s extraction step typically targets the project build directory, which is ephemeral and not committed.
+`bufBreaking` is more complicated since it requires a previous version of the Protobuf schema to validate the current version. Buf's built-in git integration isn't quite enough since it requires a buildable Protobuf source set, and the `protobuf-gradle-plugin`'s extraction step typically targets the project build directory which is ephemeral and not committed.
 
 This plugin uses `buf build` to create an image from the current Protobuf schema and publishes it as a Maven publication. In subsequent builds of the project the plugin will resolve the previously published schema image and run `buf breaking` against the current schema with the image as its reference.
 
