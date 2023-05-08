@@ -36,11 +36,11 @@ apply(plugin = "build.buf")
 ```
 
 When applied the plugin creates tasks:
-- `bufFormatApply` applies Buf's formatter to Protobuf code
-- `bufFormatCheck` validates Protobuf code using Buf's formatter
-- `bufLint` lints Protobuf code
-- `bufBreaking` checks Protobuf against a previous version for backwards-incompatible changes
-- `bufGenerate` generates Protobuf code
+- `bufFormatApply` applies [`buf format`](https://buf.build/docs/format/style/)
+- `bufFormatCheck` validates [`buf format`](https://buf.build/docs/format/style/)
+- `bufLint` validates [`buf lint`](https://buf.build/docs/breaking/overview/)
+- `bufBreaking` checks Protobuf against a previous version for backwards-incompatible changes through [`buf breaking`](https://buf.build/docs/breaking/overview/)
+- `bufGenerate` generates Protobuf code with [`buf generate`](https://buf.build/docs/generate/overview/)
 
 ### Examples
 
@@ -277,18 +277,17 @@ buf {
 
 We'd love your help making this plugin better!
 
-Extensive instructions for building the library and generator plugins locally,
+Extensive instructions for building the plugin locally,
 running tests, and contributing to the repository are available in our
 [`CONTRIBUTING.md` guide](./.github/CONTRIBUTING.md). Please check it out
 for details.
 
 ## Ecosystem
 
-* [connect-swift]: Swift clients for idiomatic gRPC & Connect RPC
+* [connect-Kotlin]: Kotlin clients for idiomatic gRPC & Connect RPC
 * [connect-web]: TypeScript clients for web browsers
 * [connect-go]: Service handlers and clients for GoLang
 * [Buf Studio][buf-studio]: web UI for ad-hoc RPCs
-* [connect-crosstest]: gRPC and gRPC-Web interoperability tests
 
 ## Status
 
@@ -301,8 +300,8 @@ Offered under the [Apache 2 license][license].
 
 [buf]: https://buf.build/
 [buf-studio]: https://studio.buf.build/
+[connect-kotlin]: https://github.com/bufbuild/connect-kotlin
 [connect-go]: https://github.com/bufbuild/connect-go
-[connect-swift]: https://github.com/bufbuild/connect-swift
 [connect-web]: https://www.npmjs.com/package/@bufbuild/connect-web
 [license]: https://github.com/bufbuild/connect-go/blob/main/LICENSE
 [protobuf-gradle-plugin]: https://github.com/google/protobuf-gradle-plugin
