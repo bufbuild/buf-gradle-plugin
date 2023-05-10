@@ -308,4 +308,3 @@ Offered under the [Apache 2 license][license].
 [license]: https://github.com/bufbuild/connect-go/blob/main/LICENSE
 [protobuf-gradle-plugin]: https://github.com/google/protobuf-gradle-plugin
 [slack]: https://buf.build/links/slack
-
