@@ -1,7 +1,5 @@
 import com.gradle.publish.PublishTask.GRADLE_PUBLISH_KEY
 import com.gradle.publish.PublishTask.GRADLE_PUBLISH_SECRET
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import io.github.gradlenexus.publishplugin.NexusPublishExtension
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
@@ -11,6 +9,7 @@ import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.the
 import org.gradle.kotlin.dsl.withType
 import org.gradle.plugins.signing.SigningExtension
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 repositories {
     gradlePluginPortal()
@@ -23,6 +22,7 @@ plugins {
     alias(libs.plugins.spotless)
     alias(libs.plugins.animalsniffer)
     alias(libs.plugins.publishing)
+    alias(libs.plugins.pluginNexusPublish)
 }
 
 private object ProjectInfo {
@@ -107,7 +107,7 @@ configure<JavaPluginExtension> {
 
 /* Publishing */
 apply(plugin = "io.github.gradle-nexus.publish-plugin")
-configure<NexusPublishExtension> {
+configure<io.github.gradlenexus.publishplugin.NexusPublishExtension> {
     repositories {
         sonatype {
             nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
