@@ -10,7 +10,8 @@ This plugin supports straightforward usage of `buf lint`, `buf format`, and `buf
 ## Usage
 
 This plugin assumes that Buf is configured for the project root with a configured `buf.work.yaml`. 
-Without specifying a `buf.work.yaml`, the plugin will scan all top-level directories for protobuf sources.
+You can check out how to get a Buf workspace set up through the [Buf docs][buf-docs].
+You are also able to use this plugin without specifying a `buf.work.yaml`. Without a specified yaml, the plugin will scan all top-level directories for protobuf sources.
 
 If the project includes the `protobuf-gradle-plugin`, then this plugin will use an implicit Buf workspace that includes all specified protobuf source set directories, the `include` dependencies that the protobuf-gradle-plugin extracts into `"$buildDir/extracted-include-protos"`, and the dependencies that the protobuf-gradle-plugin has been told to generate that are extracted into `"$buildDir/extracted-protos"`.
 
@@ -300,6 +301,7 @@ from early adopters. Join us on [Slack][slack]!
 Offered under the [Apache 2 license][license].
 
 [buf]: https://buf.build/
+[buf-docs]: https://buf.build/docs/tutorials/getting-started-with-buf-cli/
 [buf-studio]: https://studio.buf.build/
 [connect-kotlin]: https://github.com/bufbuild/connect-kotlin
 [connect-go]: https://github.com/bufbuild/connect-go
