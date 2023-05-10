@@ -281,8 +281,7 @@ We'd love your help making this plugin better!
 
 Extensive instructions for building the plugin locally,
 running tests, and contributing to the repository are available in our
-[`CONTRIBUTING.md` guide](./.github/CONTRIBUTING.md). Please check it out
-for details.
+[`CONTRIBUTING.md` guide](./.github/CONTRIBUTING.md).
 
 ## Ecosystem
 
