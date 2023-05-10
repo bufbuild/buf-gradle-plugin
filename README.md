@@ -41,7 +41,7 @@ When applied the plugin creates tasks:
 - `bufFormatApply` applies [`buf format`](https://buf.build/docs/format/style/)
 - `bufFormatCheck` validates [`buf format`](https://buf.build/docs/format/style/)
 - `bufLint` validates [`buf lint`](https://buf.build/docs/breaking/overview/)
-- `bufBreaking` checks Protobuf against a previous version for backwards-incompatible changes through [`buf breaking`](https://buf.build/docs/breaking/overview/)
+- `bufBreaking` checks Protobuf schemas against a previous version for backwards-incompatible changes through [`buf breaking`](https://buf.build/docs/breaking/overview/)
 - `bufGenerate` generates Protobuf code with [`buf generate`](https://buf.build/docs/generate/overview/)
 
 ### Examples
