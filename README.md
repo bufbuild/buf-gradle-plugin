@@ -286,7 +286,7 @@ for details.
 
 ## Ecosystem
 
-* [connect-Kotlin]: Kotlin clients for idiomatic gRPC & Connect RPC
+* [connect-kotlin]: Kotlin clients for idiomatic gRPC & Connect RPC
 * [connect-web]: TypeScript clients for web browsers
 * [connect-go]: Service handlers and clients for GoLang
 * [Buf Studio][buf-studio]: web UI for ad-hoc RPCs
