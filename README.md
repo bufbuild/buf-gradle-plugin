@@ -195,7 +195,7 @@ buf {
 
 ```kotlin
 buf {
-    enforceFormat = true // true by default
+    enforceFormat = true // True by default
 }
 ```
 
@@ -225,7 +225,7 @@ Then configure the plugin to check the schema:
 
 ``` kotlin
 buf {
-    // continue to publish the schema
+    // Continue to publish the schema
     publishSchema = true
 
     checkSchemaAgainstLatestRelease = true
@@ -245,10 +245,10 @@ If for some reason you do not want to dynamically check against the latest publi
 
 ``` kotlin
 buf {
-    // continue to publish the schema
+    // Continue to publish the schema
     publishSchema = true
 
-    // will always check against version 0.1.0
+    // Will always check against version 0.1.0
     previousVersion = "0.1.0"
 }
 ```
