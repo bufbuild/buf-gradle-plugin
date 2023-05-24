@@ -108,11 +108,7 @@ private fun Task.allProtoDirs(): List<Path> =
     (project.srcProtoDirs() + extractProtoDirs()).filter { project.anyProtos(it) }
 
 internal fun Project.srcProtoDirs() =
-    (the<SourceSetContainer>().flatMap { it.protoDirs(this) } + androidSrcProtoDirs()).filter {
-        !extractProtoDirs().contains(
-            it
-        )
-    }
+    (the<SourceSetContainer>().flatMap { it.protoDirs(this) } + androidSrcProtoDirs()).minus(extractProtoDirs())
 
 private fun Project.androidSrcProtoDirs() =
     extensions.findByName("android")
