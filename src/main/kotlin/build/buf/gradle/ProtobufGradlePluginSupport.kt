@@ -107,7 +107,7 @@ private fun Task.workspaceSymLinkEntries() =
 private fun Task.allProtoDirs(): List<Path> =
     (project.srcProtoDirs() + extractProtoDirs()).filter { project.anyProtos(it) }
 
-// NOTE: The hard coded extractProtoDirs are removed from the source set directories fixes issue
+// NOTE: The hard coded extractProtoDirs are removed from the source set directories to fix issue
 // https://github.com/bufbuild/buf-gradle-plugin/issues/132. Starting in version 0.9.2 of the
 // protobuf gradle plugin changed the directories in the proto srcDirs to include "extracted protos".
 //
