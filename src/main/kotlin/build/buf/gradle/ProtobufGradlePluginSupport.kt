@@ -151,7 +151,7 @@ private fun ExtensionAware.projectProtoSourceSetDirs() =
     extensions.getByName<SourceDirectorySet>("proto").srcDirs
         .filter { anyProtos(it) }
 
-private fun Project.makeMangledRelativizedPathStr(file: File) =
+internal fun Project.makeMangledRelativizedPathStr(file: File) =
     mangle(projectDir.toPath().relativize(file.toPath()))
 
 // Indicates if the specified file contains any proto files.

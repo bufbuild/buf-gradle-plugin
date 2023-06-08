@@ -39,7 +39,7 @@ private fun Task.execBufInSpecificDirectory(
     customErrorMessage: ((String) -> String)? = null
 ) {
     fun runWithArgs(file: File? = null) =
-        bufCommand + listOfNotNull(file?.let { mangle(project.projectDir.toPath().relativize(it.toPath())) }) + extraArgs
+        bufCommand + listOfNotNull(file?.let { project.makeMangledRelativizedPathStr(it) }) + extraArgs
 
     when {
         project.hasProtobufGradlePlugin() ->
