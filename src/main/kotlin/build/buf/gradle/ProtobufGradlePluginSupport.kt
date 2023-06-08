@@ -158,7 +158,7 @@ internal fun Project.makeMangledRelativizedPathStr(file: File) =
 private fun anyProtos(file: File) =
     file.walkTopDown().any { it.extension == "proto" }
 
-internal fun mangle(name: Path) =
+private fun mangle(name: Path) =
     name.toString().replace("-", "--").replace(File.separator, "-")
 
 internal inline fun <reified T : Task> Project.registerBufTask(
