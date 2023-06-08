@@ -15,6 +15,7 @@
 package build.buf.gradle
 
 import org.gradle.api.Task
+import java.io.File
 import java.nio.file.Path
 
 internal fun Task.execBufInSpecificDirectory(
@@ -37,12 +38,12 @@ private fun Task.execBufInSpecificDirectory(
     extraArgs: Iterable<String>,
     customErrorMessage: ((String) -> String)? = null
 ) {
-    fun runWithArgs(path: Path? = null) =
-        bufCommand + listOfNotNull(path?.let(::mangle)) + extraArgs
+    fun runWithArgs(file: File? = null) =
+        bufCommand + listOfNotNull(file?.let { mangle(project.projectDir.toPath().relativize(it.toPath())) }) + extraArgs
 
     when {
         project.hasProtobufGradlePlugin() ->
-            project.srcProtoDirs().forEach { execBuf(runWithArgs(it), customErrorMessage) }
+            project.projectDefinedProtoDirs().forEach { execBuf(runWithArgs(it), customErrorMessage) }
         project.hasWorkspace() ->
             execBuf(bufCommand, customErrorMessage)
         else ->
