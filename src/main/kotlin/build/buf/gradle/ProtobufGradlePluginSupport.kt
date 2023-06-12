@@ -109,8 +109,11 @@ private fun Task.workspaceSymLinkEntries() =
 // Returns all directories that have may have proto files relevant to processing the project's proto files. This
 // includes any proto files that are simply references (includes) as well as those that will be processed (code
 // generation or validation).
-private fun Task.allProtoDirs(): List<File> =
-    (project.allProtoSourceSetDirs() + project.file(Paths.get(BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN))).filter { anyProtos(it) }
+private fun Task.allProtoDirs() =
+    project.allProtoSourceSetDirs()
+        .plus(project.file(Paths.get(BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN)))
+        .filter { anyProtos(it) }
+        .toSet()
 
 // Returns the list of directories containing proto files defined in *this* project. The returned directories do *not*
 // include those that contain protos defined in dependencies and placed in the extracted-protos directory for codegen.
@@ -129,7 +132,8 @@ internal fun Project.projectDefinedProtoDirs() =
     allProtoSourceSetDirs() - file(Paths.get(BUILD_EXTRACTED_PROTOS_MAIN))
 
 // Returns deduplicated list of all proto source set directories.
-private fun Project.allProtoSourceSetDirs() = (projectProtoSourceSetDirs() + androidProtoSourceSetDirs()).toSet().toList()
+private fun Project.allProtoSourceSetDirs() =
+    projectProtoSourceSetDirs() + androidProtoSourceSetDirs()
 
 // Returns android proto source set directories that protobuf-gradle-plugin will codegen.
 private fun Project.androidProtoSourceSetDirs() =
@@ -141,16 +145,19 @@ private fun Project.androidProtoSourceSetDirs() =
         }
         .orEmpty()
         .flatMap { it.projectProtoSourceSetDirs() }
+        .toSet()
 
 // Returns all proto source set directories that the protobuf-gradle-plugin will codegen.
 private fun Project.projectProtoSourceSetDirs() =
     the<SourceSetContainer>().flatMap { it.projectProtoSourceSetDirs() }
+        .toSet()
 
 // Returns all directories within the "proto" source set of the receiver that actually contain proto files. This includes
 // directories explicitly added to the source set, as well as directories containing files from "protobuf" dependencies.
 private fun ExtensionAware.projectProtoSourceSetDirs() =
     extensions.getByName<SourceDirectorySet>("proto").srcDirs
         .filter { anyProtos(it) }
+        .toSet()
 
 internal fun Project.makeMangledRelativizedPathStr(file: File) =
     mangle(projectDir.toPath().relativize(file.toPath()))

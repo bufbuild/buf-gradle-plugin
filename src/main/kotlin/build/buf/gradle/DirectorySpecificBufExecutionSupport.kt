@@ -16,7 +16,6 @@ package build.buf.gradle
 
 import org.gradle.api.Task
 import java.io.File
-import java.nio.file.Path
 
 internal fun Task.execBufInSpecificDirectory(
     vararg bufCommand: String,
