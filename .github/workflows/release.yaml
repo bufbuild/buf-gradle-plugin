@@ -23,10 +23,6 @@ jobs:
           distribution: temurin
           java-version: 11
           check-latest: true
-      - name: Set release version
-        run: |
-          release_version=$(git describe --tags --abbrev=0 --exact-match)
-          export ORG_GRADLE_PROJECT_releaseVersion="${release_version:1}"
       - name: Publish
         uses: gradle/gradle-build-action@v2
         with:
