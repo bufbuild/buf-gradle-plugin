@@ -3,7 +3,7 @@
 animalsniffer = "1.5.4"
 kotlin = "1.6.20"
 pluginPublish = "1.1.0"
-publishing = "0.22.0"
+publishing = "0.25.3"
 spotless = "6.11.0"
 
 # signature
