@@ -63,7 +63,7 @@ abstract class CreateSymLinksToModulesTask : DefaultTask() {
                 logger.info("Creating symlink for $it at $symLinkFile")
                 Files.createSymbolicLink(
                     symLinkFile.toPath(),
-                    bufbuildDir.toPath().relativize(project.file(it).toPath())
+                    bufbuildDir.toPath().relativize(project.file(it).toPath()),
                 )
             }
         }
@@ -96,7 +96,7 @@ private fun Task.workspaceCommonConfig() {
     dependsOn(
         project
             .tasks
-            .matching { it::class.java.name == "com.google.protobuf.gradle.ProtobufExtract_Decorated" }
+            .matching { it::class.java.name == "com.google.protobuf.gradle.ProtobufExtract_Decorated" },
     )
     createsOutput()
 }
@@ -171,7 +171,7 @@ private fun mangle(name: Path) =
 
 internal inline fun <reified T : Task> Project.registerBufTask(
     name: String,
-    noinline configuration: T.() -> Unit
+    noinline configuration: T.() -> Unit,
 ): TaskProvider<T> {
     val taskProvider = tasks.register(name, configuration)
     withProtobufGradlePlugin {

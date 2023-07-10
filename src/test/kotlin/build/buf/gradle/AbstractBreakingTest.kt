@@ -61,7 +61,7 @@ abstract class AbstractBreakingTest : AbstractBufIntegrationTest() {
             """
                 Execution failed for task ':bufBreaking'.
                 > Some Protobuf files had breaking changes:
-            """.trimIndent().osIndependent()
+            """.trimIndent().osIndependent(),
         )
         assertThat(result.output).contains("Previously present message \"BasicMessage\" was deleted from file.")
     }

@@ -43,7 +43,7 @@ class FormatApplyWithProtobufGradleTest : AbstractFormatApplyTest() {
                 message BasicMessage {}
     
             """.trimIndent(),
-            Paths.get(projectDir.path, "subdir", "buf", "test", "v1", "test.proto")
+            Paths.get(projectDir.path, "subdir", "buf", "test", "v1", "test.proto"),
         )
     }
 
@@ -77,7 +77,7 @@ class FormatApplyWithProtobufGradleTest : AbstractFormatApplyTest() {
                   protokt.ProtoktFileOptions protokt_file_options = 2;
                 }
     
-            """.trimIndent()
+            """.trimIndent(),
         )
     }
 

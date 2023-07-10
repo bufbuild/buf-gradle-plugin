@@ -73,7 +73,7 @@ open class BufExtension {
 class ArtifactDetails(
     var groupId: String? = null,
     var artifactId: String? = null,
-    var version: String? = null
+    var version: String? = null,
 )
 
 class GenerateOptions(
@@ -86,5 +86,5 @@ class GenerateOptions(
     /**
      * Specify the location of buf.gen.yaml if not using one in the project root.
      */
-    var templateFileLocation: File? = null
+    var templateFileLocation: File? = null,
 )

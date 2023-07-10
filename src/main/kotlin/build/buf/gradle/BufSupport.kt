@@ -46,8 +46,8 @@ internal fun Project.configureBufDependency() {
             "name" to "buf",
             "version" to extension.toolVersion,
             "classifier" to "$osPart-$archPart",
-            "ext" to "exe"
-        )
+            "ext" to "exe",
+        ),
     )
 }
 

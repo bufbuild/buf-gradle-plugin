@@ -28,7 +28,7 @@ internal fun Project.getArtifactDetails(): ArtifactDetails? {
                 ArtifactDetails(
                     it.groupId,
                     "${it.artifactId}-bufbuild",
-                    it.version
+                    it.version,
                 )
             } ?: publications.size
         } else {
