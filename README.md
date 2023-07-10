@@ -126,7 +126,7 @@ An example, for Java code generation using the remote plugin:
 ``` yaml
 version: v1
 plugins:
-  - remote: buf.build/protocolbuffers/plugins/java:<version>
+  - plugin: buf.build/protocolbuffers/java:<version>
     out: java
 ```
 
