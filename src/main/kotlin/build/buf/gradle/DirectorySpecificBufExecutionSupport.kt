@@ -19,7 +19,7 @@ import java.io.File
 
 internal fun Task.execBufInSpecificDirectory(
     vararg bufCommand: String,
-    customErrorMessage: ((String) -> String)? = null
+    customErrorMessage: ((String) -> String)? = null,
 ) {
     execBufInSpecificDirectory(bufCommand.asList(), emptyList(), customErrorMessage)
 }
@@ -27,7 +27,7 @@ internal fun Task.execBufInSpecificDirectory(
 internal fun Task.execBufInSpecificDirectory(
     bufCommand: String,
     extraArgs: Iterable<String>,
-    customErrorMessage: ((String) -> String)
+    customErrorMessage: ((String) -> String),
 ) {
     execBufInSpecificDirectory(listOf(bufCommand), extraArgs, customErrorMessage)
 }
@@ -35,7 +35,7 @@ internal fun Task.execBufInSpecificDirectory(
 private fun Task.execBufInSpecificDirectory(
     bufCommand: Iterable<String>,
     extraArgs: Iterable<String>,
-    customErrorMessage: ((String) -> String)? = null
+    customErrorMessage: ((String) -> String)? = null,
 ) {
     fun runWithArgs(file: File? = null) =
         bufCommand + listOfNotNull(file?.let { project.makeMangledRelativizedPathStr(it) }) + extraArgs

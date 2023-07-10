@@ -25,7 +25,7 @@ abstract class LintTask : DefaultTask() {
     fun bufLint() {
         execBufInSpecificDirectory(
             "lint",
-            bufConfigFile()?.let { listOf("--config", it.readAndStripComments()) }.orEmpty()
+            bufConfigFile()?.let { listOf("--config", it.readAndStripComments()) }.orEmpty(),
         ) {
             """
                  |Some Protobuf files had lint violations:

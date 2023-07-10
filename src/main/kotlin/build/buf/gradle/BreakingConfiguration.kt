@@ -45,7 +45,7 @@ private fun Project.addSchemaDependency(artifactDetails: ArtifactDetails) {
 
     createConfigurationWithDependency(
         BUF_BREAKING_CONFIGURATION_NAME,
-        "${artifactDetails.groupAndArtifact()}:$versionSpecifier"
+        "${artifactDetails.groupAndArtifact()}:$versionSpecifier",
     )
 }
 

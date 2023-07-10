@@ -44,7 +44,7 @@ abstract class AbstractFormatApplyTest : AbstractBufIntegrationTest() {
                 
                 message Foo {}
                 
-            """.trimIndent()
+            """.trimIndent(),
         )
     }
 
@@ -54,7 +54,7 @@ abstract class AbstractFormatApplyTest : AbstractBufIntegrationTest() {
                 .withArguments(BUF_FORMAT_APPLY_TASK_NAME)
                 .build()
                 .task(":$BUF_FORMAT_APPLY_TASK_NAME")
-                ?.outcome
+                ?.outcome,
         ).isEqualTo(SUCCESS)
 
         assertThat(protoFile.toFile().readText()).isEqualTo(after)

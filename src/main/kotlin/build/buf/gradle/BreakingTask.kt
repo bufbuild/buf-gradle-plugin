@@ -24,7 +24,7 @@ abstract class BreakingTask : DefaultTask() {
             "breaking",
             bufBuildPublicationFile,
             "--against",
-            singleFileFromConfiguration(BUF_BREAKING_CONFIGURATION_NAME)
+            singleFileFromConfiguration(BUF_BREAKING_CONFIGURATION_NAME),
         ) {
             """
                 |Some Protobuf files had breaking changes:

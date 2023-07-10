@@ -52,7 +52,7 @@ abstract class AbstractFormatCheckTest : AbstractBufIntegrationTest() {
                     |  +message Foo {}
                     |  
                     |  Run './gradlew :bufFormatApply' to fix these violations.
-                """.trimMargin()
+                """.trimMargin(),
             )
     }
 

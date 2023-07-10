@@ -54,7 +54,7 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
     }
 
     class WrappedRunner(
-        private val delegate: GradleRunner
+        private val delegate: GradleRunner,
     ) {
         fun withArguments(vararg args: String) =
             WrappedRunner(delegate.withArguments(delegate.arguments + args))
@@ -74,7 +74,7 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
                 "-PprotobufGradleVersion=0.9.3",
                 "-PprotobufVersion=3.21.7",
                 "-PkotlinVersion=1.7.20",
-                "-PandroidGradleVersion=7.3.0"
+                "-PandroidGradleVersion=7.3.0",
             )
             .let { WrappedRunner(it) }
 

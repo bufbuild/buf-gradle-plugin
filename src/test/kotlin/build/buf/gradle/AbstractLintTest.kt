@@ -58,7 +58,7 @@ abstract class AbstractLintTest : LintTestUtilities, AbstractBufIntegrationTest(
             """
                 Execution failed for task ':bufLint'.
                 > Some Protobuf files had lint violations:
-            """.trimIndent().osIndependent()
+            """.trimIndent().osIndependent(),
         )
         assertThat(result.output).contains("Enum zero value name \"TEST_FOO\" should be suffixed with \"_UNSPECIFIED\"")
     }

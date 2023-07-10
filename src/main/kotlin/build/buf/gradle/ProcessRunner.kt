@@ -53,7 +53,7 @@ internal class ProcessRunner : Closeable {
         private val args: List<Any>,
         val exitCode: Int,
         val stdOut: ByteArray,
-        val stdErr: ByteArray
+        val stdErr: ByteArray,
     ) {
         override fun toString(): String {
             val builder = StringBuilder()
