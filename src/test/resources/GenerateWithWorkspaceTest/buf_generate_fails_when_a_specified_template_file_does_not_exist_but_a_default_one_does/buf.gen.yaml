@@ -1,4 +1,4 @@
 version: v1
 plugins:
-  - remote: buf.build/protocolbuffers/plugins/java:v3.20.0-1
+  - plugin: buf.build/protocolbuffers/java:v23.4
     out: java

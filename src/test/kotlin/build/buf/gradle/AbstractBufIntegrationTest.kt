@@ -72,7 +72,7 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
             .withPluginClasspath()
             .withArguments(
                 "-PprotobufGradleVersion=0.9.3",
-                "-PprotobufVersion=3.21.7",
+                "-PprotobufVersion=3.23.4",
                 "-PkotlinVersion=1.7.20",
                 "-PandroidGradleVersion=7.3.0"
             )
