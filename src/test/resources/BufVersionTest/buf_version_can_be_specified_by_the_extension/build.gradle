@@ -5,7 +5,7 @@ plugins {
 }
 
 buf {
-    toolVersion = project.properties.get("bufVersion")
+    toolVersion = "$bufVersion"
 }
 
 tasks.register("printBufVersion") {
