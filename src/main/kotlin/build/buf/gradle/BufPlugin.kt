@@ -35,13 +35,13 @@ class BufPlugin : Plugin<Project> {
     }
 
     private fun Project.configureBuf() {
-        configureBufDependency()
         configureLint()
         configureFormat()
         configureBuild()
         configureGenerate()
 
         afterEvaluate {
+            configureBufDependency()
             getArtifactDetails()?.let {
                 if (publishSchema()) {
                     configureImagePublication(it)

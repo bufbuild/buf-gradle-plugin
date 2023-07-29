@@ -27,7 +27,7 @@ internal fun Task.execBufInSpecificDirectory(
 internal fun Task.execBufInSpecificDirectory(
     bufCommand: String,
     extraArgs: Iterable<String>,
-    customErrorMessage: ((String) -> String),
+    customErrorMessage: (String) -> String,
 ) {
     execBufInSpecificDirectory(listOf(bufCommand), extraArgs, customErrorMessage)
 }

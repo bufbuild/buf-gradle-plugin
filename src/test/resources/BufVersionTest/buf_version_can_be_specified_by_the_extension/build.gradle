@@ -1,0 +1,16 @@
+import static build.buf.gradle.BufSupportKt.BUF_BINARY_CONFIGURATION_NAME
+
+plugins {
+    id "build.buf"
+}
+
+buf {
+    toolVersion = "asdf"
+}
+
+tasks.register("printBufVersion") {
+    def bufConfiguration = project.configurations.named("bufTool").get()
+    bufConfiguration.dependencies.forEach {
+        logger.quiet("Resolved Buf tool version: ${it.version}")
+    }
+}
