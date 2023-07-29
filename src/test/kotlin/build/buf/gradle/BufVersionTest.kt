@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test
 class BufVersionTest : AbstractBufIntegrationTest() {
     @Test
     fun `buf version can be specified by the extension`() {
-        val result = gradleRunner().withArguments("printBufVersion").build()
+        val result = gradleRunner().withArguments("printBufVersion", "-PbufVersion=asdf").build()
 
         val versionLine = result.output.lines().single { it.startsWith("Resolved") }
 

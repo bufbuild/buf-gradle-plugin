@@ -5,11 +5,11 @@ plugins {
 }
 
 buf {
-    toolVersion = "asdf"
+    toolVersion = project.properties.get("bufVersion")
 }
 
 tasks.register("printBufVersion") {
-    def bufConfiguration = project.configurations.named("bufTool").get()
+    def bufConfiguration = project.configurations.named(BUF_BINARY_CONFIGURATION_NAME).get()
     bufConfiguration.dependencies.forEach {
         logger.quiet("Resolved Buf tool version: ${it.version}")
     }
