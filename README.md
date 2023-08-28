@@ -290,7 +290,7 @@ running tests, and contributing to the repository are available in our
 ## Ecosystem
 
 * [connect-kotlin]: Kotlin clients for idiomatic gRPC & Connect RPC
-* [connect-web]: TypeScript clients for web browsers
+* [connect-es]: TypeScript clients for web browsers
 * [connect-go]: Service handlers and clients for GoLang
 * [Buf Studio][buf-studio]: Web UI for ad-hoc RPCs
 
