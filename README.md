@@ -307,8 +307,8 @@ Offered under the [Apache 2 license][license].
 [buf-docs]: https://buf.build/docs/tutorials/getting-started-with-buf-cli/
 [buf-studio]: https://buf.build/studio
 [connect-kotlin]: https://github.com/bufbuild/connect-kotlin
-[connect-go]: https://github.com/bufbuild/connect-go
-[connect-web]: https://www.npmjs.com/package/@bufbuild/connect-web
+[connect-go]: https://github.com/connectrpc/connect-go
+[connect-es]: https://github.com/connectrpc/connect-es
 [license]: https://github.com/bufbuild/connect-go/blob/main/LICENSE
 [protobuf-gradle-plugin]: https://github.com/google/protobuf-gradle-plugin
 [slack]: https://buf.build/links/slack
