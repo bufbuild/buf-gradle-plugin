@@ -2,7 +2,7 @@
 # plugins
 animalsniffer = "1.7.1"
 kotlin = "1.6.20"
-pluginPublish = "1.1.0"
+pluginPublish = "1.2.1"
 publishing = "0.22.0"
 spotless = "6.19.0"
 
