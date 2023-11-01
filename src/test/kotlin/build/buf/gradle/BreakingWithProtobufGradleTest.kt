@@ -18,8 +18,7 @@ import org.junit.jupiter.api.Test
 import java.nio.file.Paths
 
 class BreakingWithProtobufGradleTest : AbstractBreakingTest() {
-    override fun protoFile() =
-        Paths.get(protoDir.path, "buf", "test", "v1", "test.proto")
+    override fun protoFile() = Paths.get(protoDir.path, "buf", "test", "v1", "test.proto")
 
     @Test
     fun `schema with multi-directory workspace`() {

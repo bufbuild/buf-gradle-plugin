@@ -47,8 +47,7 @@ internal fun Project.bufConfigFile() =
         }
     }
 
-internal fun Task.bufConfigFile() =
-    project.bufConfigFile()
+internal fun Task.bufConfigFile() = project.bufConfigFile()
 
 private fun Project.resolveConfig(): File? {
     val ext = getExtension()

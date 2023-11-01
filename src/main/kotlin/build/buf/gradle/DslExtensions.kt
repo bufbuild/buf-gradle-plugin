@@ -19,8 +19,6 @@ import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.kotlin.dsl.configure
 
-fun Project.buf(cfg: BufExtension.() -> Unit) =
-    configure(cfg)
+fun Project.buf(cfg: BufExtension.() -> Unit) = configure(cfg)
 
-fun DependencyHandler.buf(dependencyNotation: Any): Dependency? =
-    add(BUF_CONFIGURATION_NAME, dependencyNotation)
+fun DependencyHandler.buf(dependencyNotation: Any): Dependency? = add(BUF_CONFIGURATION_NAME, dependencyNotation)

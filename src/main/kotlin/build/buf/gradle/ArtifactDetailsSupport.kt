@@ -38,11 +38,11 @@ internal fun Project.getArtifactDetails(): ArtifactDetails? {
     return if (publishSchema() || runBreakageCheck()) {
         checkNotNull(getExtension().imageArtifactDetails ?: inferredDetails as? ArtifactDetails) {
             """
-                Unable to determine image artifact details and schema publication or
-                compatibility check was requested; no image publication details
-                were provided and there was not exactly one publication from which
-                to infer them (found ${inferredDetails ?: 0}). Either configure the
-                plugin with imageArtifact() or configure a publication.
+            Unable to determine image artifact details and schema publication or
+            compatibility check was requested; no image publication details
+            were provided and there was not exactly one publication from which
+            to infer them (found ${inferredDetails ?: 0}). Either configure the
+            plugin with imageArtifact() or configure a publication.
             """.trimIndent().replace('\n', ' ')
         }
     } else {

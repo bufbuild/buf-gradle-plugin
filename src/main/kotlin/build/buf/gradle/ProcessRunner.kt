@@ -28,7 +28,10 @@ internal class ProcessRunner : Closeable {
     private val bufStdOut = ByteArrayOutputStream()
     private val bufStdErr = ByteArrayOutputStream()
 
-    fun shell(workingDir: File, args: List<Any>): Result {
+    fun shell(
+        workingDir: File,
+        args: List<Any>,
+    ): Result {
         val processBuilder = ProcessBuilder(args.map(Any::toString))
         processBuilder.directory(workingDir)
         val process = processBuilder.start()
@@ -38,7 +41,10 @@ internal class ProcessRunner : Closeable {
         return Result(args, exitCode, out.get(), err.get())
     }
 
-    private fun drain(input: InputStream, output: ByteArrayOutputStream): ByteArray {
+    private fun drain(
+        input: InputStream,
+        output: ByteArrayOutputStream,
+    ): ByteArray {
         output.reset()
         input.copyTo(output)
         return output.toByteArray()

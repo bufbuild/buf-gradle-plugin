@@ -23,13 +23,14 @@ internal fun TaskProvider<*>.dependsOn(obj: Any) {
     configure { dependsOn(obj) }
 }
 
-internal fun Project.createConfigurationWithDependency(configuration: String, notation: Any) {
+internal fun Project.createConfigurationWithDependency(
+    configuration: String,
+    notation: Any,
+) {
     configurations.create(configuration)
     dependencies { add(configuration, notation) }
 }
 
-internal fun Project.singleFileFromConfiguration(configuration: String) =
-    configurations.getByName(configuration).singleFile
+internal fun Project.singleFileFromConfiguration(configuration: String) = configurations.getByName(configuration).singleFile
 
-internal fun Task.singleFileFromConfiguration(configuration: String) =
-    project.singleFileFromConfiguration(configuration)
+internal fun Task.singleFileFromConfiguration(configuration: String) = project.singleFileFromConfiguration(configuration)

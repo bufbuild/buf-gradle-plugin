@@ -27,15 +27,17 @@ abstract class GenerateTask : DefaultTask() {
 
     private fun additionalArgs(): List<String> {
         val generateOptions = getExtension().generateOptions
-        val importOptions = if (generateOptions?.includeImports == true) {
-            listOf("--include-imports")
-        } else {
-            emptyList()
-        }
+        val importOptions =
+            if (generateOptions?.includeImports == true) {
+                listOf("--include-imports")
+            } else {
+                emptyList()
+            }
 
-        val templateFileOption = resolveTemplateFile()?.let {
-            listOf("--template", it.absolutePath)
-        } ?: emptyList()
+        val templateFileOption =
+            resolveTemplateFile()?.let {
+                listOf("--template", it.absolutePath)
+            } ?: emptyList()
 
         return importOptions + templateFileOption
     }
@@ -61,6 +63,5 @@ abstract class GenerateTask : DefaultTask() {
         }
     }
 
-    private fun File?.validOrNull() =
-        this?.takeIf { it.isFile && it.exists() }
+    private fun File?.validOrNull() = this?.takeIf { it.isFile && it.exists() }
 }

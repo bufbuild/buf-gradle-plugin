@@ -42,11 +42,9 @@ private val BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN =
 private val BUILD_EXTRACTED_PROTOS_MAIN =
     listOf("build", "extracted-protos", "main").joinToString(File.separator)
 
-internal fun Project.hasProtobufGradlePlugin() =
-    pluginManager.hasPlugin("com.google.protobuf")
+internal fun Project.hasProtobufGradlePlugin() = pluginManager.hasPlugin("com.google.protobuf")
 
-internal fun Project.withProtobufGradlePlugin(action: (AppliedPlugin) -> Unit) =
-    pluginManager.withPlugin("com.google.protobuf", action)
+internal fun Project.withProtobufGradlePlugin(action: (AppliedPlugin) -> Unit) = pluginManager.withPlugin("com.google.protobuf", action)
 
 internal fun Project.configureCreateSymLinksToModules() {
     tasks.register<CreateSymLinksToModulesTask>(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME) {
@@ -128,12 +126,10 @@ private fun Task.allProtoDirs() =
 //
 // Protobuf-gradle-plugin change that introduced this behavior: https://github.com/google/protobuf-gradle-plugin/pull/637/
 // Line: https://github.com/google/protobuf-gradle-plugin/blob/9d2a328a0d577bf4439d3b482a953715b3a03027/src/main/groovy/com/google/protobuf/gradle/ProtobufPlugin.groovy#L425
-internal fun Project.projectDefinedProtoDirs() =
-    allProtoSourceSetDirs() - file(Paths.get(BUILD_EXTRACTED_PROTOS_MAIN))
+internal fun Project.projectDefinedProtoDirs() = allProtoSourceSetDirs() - file(Paths.get(BUILD_EXTRACTED_PROTOS_MAIN))
 
 // Returns deduplicated list of all proto source set directories.
-private fun Project.allProtoSourceSetDirs() =
-    projectProtoSourceSetDirs() + androidProtoSourceSetDirs()
+private fun Project.allProtoSourceSetDirs() = projectProtoSourceSetDirs() + androidProtoSourceSetDirs()
 
 // Returns android proto source set directories that protobuf-gradle-plugin will codegen.
 private fun Project.androidProtoSourceSetDirs() =
@@ -159,15 +155,12 @@ private fun ExtensionAware.projectProtoSourceSetDirs() =
         .filter { anyProtos(it) }
         .toSet()
 
-internal fun Project.makeMangledRelativizedPathStr(file: File) =
-    mangle(projectDir.toPath().relativize(file.toPath()))
+internal fun Project.makeMangledRelativizedPathStr(file: File) = mangle(projectDir.toPath().relativize(file.toPath()))
 
 // Indicates if the specified directory contains any proto files.
-private fun anyProtos(directory: File) =
-    directory.walkTopDown().any { it.extension == "proto" }
+private fun anyProtos(directory: File) = directory.walkTopDown().any { it.extension == "proto" }
 
-private fun mangle(name: Path) =
-    name.toString().replace("-", "--").replace(File.separator, "-")
+private fun mangle(name: Path) = name.toString().replace("-", "--").replace(File.separator, "-")
 
 internal inline fun <reified T : Task> Project.registerBufTask(
     name: String,

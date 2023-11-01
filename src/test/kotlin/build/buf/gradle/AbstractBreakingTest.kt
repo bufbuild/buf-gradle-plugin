@@ -59,8 +59,8 @@ abstract class AbstractBreakingTest : AbstractBufIntegrationTest() {
         assertThat(result.task(":$BUF_BREAKING_TASK_NAME")?.outcome).isEqualTo(FAILED)
         assertThat(result.output).contains(
             """
-                Execution failed for task ':bufBreaking'.
-                > Some Protobuf files had breaking changes:
+            Execution failed for task ':bufBreaking'.
+            > Some Protobuf files had breaking changes:
             """.trimIndent().osIndependent(),
         )
         assertThat(result.output).contains("Previously present message \"BasicMessage\" was deleted from file.")
