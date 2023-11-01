@@ -30,5 +30,4 @@ internal fun Task.createsOutput() {
     doFirst { project.bufbuildDir.mkdirs() }
 }
 
-internal fun ArtifactDetails.groupAndArtifact() =
-    "$groupId:$artifactId"
+internal fun ArtifactDetails.groupAndArtifact() = "$groupId:$artifactId"

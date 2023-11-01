@@ -56,8 +56,8 @@ abstract class AbstractLintTest : LintTestUtilities, AbstractBufIntegrationTest(
         assertThat(result.task(":$BUF_LINT_TASK_NAME")?.outcome).isEqualTo(FAILED)
         assertThat(result.output).contains(
             """
-                Execution failed for task ':bufLint'.
-                > Some Protobuf files had lint violations:
+            Execution failed for task ':bufLint'.
+            > Some Protobuf files had lint violations:
             """.trimIndent().osIndependent(),
         )
         assertThat(result.output).contains("Enum zero value name \"TEST_FOO\" should be suffixed with \"_UNSPECIFIED\"")

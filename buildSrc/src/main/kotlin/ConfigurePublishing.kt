@@ -45,9 +45,9 @@ private object Remote {
 }
 
 object ProjectInfo {
-    const val name = "Buf Gradle Plugin"
-    const val url = "https://github.com/bufbuild/buf-gradle-plugin"
-    const val description = "Buf plugin for Gradle"
+    const val NAME = "Buf Gradle Plugin"
+    const val URL = "https://github.com/bufbuild/buf-gradle-plugin"
+    const val DESCRIPTION = "Buf plugin for Gradle"
 }
 
 fun Project.configurePublishing() {
@@ -95,16 +95,16 @@ fun Project.configurePublishing() {
 
 private fun MavenPublication.standardPom() {
     pom {
-        name.set(ProjectInfo.name)
-        description.set(ProjectInfo.description)
-        url.set(ProjectInfo.url)
+        name.set(ProjectInfo.NAME)
+        description.set(ProjectInfo.DESCRIPTION)
+        url.set(ProjectInfo.URL)
         scm {
-            url.set(ProjectInfo.url)
+            url.set(ProjectInfo.URL)
         }
         licenses {
             license {
                 name.set("The Apache License, Version 2.0")
-                url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
             }
         }
         developers {
@@ -118,7 +118,7 @@ private fun MavenPublication.standardPom() {
                 name.set("Buf")
                 email.set("dev@buf.build")
                 url.set("https://buf.build")
-                organization.set("Buf Techonologies, Inc.")
+                organization.set("Buf Technologies, Inc.")
                 organizationUrl.set("https://buf.build")
             }
         }

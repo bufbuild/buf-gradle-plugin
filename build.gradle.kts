@@ -48,16 +48,16 @@ gradlePlugin {
         create("buf") {
             id = "build.buf"
             implementationClass = "build.buf.gradle.BufPlugin"
-            displayName = ProjectInfo.name
-            description = ProjectInfo.description
+            displayName = ProjectInfo.NAME
+            description = ProjectInfo.DESCRIPTION
         }
     }
 }
 
 pluginBundle {
-    website = ProjectInfo.url
-    vcsUrl = ProjectInfo.url
-    description = ProjectInfo.description
+    website = ProjectInfo.URL
+    vcsUrl = ProjectInfo.URL
+    description = ProjectInfo.DESCRIPTION
     tags = listOf("protobuf", "kotlin", "buf")
 }
 

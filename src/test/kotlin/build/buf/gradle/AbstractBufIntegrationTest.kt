@@ -39,12 +39,13 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
         File(projectDir, "settings.gradle").writeText("rootProject.name = 'testing'")
         File(projectDir, "gradle.properties").writeText("org.gradle.jvmargs=-Xmx5g")
 
-        val testName = testInfo.testMethod.get().name
-            .replace(",", "")
-            .replace("--", "")
-            .replace(" ", "_")
-            .replace("-", "_")
-            .toLowerCase(Locale.US)
+        val testName =
+            testInfo.testMethod.get().name
+                .replace(",", "")
+                .replace("--", "")
+                .replace(" ", "_")
+                .replace("-", "_")
+                .toLowerCase(Locale.US)
         val fixture = File("src/test/resources/${testInfo.testClass.get().simpleName}/$testName")
         assertWithMessage("Directory ${fixture.path} does not exist").that(fixture.exists()).isTrue()
         assertWithMessage("Failed to copy test fixture files").that(fixture.copyRecursively(projectDir)).isTrue()
@@ -53,14 +54,11 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
     class WrappedRunner(
         private val delegate: GradleRunner,
     ) {
-        fun withArguments(vararg args: String) =
-            WrappedRunner(delegate.withArguments(delegate.arguments + args))
+        fun withArguments(vararg args: String) = WrappedRunner(delegate.withArguments(delegate.arguments + args))
 
-        fun build() =
-            delegate.build().also { println(it.output) }
+        fun build() = delegate.build().also { println(it.output) }
 
-        fun buildAndFail() =
-            delegate.buildAndFail().also { println(it.output) }
+        fun buildAndFail() = delegate.buildAndFail().also { println(it.output) }
     }
 
     fun gradleRunner() =
@@ -75,13 +73,14 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
             )
             .let { WrappedRunner(it) }
 
-    override fun checkRunner() =
-        gradleRunner().withArguments(CHECK_TASK_NAME)
+    override fun checkRunner() = gradleRunner().withArguments(CHECK_TASK_NAME)
 
-    fun publishRunner() =
-        gradleRunner().withArguments("publish")
+    fun publishRunner() = gradleRunner().withArguments("publish")
 
-    fun File.replace(oldValue: String, newValue: String) {
+    fun File.replace(
+        oldValue: String,
+        newValue: String,
+    ) {
         writeText(readText().replace(oldValue, newValue))
     }
 }
@@ -90,5 +89,4 @@ interface IntegrationTest {
     fun checkRunner(): AbstractBufIntegrationTest.WrappedRunner
 }
 
-fun String.osIndependent() =
-    replace("\n", lineSeparator)
+fun String.osIndependent() = replace("\n", lineSeparator)

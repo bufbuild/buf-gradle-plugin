@@ -82,7 +82,6 @@ class GenerateOptions(
      * dependency resolution to succeed.
      */
     var includeImports: Boolean? = null,
-
     /**
      * Specify the location of buf.gen.yaml if not using one in the project root.
      */

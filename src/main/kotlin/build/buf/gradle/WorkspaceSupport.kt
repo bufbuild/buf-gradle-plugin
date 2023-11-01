@@ -16,5 +16,4 @@ package build.buf.gradle
 
 import org.gradle.api.Project
 
-internal fun Project.hasWorkspace() =
-    file("buf.work.yaml").let { it.exists() && it.isFile }
+internal fun Project.hasWorkspace() = file("buf.work.yaml").let { it.exists() && it.isFile }

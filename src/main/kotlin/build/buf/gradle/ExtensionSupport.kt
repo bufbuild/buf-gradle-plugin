@@ -25,16 +25,13 @@ internal fun Project.createExtension() {
     extensions.create<BufExtension>(BUF_EXTENSION_NAME)
 }
 
-internal fun Project.getExtension() =
-    extensions.getByName<BufExtension>(BUF_EXTENSION_NAME)
+internal fun Project.getExtension() = extensions.getByName<BufExtension>(BUF_EXTENSION_NAME)
 
-internal fun Task.getExtension() =
-    project.getExtension()
+internal fun Task.getExtension() = project.getExtension()
 
 internal fun Project.runBreakageCheck() =
     with(getExtension()) {
         checkSchemaAgainstLatestRelease || previousVersion != null
     }
 
-internal fun Project.publishSchema() =
-    getExtension().publishSchema
+internal fun Project.publishSchema() = getExtension().publishSchema

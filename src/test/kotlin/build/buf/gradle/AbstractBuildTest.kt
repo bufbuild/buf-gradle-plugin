@@ -55,6 +55,5 @@ abstract class AbstractBuildTest : AbstractBufIntegrationTest() {
         assertThat(image).isNotEmpty()
     }
 
-    private fun buildRunner() =
-        gradleRunner().withArguments(":$BUF_BUILD_TASK_NAME")
+    private fun buildRunner() = gradleRunner().withArguments(":$BUF_BUILD_TASK_NAME")
 }

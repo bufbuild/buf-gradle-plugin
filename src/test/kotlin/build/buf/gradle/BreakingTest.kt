@@ -17,6 +17,5 @@ package build.buf.gradle
 import java.nio.file.Paths
 
 class BreakingTest : AbstractBreakingTest() {
-    override fun protoFile() =
-        Paths.get(projectDir.path, "buf", "test", "v1", "test.proto")
+    override fun protoFile() = Paths.get(projectDir.path, "buf", "test", "v1", "test.proto")
 }

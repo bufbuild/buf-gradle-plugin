@@ -51,11 +51,17 @@ internal fun Project.configureBufDependency() {
     )
 }
 
-internal fun Task.execBuf(vararg args: Any, customErrorMessage: ((String) -> String)? = null) {
+internal fun Task.execBuf(
+    vararg args: Any,
+    customErrorMessage: ((String) -> String)? = null,
+) {
     execBuf(args.asList(), customErrorMessage)
 }
 
-internal fun Task.execBuf(args: Iterable<Any>, customErrorMessage: ((String) -> String)? = null) {
+internal fun Task.execBuf(
+    args: Iterable<Any>,
+    customErrorMessage: ((String) -> String)? = null,
+) {
     with(project) {
         val executable = singleFileFromConfiguration(BUF_BINARY_CONFIGURATION_NAME)
 
