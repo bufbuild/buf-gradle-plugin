@@ -4,7 +4,7 @@ animalsniffer = "1.7.1"
 kotlin = "1.6.20"
 pluginPublish = "1.2.1"
 publishing = "0.25.3"
-spotless = "6.23.0"
+spotless = "6.23.3"
 
 # signature
 java8Signature = "1.0"
