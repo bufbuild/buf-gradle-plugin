@@ -86,4 +86,6 @@ class GenerateOptions(
      * Specify the location of buf.gen.yaml if not using one in the project root.
      */
     var templateFileLocation: File? = null,
+
+    var bufBuildPublicationFileName: String? = null,
 )
