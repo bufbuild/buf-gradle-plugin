@@ -56,11 +56,8 @@ internal fun Project.configureImagePublication(artifactDetails: ArtifactDetails)
     }
 }
 
-internal val Project.bufBuildPublicationFileName
-    get() = getExtension().bufBuildPublicationFileName
-
 internal val Project.bufBuildPublicationFile
-    get() = File(bufbuildDir, bufBuildPublicationFileName)
+    get() = File(bufbuildDir, getExtension().bufBuildPublicationFileName)
 
 internal val Task.bufBuildPublicationFile
     get() = project.bufBuildPublicationFile
