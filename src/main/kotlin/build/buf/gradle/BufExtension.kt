@@ -51,6 +51,8 @@ open class BufExtension {
      */
     var toolVersion = "1.27.1"
 
+    var bufBuildPublicationFileName = "image.json"
+
     internal var imageArtifactDetails: ArtifactDetails? = null
 
     /**
@@ -86,6 +88,4 @@ class GenerateOptions(
      * Specify the location of buf.gen.yaml if not using one in the project root.
      */
     var templateFileLocation: File? = null,
-
-    var bufBuildPublicationFileName: String? = null,
 )

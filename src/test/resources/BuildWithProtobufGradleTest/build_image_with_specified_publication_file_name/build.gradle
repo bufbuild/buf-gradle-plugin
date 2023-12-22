@@ -1,0 +1,28 @@
+plugins {
+  id 'java'
+  id 'com.google.protobuf' version "$protobufGradleVersion"
+  id 'build.buf'
+  id 'maven-publish'
+}
+
+repositories {
+  mavenCentral()
+}
+
+protobuf {
+  protoc {
+    artifact = "com.google.protobuf:protoc:$protobufVersion"
+  }
+}
+
+compileJava.enabled = false
+
+buf {
+  publishSchema = true
+  bufBuildPublicationFileName = "image.bin"
+  imageArtifact {
+    groupId = 'foo'
+    artifactId = 'bar'
+    version = '2319'
+  }
+}

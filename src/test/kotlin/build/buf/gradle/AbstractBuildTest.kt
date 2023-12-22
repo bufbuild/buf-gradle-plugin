@@ -22,12 +22,12 @@ import java.nio.file.Paths
 abstract class AbstractBuildTest : AbstractBufIntegrationTest() {
     @Test
     fun `build image with explicit artifact details`() {
-        assertImageGeneration()
+        assertImageGeneration("image.json")
     }
 
     @Test
     fun `build image with inferred artifact details`() {
-        assertImageGeneration()
+        assertImageGeneration("image.json")
     }
 
     @Test
@@ -35,6 +35,11 @@ abstract class AbstractBuildTest : AbstractBufIntegrationTest() {
         val result = buildRunner().buildAndFail()
         assertThat(result.output).contains("Unable to determine image artifact details")
         assertThat(result.output).contains("found 0")
+    }
+
+    @Test
+    fun `build image with specified publication file name`() {
+        assertImageGeneration("image.bin")
     }
 
     @Test
@@ -46,12 +51,12 @@ abstract class AbstractBuildTest : AbstractBufIntegrationTest() {
 
     @Test
     fun `build image with two publications should succeed if details are provided explicitly`() {
-        assertImageGeneration()
+        assertImageGeneration("image.json")
     }
 
-    private fun assertImageGeneration() {
+    private fun assertImageGeneration(publicationFileName: String) {
         assertThat(buildRunner().build().task(":$BUF_BUILD_TASK_NAME")?.outcome).isEqualTo(SUCCESS)
-        val image = Paths.get(projectDir.path, "build", "bufbuild", "image.json").toFile().readText()
+        val image = Paths.get(projectDir.path, "build", "bufbuild", publicationFileName).toFile().readText()
         assertThat(image).isNotEmpty()
     }
 

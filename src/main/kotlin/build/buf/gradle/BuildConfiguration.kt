@@ -24,7 +24,6 @@ import org.gradle.language.base.plugins.LifecycleBasePlugin.BUILD_GROUP
 import java.io.File
 
 const val BUF_BUILD_TASK_NAME = "bufBuild"
-const val BUF_BUILD_PUBLICATION_FILE_NAME_DEFAULT = "image.json"
 const val BUF_IMAGE_PUBLICATION_NAME = "bufImagePublication"
 
 internal fun Project.configureBuild() {
@@ -58,7 +57,7 @@ internal fun Project.configureImagePublication(artifactDetails: ArtifactDetails)
 }
 
 internal val Project.bufBuildPublicationFileName
-    get() = getExtension().generateOptions?.bufBuildPublicationFileName ?: BUF_BUILD_PUBLICATION_FILE_NAME_DEFAULT
+    get() = getExtension().bufBuildPublicationFileName
 
 internal val Project.bufBuildPublicationFile
     get() = File(bufbuildDir, bufBuildPublicationFileName)
