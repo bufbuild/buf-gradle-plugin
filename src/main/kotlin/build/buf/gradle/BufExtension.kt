@@ -51,6 +51,9 @@ open class BufExtension {
      */
     var toolVersion = "1.27.1"
 
+    /**
+     * Specify an image filename published by `bufBuild`.
+     */
     var bufBuildPublicationFileName = "image.json"
 
     internal var imageArtifactDetails: ArtifactDetails? = null

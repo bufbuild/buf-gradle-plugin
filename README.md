@@ -279,6 +279,14 @@ buf {
 }
 ```
 
+You can specify an image filename published by `bufBuild`:
+
+``` kotlin
+buf {
+    bufBuildPublicationFileName = "image.bin"
+}
+```
+
 ## Contributing
 
 We'd love your help making this plugin better!
