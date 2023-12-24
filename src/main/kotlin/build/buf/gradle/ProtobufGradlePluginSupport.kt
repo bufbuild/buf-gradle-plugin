@@ -63,7 +63,7 @@ abstract class PopulateProtobufGradlePluginWorkspaceTask : DefaultTask() {
                 it.copyRecursively(destination)
             } else {
                 // Create symlinks for project-owned files so that modifying tasks' effects propagate
-                logger.info("Creating symlink for $it at $destination; contained ${it.walkTopDown().toList()}")
+                logger.info("Creating symlink for $it at $destination")
                 Files.createSymbolicLink(
                     destination.toPath(),
                     bufbuildDir.toPath().relativize(project.file(it).toPath()),
