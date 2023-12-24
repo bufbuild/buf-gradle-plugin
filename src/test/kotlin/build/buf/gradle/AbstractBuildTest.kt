@@ -49,6 +49,15 @@ abstract class AbstractBuildTest : AbstractBufIntegrationTest() {
         assertImageGeneration()
     }
 
+    @Test
+    fun `build an image reusing an extension number`() {
+        val result = buildRunner().buildAndFail()
+        assertThat(result.output).contains(
+            "buf/test/v1/test.proto:23:14:extension with tag 1072 for message google.protobuf.MessageOptions already " +
+                "defined at validate/validate.proto:17:29",
+        )
+    }
+
     private fun assertImageGeneration() {
         assertThat(buildRunner().build().task(":$BUF_BUILD_TASK_NAME")?.outcome).isEqualTo(SUCCESS)
         val image = Paths.get(projectDir.path, "build", "bufbuild", "image.json").toFile().readText()
