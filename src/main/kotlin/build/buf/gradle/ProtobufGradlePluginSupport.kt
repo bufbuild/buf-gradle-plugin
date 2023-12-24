@@ -33,7 +33,7 @@ import java.nio.file.Paths
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
 
-const val CREATE_SYM_LINKS_TO_MODULES_TASK_NAME = "createSymLinksToModules"
+const val POPULATE_PROTOBUF_GRADLE_PLUGIN_WORKSPACE_TASK_NAME = "populateProtobufGradlePluginWorkspace"
 const val WRITE_WORKSPACE_YAML_TASK_NAME = "writeWorkspaceYaml"
 
 private val BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN =
@@ -46,23 +46,33 @@ internal fun Project.hasProtobufGradlePlugin() = pluginManager.hasPlugin("com.go
 
 internal fun Project.withProtobufGradlePlugin(action: (AppliedPlugin) -> Unit) = pluginManager.withPlugin("com.google.protobuf", action)
 
-internal fun Project.configureCreateSymLinksToModules() {
-    tasks.register<CreateSymLinksToModulesTask>(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME) {
+internal fun Project.configureCopyProtosToModules() {
+    tasks.register<PopulateProtobufGradlePluginWorkspaceTask>(POPULATE_PROTOBUF_GRADLE_PLUGIN_WORKSPACE_TASK_NAME) {
         workspaceCommonConfig()
     }
 }
 
-abstract class CreateSymLinksToModulesTask : DefaultTask() {
+abstract class PopulateProtobufGradlePluginWorkspaceTask : DefaultTask() {
     @TaskAction
-    fun createSymLinksToModules() {
+    fun populateProtobufGradlePluginWorkspace() {
         allProtoDirs().forEach {
-            val symLinkFile = File(bufbuildDir, project.makeMangledRelativizedPathStr(it))
-            if (!symLinkFile.exists()) {
-                logger.info("Creating symlink for $it at $symLinkFile")
-                Files.createSymbolicLink(
-                    symLinkFile.toPath(),
-                    bufbuildDir.toPath().relativize(project.file(it).toPath()),
-                )
+            if (it == buildExtractedProtosMainDir()) {
+                // Copy non-project-owned files so we can inject config files where needed without touching the originals
+                val destination = File(bufbuildDir, project.makeMangledRelativizedPathStr(it))
+                if (!destination.exists()) {
+                    logger.info("Copying protos for $it to $destination")
+                    it.copyRecursively(destination)
+                }
+            } else {
+                // Create symlinks for project-owned files so that modifying tasks' effects propagate
+                val symLinkFile = File(bufbuildDir, project.makeMangledRelativizedPathStr(it))
+                if (!symLinkFile.exists()) {
+                    logger.info("Creating symlink for $it at $symLinkFile; contained ${it.walkTopDown().toList()}")
+                    Files.createSymbolicLink(
+                        symLinkFile.toPath(),
+                        bufbuildDir.toPath().relativize(project.file(it).toPath()),
+                    )
+                }
             }
         }
     }
@@ -81,7 +91,7 @@ abstract class WriteWorkspaceYamlTask : DefaultTask() {
             """
                 |version: v1
                 |directories:
-                ${workspaceSymLinkEntries()}
+                ${workspaceDirectoryEntries()}
             """.trimMargin()
 
         logger.info("Writing generated buf.work.yaml:\n$bufWork")
@@ -99,7 +109,7 @@ private fun Task.workspaceCommonConfig() {
     createsOutput()
 }
 
-private fun Task.workspaceSymLinkEntries() =
+private fun Task.workspaceDirectoryEntries() =
     allProtoDirs()
         .map { project.makeMangledRelativizedPathStr(it) }
         .joinToString("\n") { "|  - $it" }
@@ -107,10 +117,10 @@ private fun Task.workspaceSymLinkEntries() =
 // Returns all directories that have may have proto files relevant to processing the project's proto files. This
 // includes any proto files that are simply references (includes) as well as those that will be processed (code
 // generation or validation).
-private fun Task.allProtoDirs() =
+private fun Task.allProtoDirs(): Set<File> =
     project.allProtoSourceSetDirs()
         .plus(project.file(Paths.get(BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN)))
-        .filter { anyProtos(it) }
+        .filter(::anyProtos)
         .toSet()
 
 // Returns the list of directories containing proto files defined in *this* project. The returned directories do *not*
@@ -126,13 +136,24 @@ private fun Task.allProtoDirs() =
 //
 // Protobuf-gradle-plugin change that introduced this behavior: https://github.com/google/protobuf-gradle-plugin/pull/637/
 // Line: https://github.com/google/protobuf-gradle-plugin/blob/9d2a328a0d577bf4439d3b482a953715b3a03027/src/main/groovy/com/google/protobuf/gradle/ProtobufPlugin.groovy#L425
-internal fun Project.projectDefinedProtoDirs() = allProtoSourceSetDirs() - file(Paths.get(BUILD_EXTRACTED_PROTOS_MAIN))
+internal fun Task.projectDefinedProtoDirs(): Set<File> =
+    project.allProtoSourceSetDirs()
+        .let {
+            val extractedProtosDir = buildExtractedProtosMainDir()
+            if (extractedProtosDir == null) {
+                it
+            } else {
+                it - extractedProtosDir
+            }
+        }
+
+internal fun Task.buildExtractedProtosMainDir(): File? = project.file(Paths.get(BUILD_EXTRACTED_PROTOS_MAIN)).takeIf(::anyProtos)
 
 // Returns deduplicated list of all proto source set directories.
-private fun Project.allProtoSourceSetDirs() = projectProtoSourceSetDirs() + androidProtoSourceSetDirs()
+private fun Project.allProtoSourceSetDirs(): Set<File> = projectProtoSourceSetDirs() + androidProtoSourceSetDirs()
 
 // Returns android proto source set directories that protobuf-gradle-plugin will codegen.
-private fun Project.androidProtoSourceSetDirs() =
+private fun Project.androidProtoSourceSetDirs(): Set<File> =
     extensions.findByName("android")
         ?.let { baseExtension ->
             val prop = baseExtension::class.declaredMemberProperties.single { it.name == "sourceSets" }
@@ -144,15 +165,13 @@ private fun Project.androidProtoSourceSetDirs() =
         .toSet()
 
 // Returns all proto source set directories that the protobuf-gradle-plugin will codegen.
-private fun Project.projectProtoSourceSetDirs() =
-    the<SourceSetContainer>().flatMap { it.projectProtoSourceSetDirs() }
-        .toSet()
+private fun Project.projectProtoSourceSetDirs(): Set<File> = the<SourceSetContainer>().flatMap { it.projectProtoSourceSetDirs() }.toSet()
 
 // Returns all directories within the "proto" source set of the receiver that actually contain proto files. This includes
 // directories explicitly added to the source set, as well as directories containing files from "protobuf" dependencies.
-private fun ExtensionAware.projectProtoSourceSetDirs() =
+private fun ExtensionAware.projectProtoSourceSetDirs(): Set<File> =
     extensions.getByName<SourceDirectorySet>("proto").srcDirs
-        .filter { anyProtos(it) }
+        .filter(::anyProtos)
         .toSet()
 
 internal fun Project.makeMangledRelativizedPathStr(file: File) = mangle(projectDir.toPath().relativize(file.toPath()))
@@ -169,7 +188,7 @@ internal inline fun <reified T : Task> Project.registerBufTask(
     val taskProvider = tasks.register(name, configuration)
     withProtobufGradlePlugin {
         afterEvaluate {
-            taskProvider.dependsOn(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME)
+            taskProvider.dependsOn(POPULATE_PROTOBUF_GRADLE_PLUGIN_WORKSPACE_TASK_NAME)
             taskProvider.dependsOn(WRITE_WORKSPACE_YAML_TASK_NAME)
         }
     }

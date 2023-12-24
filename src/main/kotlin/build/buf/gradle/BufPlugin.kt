@@ -56,7 +56,7 @@ class BufPlugin : Plugin<Project> {
     private fun Project.configureBufWithProtobufGradle() {
         failForWorkspaceAndPlugin()
         afterEvaluate {
-            configureCreateSymLinksToModules()
+            configureCopyProtosToModules()
             configureCopyBufConfig()
             configureWriteWorkspaceYaml()
         }
