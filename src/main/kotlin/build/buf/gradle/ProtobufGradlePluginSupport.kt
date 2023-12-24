@@ -56,23 +56,18 @@ abstract class PopulateProtobufGradlePluginWorkspaceTask : DefaultTask() {
     @TaskAction
     fun populateProtobufGradlePluginWorkspace() {
         allProtoDirs().forEach {
-            if (it == buildExtractedProtosMainDir()) {
+            val destination = File(bufbuildDir, project.makeMangledRelativizedPathStr(it))
+            if (it == buildExtractedProtosMainDir() && !destination.exists()) {
                 // Copy non-project-owned files so we can inject config files where needed without touching the originals
-                val destination = File(bufbuildDir, project.makeMangledRelativizedPathStr(it))
-                if (!destination.exists()) {
-                    logger.info("Copying protos for $it to $destination")
-                    it.copyRecursively(destination)
-                }
+                logger.info("Copying protos for $it to $destination")
+                it.copyRecursively(destination)
             } else {
                 // Create symlinks for project-owned files so that modifying tasks' effects propagate
-                val symLinkFile = File(bufbuildDir, project.makeMangledRelativizedPathStr(it))
-                if (!symLinkFile.exists()) {
-                    logger.info("Creating symlink for $it at $symLinkFile; contained ${it.walkTopDown().toList()}")
-                    Files.createSymbolicLink(
-                        symLinkFile.toPath(),
-                        bufbuildDir.toPath().relativize(project.file(it).toPath()),
-                    )
-                }
+                logger.info("Creating symlink for $it at $destination; contained ${it.walkTopDown().toList()}")
+                Files.createSymbolicLink(
+                    destination.toPath(),
+                    bufbuildDir.toPath().relativize(project.file(it).toPath()),
+                )
             }
         }
     }
