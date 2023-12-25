@@ -11,7 +11,7 @@ java8Signature = "1.0"
 
 # test
 junit = "5.10.1"
-truth = "1.1.5"
+truth = "1.2.0"
 
 [plugins]
 animalsniffer = { id = "ru.vyarus.animalsniffer", version.ref = "animalsniffer" }
