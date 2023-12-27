@@ -52,7 +52,6 @@ internal fun Project.configureImagePublication(artifactDetails: ArtifactDetails)
             artifactId = artifactDetails.artifactId
             version = artifactDetails.version
 
-
             artifact(bufBuildPublicationFile) {
                 builtBy(tasks.named(BUF_BUILD_TASK_NAME))
                 extension = specifiedExtension

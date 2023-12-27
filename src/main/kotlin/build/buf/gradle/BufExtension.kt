@@ -53,7 +53,7 @@ open class BufExtension {
     var toolVersion = "1.27.1"
 
     /**
-     * Specify an image filename published by `bufBuild`.
+     * Specify an image file extension published by `bufBuild`.
      */
     var bufBuildPublicationFileExtension: AvailablePublicationFileExtension = AvailablePublicationFileExtension.JSON
 
