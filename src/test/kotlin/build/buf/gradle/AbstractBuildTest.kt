@@ -17,6 +17,8 @@ package build.buf.gradle
 import com.google.common.truth.Truth.assertThat
 import org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.EnumSource
 import java.nio.file.Paths
 
 abstract class AbstractBuildTest : AbstractBufIntegrationTest() {
@@ -37,14 +39,11 @@ abstract class AbstractBuildTest : AbstractBufIntegrationTest() {
         assertThat(result.output).contains("found 0")
     }
 
-    @Test
-    fun `build image with specified publication file extension`() {
-        var before = ""
-        AvailablePublicationFileExtension.values().forEach { now ->
-            buildFile.replace("bufBuildPublicationFileExtension = '${before}'", "bufBuildPublicationFileExtension = '${now.extension}'")
-            assertImageGeneration("image${now.extension}")
-            before = now.extension
-        }
+    @ParameterizedTest
+    @EnumSource(AvailablePublicationFileExtension::class)
+    fun `build image with specified publication file extension`(extension: AvailablePublicationFileExtension) {
+        buildFile.replace("bufBuildPublicationFileExtension = 'json'", "bufBuildPublicationFileExtension = '${extension.extension}'")
+        assertImageGeneration("image.${extension.extension}")
     }
 
     @Test

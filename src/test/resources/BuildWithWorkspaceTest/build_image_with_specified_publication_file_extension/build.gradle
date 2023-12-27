@@ -10,7 +10,7 @@ repositories {
 
 buf {
   publishSchema = true
-  bufBuildPublicationFileExtension = ''
+  bufBuildPublicationFileExtension = 'json'
   imageArtifact {
     groupId = 'foo'
     artifactId = 'bar'

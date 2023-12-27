@@ -17,6 +17,8 @@ package build.buf.gradle
 import com.google.common.truth.Truth.assertThat
 import org.gradle.testkit.runner.TaskOutcome.FAILED
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.EnumSource
 import java.nio.file.Path
 
 abstract class AbstractBreakingTest : AbstractBufIntegrationTest() {
@@ -28,6 +30,14 @@ abstract class AbstractBreakingTest : AbstractBufIntegrationTest() {
 
     @Test
     fun `breaking schema with latest-release as version`() {
+        publishRunner().build()
+        checkBreaking()
+    }
+
+    @ParameterizedTest
+    @EnumSource(AvailablePublicationFileExtension::class)
+    fun `breaking schema with specified publication file extension`(extension: AvailablePublicationFileExtension) {
+        buildFile.replace("bufBuildPublicationFileExtension = 'json'", "bufBuildPublicationFileExtension = '${extension.extension}'")
         publishRunner().build()
         checkBreaking()
     }

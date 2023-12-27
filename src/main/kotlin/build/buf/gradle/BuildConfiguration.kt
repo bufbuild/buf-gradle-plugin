@@ -44,21 +44,25 @@ internal fun Project.configureBuild() {
 internal fun Project.configureImagePublication(artifactDetails: ArtifactDetails) {
     logger.info("Publishing buf schema image to ${artifactDetails.groupAndArtifact()}:${artifactDetails.version}")
 
+    val specifiedExtension = getExtension().bufBuildPublicationFileExtension.extension
+
     the<PublishingExtension>().publications {
         create<MavenPublication>(BUF_IMAGE_PUBLICATION_NAME) {
             groupId = artifactDetails.groupId
             artifactId = artifactDetails.artifactId
             version = artifactDetails.version
 
+
             artifact(bufBuildPublicationFile) {
                 builtBy(tasks.named(BUF_BUILD_TASK_NAME))
+                extension = specifiedExtension
             }
         }
     }
 }
 
 internal val Project.bufBuildPublicationFile
-    get() = File(bufbuildDir, BUF_BUILD_PUBLICATION_FILE_BASE_NAME + getExtension().bufBuildPublicationFileExtension.extension)
+    get() = File(bufbuildDir, "$BUF_BUILD_PUBLICATION_FILE_BASE_NAME.${getExtension().bufBuildPublicationFileExtension.extension}")
 
 internal val Task.bufBuildPublicationFile
     get() = project.bufBuildPublicationFile

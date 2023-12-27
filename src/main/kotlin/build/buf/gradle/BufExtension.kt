@@ -77,24 +77,18 @@ open class BufExtension {
 }
 
 enum class AvailablePublicationFileExtension(val extension: String) {
-    BINPB(".binpb"),
-    BINPB_GZ(".binpb.gz"),
-    BINPB_ZST(".binpb.zst"),
-    BIN(".bin"),
-    BIN_GZ(".bin.gz"),
-    BIN_ZST(".bin.zst"),
-    JSON(".json"),
-    JSON_GZ(".json.gz"),
-    JSON_ZST(".json.zst"),
-    TXTPB(".txtpb"),
-    TXTPB_GZ(".txtpb.gz"),
-    TXTPB_ZST(".txtpb.zst"),
-    TAR(".tar"),
-//    TAR_GZ(".tar.gz"),
-    TGZ(".tgz"),
-//    TAR_ZST(".tar.zst"),
-    ZIP(".zip"),
-    GIT(".git"),
+    BINPB("binpb"),
+    BINPB_GZ("binpb.gz"),
+    BINPB_ZST("binpb.zst"),
+    BIN("bin"),
+    BIN_GZ("bin.gz"),
+    BIN_ZST("bin.zst"),
+    JSON("json"),
+    JSON_GZ("json.gz"),
+    JSON_ZST("json.zst"),
+    TXTPB("txtpb"),
+    TXTPB_GZ("txtpb.gz"),
+    TXTPB_ZST("txtpb.zst"),
     ;
 }
 

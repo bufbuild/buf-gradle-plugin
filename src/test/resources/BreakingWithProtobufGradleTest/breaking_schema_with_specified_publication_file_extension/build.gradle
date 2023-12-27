@@ -7,6 +7,7 @@ plugins {
 
 repositories {
   mavenCentral()
+  maven { url 'build/repos/test' }
 }
 
 protobuf {
@@ -17,12 +18,21 @@ protobuf {
 
 compileJava.enabled = false
 
+publishing {
+  repositories {
+    maven { url 'build/repos/test' }
+  }
+}
+
 buf {
   publishSchema = true
+  //previousVersion = '2319'
   bufBuildPublicationFileExtension = 'json'
+
   imageArtifact {
     groupId = 'foo'
     artifactId = 'bar'
     version = '2319'
   }
 }
+

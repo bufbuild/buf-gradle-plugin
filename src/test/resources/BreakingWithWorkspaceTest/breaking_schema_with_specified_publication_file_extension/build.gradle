@@ -6,12 +6,20 @@ plugins {
 
 repositories {
   mavenCentral()
+  maven { url 'build/repos/test' }
+}
+
+publishing {
+  repositories {
+    maven { url 'build/repos/test' }
+  }
 }
 
 buf {
   publishSchema = true
+  //previousVersion = '2319'
   bufBuildPublicationFileExtension = 'json'
-  toolVersion = '1.28.1'
+
   imageArtifact {
     groupId = 'foo'
     artifactId = 'bar'
