@@ -38,8 +38,13 @@ abstract class AbstractBuildTest : AbstractBufIntegrationTest() {
     }
 
     @Test
-    fun `build image with specified publication file name`() {
-        assertImageGeneration("image.bin")
+    fun `build image with specified publication file extension`() {
+        var before = ""
+        AvailablePublicationFileExtension.values().forEach { now ->
+            buildFile.replace("bufBuildPublicationFileExtension = '${before}'", "bufBuildPublicationFileExtension = '${now.extension}'")
+            assertImageGeneration("image${now.extension}")
+            before = now.extension
+        }
     }
 
     @Test

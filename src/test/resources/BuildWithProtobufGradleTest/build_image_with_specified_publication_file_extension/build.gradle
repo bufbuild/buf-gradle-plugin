@@ -19,7 +19,7 @@ compileJava.enabled = false
 
 buf {
   publishSchema = true
-  bufBuildPublicationFileName = "image.bin"
+  bufBuildPublicationFileExtension = ''
   imageArtifact {
     groupId = 'foo'
     artifactId = 'bar'

@@ -10,7 +10,8 @@ repositories {
 
 buf {
   publishSchema = true
-  bufBuildPublicationFileName = "image.bin"
+  bufBuildPublicationFileExtension = ''
+  toolVersion = '1.28.1'
   imageArtifact {
     groupId = 'foo'
     artifactId = 'bar'

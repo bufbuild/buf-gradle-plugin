@@ -15,6 +15,7 @@
 package build.buf.gradle
 
 import org.gradle.api.Action
+import org.gradle.api.provider.Property
 import java.io.File
 
 open class BufExtension {
@@ -54,7 +55,7 @@ open class BufExtension {
     /**
      * Specify an image filename published by `bufBuild`.
      */
-    var bufBuildPublicationFileName = "image.json"
+    var bufBuildPublicationFileExtension: AvailablePublicationFileExtension = AvailablePublicationFileExtension.JSON
 
     internal var imageArtifactDetails: ArtifactDetails? = null
 
@@ -73,6 +74,28 @@ open class BufExtension {
     fun generate(configure: Action<GenerateOptions>) {
         generateOptions = (generateOptions ?: GenerateOptions()).apply(configure::execute)
     }
+}
+
+enum class AvailablePublicationFileExtension(val extension: String) {
+    BINPB(".binpb"),
+    BINPB_GZ(".binpb.gz"),
+    BINPB_ZST(".binpb.zst"),
+    BIN(".bin"),
+    BIN_GZ(".bin.gz"),
+    BIN_ZST(".bin.zst"),
+    JSON(".json"),
+    JSON_GZ(".json.gz"),
+    JSON_ZST(".json.zst"),
+    TXTPB(".txtpb"),
+    TXTPB_GZ(".txtpb.gz"),
+    TXTPB_ZST(".txtpb.zst"),
+    TAR(".tar"),
+//    TAR_GZ(".tar.gz"),
+    TGZ(".tgz"),
+//    TAR_ZST(".tar.zst"),
+    ZIP(".zip"),
+    GIT(".git"),
+    ;
 }
 
 class ArtifactDetails(
