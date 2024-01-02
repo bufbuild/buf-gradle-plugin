@@ -1,0 +1,6 @@
+version: v1
+deps:
+  - remote: buf.build
+    owner: envoyproxy
+    repository: protoc-gen-validate
+    commit: 71881f09a0c5420a9545a07987a86728
