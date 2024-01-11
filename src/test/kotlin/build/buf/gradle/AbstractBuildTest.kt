@@ -19,6 +19,7 @@ import org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
+import java.io.File
 import java.nio.file.Paths
 
 abstract class AbstractBuildTest : AbstractBufIntegrationTest() {
@@ -56,6 +57,16 @@ abstract class AbstractBuildTest : AbstractBufIntegrationTest() {
     @Test
     fun `build image with two publications should succeed if details are provided explicitly`() {
         assertImageGeneration("image.json")
+    }
+
+    @Test
+    fun `build an image reusing an extension number`() {
+        val result = buildRunner().buildAndFail()
+        val source = listOf("buf", "test", "v1", "test.proto").joinToString(File.separator)
+        assertThat(result.output).contains(
+            "$source:23:14:extension with tag 1072 for message google.protobuf.MessageOptions already defined at " +
+                "validate/validate.proto:17:29",
+        )
     }
 
     private fun assertImageGeneration(publicationFileName: String) {

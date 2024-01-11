@@ -1,0 +1,19 @@
+plugins {
+  id 'java'
+  id 'com.google.protobuf' version "$protobufGradleVersion"
+  id 'build.buf'
+}
+
+repositories {
+  mavenCentral()
+}
+
+protobuf {
+  protoc {
+    artifact = "com.google.protobuf:protoc:$protobufVersion"
+  }
+}
+
+dependencies {
+  protobuf 'io.envoyproxy.controlplane:api:1.0.41'
+}
