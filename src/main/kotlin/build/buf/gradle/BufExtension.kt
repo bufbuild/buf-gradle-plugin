@@ -51,6 +51,15 @@ open class BufExtension {
      */
     var toolVersion = "1.27.1"
 
+    internal var buildDetails: BuildDetails? = null
+
+    /**
+     * Specify the build details for image generation.
+     */
+    fun build(configure: Action<BuildDetails>) {
+        buildDetails = (buildDetails ?: BuildDetails()).apply(configure::execute)
+    }
+
     internal var imageArtifactDetails: ArtifactDetails? = null
 
     /**
@@ -69,6 +78,33 @@ open class BufExtension {
         generateOptions = (generateOptions ?: GenerateOptions()).apply(configure::execute)
     }
 }
+
+enum class ImageFormat(
+    internal val formatName: String,
+) {
+    BINPB("binpb"),
+    BIN("bin"),
+    JSON("json"),
+    TXTPB("txtpb"),
+}
+
+enum class CompressionFormat(
+    internal val ext: String,
+) {
+    GZ("gz"),
+    ZST("zst"),
+}
+
+class BuildDetails(
+    /**
+     * The format of the built image.
+     */
+    var imageFormat: ImageFormat = ImageFormat.JSON,
+    /**
+     * The compression, if any, of the built image.
+     */
+    var compressionFormat: CompressionFormat? = null,
+)
 
 class ArtifactDetails(
     var groupId: String? = null,

@@ -14,9 +14,12 @@
 
 package build.buf.gradle
 
+import build.buf.gradle.ImageGenerationSupport.replaceBuildDetails
 import com.google.common.truth.Truth.assertThat
 import org.gradle.testkit.runner.TaskOutcome.FAILED
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.MethodSource
 import java.nio.file.Path
 
 abstract class AbstractBreakingTest : AbstractBufIntegrationTest() {
@@ -28,6 +31,17 @@ abstract class AbstractBreakingTest : AbstractBufIntegrationTest() {
 
     @Test
     fun `breaking schema with latest-release as version`() {
+        publishRunner().build()
+        checkBreaking()
+    }
+
+    @ParameterizedTest
+    @MethodSource("build.buf.gradle.ImageGenerationSupport#publicationFileExtensionTestCase")
+    fun `breaking schema with specified publication file extension`(
+        format: String,
+        compression: String?,
+    ) {
+        replaceBuildDetails(format, compression)
         publishRunner().build()
         checkBreaking()
     }

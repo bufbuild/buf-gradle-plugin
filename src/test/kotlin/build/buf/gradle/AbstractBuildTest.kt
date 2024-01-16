@@ -14,21 +14,24 @@
 
 package build.buf.gradle
 
+import build.buf.gradle.ImageGenerationSupport.replaceBuildDetails
 import com.google.common.truth.Truth.assertThat
 import org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.MethodSource
 import java.io.File
 import java.nio.file.Paths
 
 abstract class AbstractBuildTest : AbstractBufIntegrationTest() {
     @Test
     fun `build image with explicit artifact details`() {
-        assertImageGeneration()
+        assertImageGeneration("image.json")
     }
 
     @Test
     fun `build image with inferred artifact details`() {
-        assertImageGeneration()
+        assertImageGeneration("image.json")
     }
 
     @Test
@@ -36,6 +39,17 @@ abstract class AbstractBuildTest : AbstractBufIntegrationTest() {
         val result = buildRunner().buildAndFail()
         assertThat(result.output).contains("Unable to determine image artifact details")
         assertThat(result.output).contains("found 0")
+    }
+
+    @ParameterizedTest
+    @MethodSource("build.buf.gradle.ImageGenerationSupport#publicationFileExtensionTestCase")
+    fun `build image with specified publication file extension`(
+        format: String,
+        compression: String?,
+    ) {
+        replaceBuildDetails(format, compression)
+        val extension = format + (compression?.let { ".$compression" } ?: "")
+        assertImageGeneration("image.$extension")
     }
 
     @Test
@@ -47,7 +61,7 @@ abstract class AbstractBuildTest : AbstractBufIntegrationTest() {
 
     @Test
     fun `build image with two publications should succeed if details are provided explicitly`() {
-        assertImageGeneration()
+        assertImageGeneration("image.json")
     }
 
     @Test
@@ -60,9 +74,9 @@ abstract class AbstractBuildTest : AbstractBufIntegrationTest() {
         )
     }
 
-    private fun assertImageGeneration() {
+    private fun assertImageGeneration(publicationFileName: String) {
         assertThat(buildRunner().build().task(":$BUF_BUILD_TASK_NAME")?.outcome).isEqualTo(SUCCESS)
-        val image = Paths.get(projectDir.path, "build", "bufbuild", "image.json").toFile().readText()
+        val image = Paths.get(projectDir.path, "build", "bufbuild", publicationFileName).toFile().readText()
         assertThat(image).isNotEmpty()
     }
 

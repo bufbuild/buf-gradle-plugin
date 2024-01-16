@@ -45,6 +45,7 @@ When applied, the plugin creates the following tasks:
 - `bufFormatApply` applies [`buf format`](https://buf.build/docs/format/style/)
 - `bufFormatCheck` validates [`buf format`](https://buf.build/docs/format/style/)
 - `bufLint` validates [`buf lint`](https://buf.build/docs/breaking/overview/)
+- `bufBuild` builds an image with [`buf build`](https://buf.build/docs/reference/cli/buf/build)
 - `bufBreaking` checks Protobuf schemas against a previous version for backwards-incompatible changes through [`buf breaking`](https://buf.build/docs/breaking/overview/)
 - `bufGenerate` generates Protobuf code with [`buf generate`](https://buf.build/docs/generate/overview/)
 
@@ -202,6 +203,34 @@ buf {
 ### `bufLint`
 
 `bufLint` is configured by creating `buf.yaml` in basic projects or projects using the `protobuf-gradle-plugin`. It is run automatically during the `check` task. Specification of `buf.yaml` is not supported for projects using a workspace.
+
+### `bufBuild`
+
+`bufBuild` is configured with the `build` closure:
+
+```kotlin
+buf {
+    build {
+        imageFormat = ImageFormat.JSON // JSON by default
+        compressionFormat = CompressionFormat.GZ // null by default (no compression)
+    }
+}
+```
+
+Available image formats are:
+
+- `binpb`
+- `bin`
+- `json`
+- `txtpb`
+
+Available compression formats are:
+
+- `gz`
+- `zst`
+
+The file is built in the `bufbuild` directory in the project's build directory and has the name `image` followed by
+the image format and optionally the compression format, e.g. `build/bufbuild/image.bin.zst`.
 
 ### `bufBreaking`
 
