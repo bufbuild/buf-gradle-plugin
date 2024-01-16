@@ -18,7 +18,7 @@ import com.google.common.truth.Truth.assertThat
 import org.gradle.testkit.runner.TaskOutcome.FAILED
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.EnumSource
+import org.junit.jupiter.params.provider.MethodSource
 import java.nio.file.Path
 
 abstract class AbstractBreakingTest : AbstractBufIntegrationTest() {
@@ -35,9 +35,16 @@ abstract class AbstractBreakingTest : AbstractBufIntegrationTest() {
     }
 
     @ParameterizedTest
-    @EnumSource(AvailablePublicationFileExtension::class)
-    fun `breaking schema with specified publication file extension`(extension: AvailablePublicationFileExtension) {
-        buildFile.replace("bufBuildPublicationFileExtension = 'json'", "bufBuildPublicationFileExtension = '${extension.extension}'")
+    @MethodSource("publicationFileExtensionTestCase")
+    fun `breaking schema with specified publication file extension`(format: String, compression: String?) {
+        buildFile.replace(
+            "bufBuildPublicationFileFormat = 'json'",
+            "bufBuildPublicationFileFormat = '${format}'"
+        )
+        buildFile.replace(
+            "bufBuildPublicationFileCompression = null",
+            "bufBuildPublicationFileCompression = ${compression?.let { "'${it}'" } ?: "null"}"
+        )
         publishRunner().build()
         checkBreaking()
     }

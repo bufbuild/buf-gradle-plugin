@@ -1,28 +1,29 @@
 plugins {
-  id 'java'
-  id 'build.buf'
-  id 'maven-publish'
+    id 'java'
+    id 'build.buf'
+    id 'maven-publish'
 }
 
 repositories {
-  mavenCentral()
-  maven { url 'build/repos/test' }
+    mavenCentral()
+    maven { url 'build/repos/test' }
 }
 
 publishing {
-  repositories {
-    maven { url 'build/repos/test' }
-  }
+    repositories {
+        maven { url 'build/repos/test' }
+    }
 }
 
 buf {
-  publishSchema = true
-  //previousVersion = '2319'
-  bufBuildPublicationFileExtension = 'json'
+    publishSchema = true
+    //previousVersion = '2319'
+    bufBuildPublicationFileFormat = 'json'
+    bufBuildPublicationFileCompression = null
 
-  imageArtifact {
-    groupId = 'foo'
-    artifactId = 'bar'
-    version = '2319'
-  }
+    imageArtifact {
+        groupId = 'foo'
+        artifactId = 'bar'
+        version = '2319'
+    }
 }

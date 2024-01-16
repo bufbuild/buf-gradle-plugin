@@ -1,20 +1,21 @@
 plugins {
-  id 'java'
-  id 'build.buf'
-  id 'maven-publish'
+    id 'java'
+    id 'build.buf'
+    id 'maven-publish'
 }
 
 repositories {
-  mavenCentral()
+    mavenCentral()
 }
 
 buf {
-  publishSchema = true
-  bufBuildPublicationFileExtension = 'json'
-  toolVersion = '1.28.1'
-  imageArtifact {
-    groupId = 'foo'
-    artifactId = 'bar'
-    version = '2319'
-  }
+    publishSchema = true
+    bufBuildPublicationFileFormat = 'json'
+    bufBuildPublicationFileCompression = null
+    toolVersion = '1.28.1'
+    imageArtifact {
+        groupId = 'foo'
+        artifactId = 'bar'
+        version = '2319'
+    }
 }

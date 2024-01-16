@@ -20,9 +20,11 @@ import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.TestInfo
 import org.junit.jupiter.api.io.TempDir
+import org.junit.jupiter.params.provider.Arguments
 import java.io.File
 import java.nio.file.Paths
 import java.util.Locale
+import java.util.stream.Stream
 
 abstract class AbstractBufIntegrationTest : IntegrationTest {
     @TempDir
@@ -82,6 +84,20 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
         newValue: String,
     ) {
         writeText(readText().replace(oldValue, newValue))
+    }
+
+    companion object {
+        @JvmStatic
+        fun publicationFileExtensionTestCase(): Stream<Arguments> {
+            val extensionCombinations = PublicationFileFormat.values().flatMap { format ->
+                val compressionsWithNull = PublicationFileCompression.values().map { it.compression } + listOf(null)
+
+                compressionsWithNull.map { compression ->
+                    Arguments.of(format.format, compression)
+                }
+            }
+            return Stream.of(*extensionCombinations.toTypedArray())
+        }
     }
 }
 
