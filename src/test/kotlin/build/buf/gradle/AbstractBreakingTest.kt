@@ -14,6 +14,7 @@
 
 package build.buf.gradle
 
+import build.buf.gradle.ImageGenerationSupport.replaceBuildDetails
 import com.google.common.truth.Truth.assertThat
 import org.gradle.testkit.runner.TaskOutcome.FAILED
 import org.junit.jupiter.api.Test
@@ -35,16 +36,12 @@ abstract class AbstractBreakingTest : AbstractBufIntegrationTest() {
     }
 
     @ParameterizedTest
-    @MethodSource("publicationFileExtensionTestCase")
-    fun `breaking schema with specified publication file extension`(format: String, compression: String?) {
-        buildFile.replace(
-            "bufBuildPublicationFileFormat = 'json'",
-            "bufBuildPublicationFileFormat = '${format}'"
-        )
-        buildFile.replace(
-            "bufBuildPublicationFileCompression = null",
-            "bufBuildPublicationFileCompression = ${compression?.let { "'${it}'" } ?: "null"}"
-        )
+    @MethodSource("build.buf.gradle.ImageGenerationSupport#publicationFileExtensionTestCase")
+    fun `breaking schema with specified publication file extension`(
+        format: String,
+        compression: String?,
+    ) {
+        replaceBuildDetails(format, compression)
         publishRunner().build()
         checkBreaking()
     }

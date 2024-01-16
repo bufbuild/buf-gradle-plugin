@@ -24,7 +24,7 @@ import org.gradle.language.base.plugins.LifecycleBasePlugin.BUILD_GROUP
 import java.io.File
 
 const val BUF_BUILD_TASK_NAME = "bufBuild"
-const val BUF_BUILD_PUBLICATION_FILE_BASE_NAME = "image"
+private const val BUF_BUILD_PUBLICATION_FILE_BASE_NAME = "image"
 const val BUF_IMAGE_PUBLICATION_NAME = "bufImagePublication"
 
 internal fun Project.configureBuild() {
@@ -58,13 +58,13 @@ internal fun Project.configureImagePublication(artifactDetails: ArtifactDetails)
     }
 }
 
-internal val Project.bufBuildPublicationFileExtension
-    // Combine a format and a compression to make an extension.
-    get() = getExtension().bufBuildPublicationFileFormat.format +
-            (getExtension().bufBuildPublicationFileCompression?.let { ".${it.compression}" }
-                ?: "")
+private val Project.bufBuildPublicationFileExtension
+    get() =
+        (getExtension().buildDetails ?: BuildDetails()).let { deets ->
+            deets.imageFormat.formatName + deets.compressionFormat?.let { ".${it.ext}" }.orEmpty()
+        }
 
-internal val Project.bufBuildPublicationFile
+private val Project.bufBuildPublicationFile
     get() = File(bufbuildDir, "$BUF_BUILD_PUBLICATION_FILE_BASE_NAME.$bufBuildPublicationFileExtension")
 
 internal val Task.bufBuildPublicationFile

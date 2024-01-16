@@ -18,8 +18,11 @@ publishing {
 buf {
     publishSchema = true
     //previousVersion = '2319'
-    bufBuildPublicationFileFormat = 'json'
-    bufBuildPublicationFileCompression = null
+
+    build {
+        imageFormat = REPLACEME
+        compressionFormat = REPLACEME
+    }
 
     imageArtifact {
         groupId = 'foo'

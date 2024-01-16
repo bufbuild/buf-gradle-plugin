@@ -10,9 +10,12 @@ repositories {
 
 buf {
     publishSchema = true
-    bufBuildPublicationFileFormat = 'json'
-    bufBuildPublicationFileCompression = null
-    toolVersion = '1.28.1'
+
+    build {
+        imageFormat = REPLACEME
+        compressionFormat = REPLACEME
+    }
+
     imageArtifact {
         groupId = 'foo'
         artifactId = 'bar'

@@ -14,6 +14,7 @@
 
 package build.buf.gradle
 
+import build.buf.gradle.ImageGenerationSupport.replaceBuildDetails
 import com.google.common.truth.Truth.assertThat
 import org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import org.junit.jupiter.api.Test
@@ -41,16 +42,12 @@ abstract class AbstractBuildTest : AbstractBufIntegrationTest() {
     }
 
     @ParameterizedTest
-    @MethodSource("publicationFileExtensionTestCase")
-    fun `build image with specified publication file extension`(format: String, compression: String?) {
-        buildFile.replace(
-            "bufBuildPublicationFileFormat = 'json'",
-            "bufBuildPublicationFileFormat = '${format}'"
-        )
-        buildFile.replace(
-            "bufBuildPublicationFileCompression = null",
-            "bufBuildPublicationFileCompression = ${compression?.let { "'${it}'" } ?: "null"}"
-        )
+    @MethodSource("build.buf.gradle.ImageGenerationSupport#publicationFileExtensionTestCase")
+    fun `build image with specified publication file extension`(
+        format: String,
+        compression: String?,
+    ) {
+        replaceBuildDetails(format, compression)
         val extension = format + (compression?.let { ".$compression" } ?: "")
         assertImageGeneration("image.$extension")
     }
@@ -73,7 +70,7 @@ abstract class AbstractBuildTest : AbstractBufIntegrationTest() {
         val source = listOf("buf", "test", "v1", "test.proto").joinToString(File.separator)
         assertThat(result.output).contains(
             "$source:23:14:extension with tag 1072 for message google.protobuf.MessageOptions already defined at " +
-                    "validate/validate.proto:17:29",
+                "validate/validate.proto:17:29",
         )
     }
 

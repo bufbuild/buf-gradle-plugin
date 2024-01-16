@@ -19,8 +19,12 @@ compileJava.enabled = false
 
 buf {
     publishSchema = true
-    bufBuildPublicationFileFormat = 'json'
-    bufBuildPublicationFileCompression = null
+
+    build {
+        imageFormat = REPLACEME
+        compressionFormat = REPLACEME
+    }
+
     imageArtifact {
         groupId = 'foo'
         artifactId = 'bar'
