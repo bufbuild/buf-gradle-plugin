@@ -44,21 +44,17 @@ configure<JavaPluginExtension> {
 }
 
 gradlePlugin {
+    website.set(ProjectInfo.URL)
+    vcsUrl.set(ProjectInfo.URL)
     plugins {
         create("buf") {
             id = "build.buf"
             implementationClass = "build.buf.gradle.BufPlugin"
             displayName = ProjectInfo.NAME
             description = ProjectInfo.DESCRIPTION
+            tags.set(listOf("protobuf", "kotlin", "buf"))
         }
     }
-}
-
-pluginBundle {
-    website = ProjectInfo.URL
-    vcsUrl = ProjectInfo.URL
-    description = ProjectInfo.DESCRIPTION
-    tags = listOf("protobuf", "kotlin", "buf")
 }
 
 ext[GRADLE_PUBLISH_KEY] = System.getenv("GRADLE_PORTAL_PUBLISH_KEY")
