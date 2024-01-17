@@ -20,6 +20,7 @@ import java.io.File
 
 const val BUF_BUILD_DIR = "bufbuild"
 
+@Suppress("DEPRECATION") // https://docs.gradle.org/current/userguide/upgrading_version_8.html#deprecations_3
 internal val Project.bufbuildDir
     get() = File(buildDir, BUF_BUILD_DIR)
 

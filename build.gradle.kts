@@ -38,6 +38,9 @@ dependencies {
     testImplementation(libs.truth)
 }
 
+val targetJavaVersion = JavaVersion.VERSION_1_8
+val targetKotlinVersion = "1.6"
+
 configure<JavaPluginExtension> {
     sourceCompatibility = targetJavaVersion
     targetCompatibility = targetJavaVersion
@@ -60,8 +63,6 @@ gradlePlugin {
 ext[GRADLE_PUBLISH_KEY] = System.getenv("GRADLE_PORTAL_PUBLISH_KEY")
 ext[GRADLE_PUBLISH_SECRET] = System.getenv("GRADLE_PORTAL_PUBLISH_SECRET")
 
-val targetJavaVersion = JavaVersion.VERSION_1_8
-
 tasks {
     named("publishPlugins") {
         enabled = isRelease()
@@ -75,6 +76,21 @@ tasks {
         kotlinOptions {
             allWarningsAsErrors = true
             jvmTarget = targetJavaVersion.toString()
+            languageVersion = targetKotlinVersion
+            apiVersion = targetKotlinVersion
+            if (JavaVersion.current().isJava9Compatible) {
+                freeCompilerArgs += "-Xjdk-release=1.8"
+            }
         }
+    }
+
+    withType<JavaCompile> {
+        if (JavaVersion.current().isJava9Compatible) {
+            doFirst {
+                options.compilerArgs = listOf("--release", "8")
+            }
+        }
+        sourceCompatibility = targetJavaVersion.toString()
+        targetCompatibility = targetJavaVersion.toString()
     }
 }
