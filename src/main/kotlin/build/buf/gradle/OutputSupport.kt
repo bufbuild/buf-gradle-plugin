@@ -16,12 +16,11 @@ package build.buf.gradle
 
 import org.gradle.api.Project
 import org.gradle.api.Task
-import java.io.File
 
 const val BUF_BUILD_DIR = "bufbuild"
 
 internal val Project.bufbuildDir
-    get() = File(buildDir, BUF_BUILD_DIR)
+    get() = layout.buildDirectory.dir(BUF_BUILD_DIR).get().asFile
 
 internal val Task.bufbuildDir
     get() = project.bufbuildDir

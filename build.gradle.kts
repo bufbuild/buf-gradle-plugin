@@ -38,33 +38,28 @@ dependencies {
     testImplementation(libs.truth)
 }
 
-configure<JavaPluginExtension> {
-    sourceCompatibility = targetJavaVersion
-    targetCompatibility = targetJavaVersion
-}
-
 gradlePlugin {
+    website.set(ProjectInfo.URL)
+    vcsUrl.set(ProjectInfo.URL)
     plugins {
         create("buf") {
             id = "build.buf"
             implementationClass = "build.buf.gradle.BufPlugin"
             displayName = ProjectInfo.NAME
             description = ProjectInfo.DESCRIPTION
+            tags.set(listOf("protobuf", "kotlin", "buf"))
         }
     }
-}
-
-pluginBundle {
-    website = ProjectInfo.URL
-    vcsUrl = ProjectInfo.URL
-    description = ProjectInfo.DESCRIPTION
-    tags = listOf("protobuf", "kotlin", "buf")
 }
 
 ext[GRADLE_PUBLISH_KEY] = System.getenv("GRADLE_PORTAL_PUBLISH_KEY")
 ext[GRADLE_PUBLISH_SECRET] = System.getenv("GRADLE_PORTAL_PUBLISH_SECRET")
 
-val targetJavaVersion = JavaVersion.VERSION_1_8
+kotlin {
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(11))
+    }
+}
 
 tasks {
     named("publishPlugins") {
@@ -78,7 +73,6 @@ tasks {
     withType<KotlinCompile> {
         kotlinOptions {
             allWarningsAsErrors = true
-            jvmTarget = targetJavaVersion.toString()
         }
     }
 }

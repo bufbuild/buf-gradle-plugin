@@ -21,7 +21,7 @@ import java.nio.charset.StandardCharsets
 const val BUF_BINARY_CONFIGURATION_NAME = "bufTool"
 
 internal fun Project.configureBufDependency() {
-    val os = System.getProperty("os.name").toLowerCase()
+    val os = System.getProperty("os.name").lowercase()
     val osPart =
         when {
             os.startsWith("windows") -> "windows"
@@ -31,7 +31,7 @@ internal fun Project.configureBufDependency() {
         }
 
     val archPart =
-        when (val arch = System.getProperty("os.arch").toLowerCase()) {
+        when (val arch = System.getProperty("os.arch").lowercase()) {
             in setOf("x86_64", "amd64") -> "x86_64"
             in setOf("arm64", "aarch64") -> "aarch_64"
             else -> error("unsupported arch: $arch")
