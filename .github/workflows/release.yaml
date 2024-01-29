@@ -24,7 +24,7 @@ jobs:
           java-version: 11
           check-latest: true
       - name: Publish
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
         with:
           arguments: |
             publishMainPublicationToSonatypeRepository
