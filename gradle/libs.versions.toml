@@ -16,9 +16,6 @@ pluginPublish = { id = "com.gradle.plugin-publish", version.ref = "pluginPublish
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 [libraries]
-# signature
-java8Signature = { module = "org.codehaus.mojo.signature:java18", version.ref = "java8Signature" }
-
 # test
 junit = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
 truth = { module = "com.google.truth:truth", version.ref = "truth" }
