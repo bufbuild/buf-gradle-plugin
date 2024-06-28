@@ -1,5 +1,6 @@
 import com.gradle.publish.PublishTask.GRADLE_PUBLISH_KEY
 import com.gradle.publish.PublishTask.GRADLE_PUBLISH_SECRET
+import com.vanniktech.maven.publish.SonatypeHost
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 repositories {
@@ -12,11 +13,10 @@ plugins {
     alias(libs.plugins.pluginPublish)
     alias(libs.plugins.spotless)
     alias(libs.plugins.animalsniffer)
-    alias(libs.plugins.publishing)
+    alias(libs.plugins.mavenPublish)
 }
 
 group = "build.buf"
-configurePublishing()
 
 allprojects {
     spotless {
@@ -37,6 +37,14 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.truth)
 }
+
+object ProjectInfo {
+    const val NAME = "Buf Gradle Plugin"
+    const val URL = "https://github.com/bufbuild/buf-gradle-plugin"
+    const val DESCRIPTION = "Buf plugin for Gradle"
+}
+
+fun isRelease() = !version.toString().endsWith("-SNAPSHOT")
 
 gradlePlugin {
     website.set(ProjectInfo.URL)
@@ -61,7 +69,42 @@ kotlin {
     }
 }
 
+mavenPublishing {
+    publishToMavenCentral(SonatypeHost.S01)
+    signAllPublications()
+    pom {
+        name.set(ProjectInfo.NAME)
+        description.set(ProjectInfo.DESCRIPTION)
+        url.set(ProjectInfo.URL)
+        scm {
+            url.set(ProjectInfo.URL)
+        }
+        licenses {
+            license {
+                name.set("The Apache License, Version 2.0")
+                url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+            }
+        }
+        developers {
+            developer {
+                id.set("Andrew Parmet")
+                name.set("Andrew Parmet")
+                email.set("andrew@parmet.com")
+            }
+            developer {
+                id.set("bufbuild")
+                name.set("Buf")
+                email.set("dev@buf.build")
+                url.set("https://buf.build")
+                organization.set("Buf Technologies, Inc.")
+                organizationUrl.set("https://buf.build")
+            }
+        }
+    }
+}
+
 tasks {
+    // Only enable publishing to the Gradle Portal for release builds.
     named("publishPlugins") {
         enabled = isRelease()
     }

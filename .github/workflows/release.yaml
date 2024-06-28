@@ -16,27 +16,27 @@ jobs:
         with:
           fetch-depth: 0
       - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@v3
+        uses: gradle/actions/wrapper-validation@v3
       - name: Set up JDK 11
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 11
           check-latest: true
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
       - name: Publish
-        uses: gradle/gradle-build-action@v3
-        with:
-          arguments: |
-            publishMainPublicationToSonatypeRepository
-            closeAndReleaseSonatypeStagingRepository
-            publishPlugins
-            -Dorg.gradle.internal.http.socketTimeout=120000
-            -Dorg.gradle.internal.network.retry.max.attempts=1
-            -Dorg.gradle.internal.publish.checksums.insecure=true
+        run: |
+          ./gradlew
+          publishToMavenCentral
+          publishPlugins
+          --no-configuration-cache
+          -Dorg.gradle.internal.http.socketTimeout=120000
+          -Dorg.gradle.internal.network.retry.max.attempts=1
         env:
-          OSSRH_USERNAME: ${{ secrets.SONATYPE_USER }}
-          OSSRH_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-          PGP_KEY: ${{ secrets.GPG_KEY_ARMORED }}
-          PGP_PASSWORD: ${{ secrets.GPG_PASSPHRASE }}
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_USER }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_KEY_ARMORED }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.GPG_PASSPHRASE }}
           GRADLE_PORTAL_PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}
           GRADLE_PORTAL_PUBLISH_SECRET: ${{ secrets.GRADLE_PUBLISH_SECRET }}
