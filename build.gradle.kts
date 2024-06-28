@@ -12,7 +12,6 @@ plugins {
     alias(libs.plugins.kotlin)
     alias(libs.plugins.pluginPublish)
     alias(libs.plugins.spotless)
-    alias(libs.plugins.animalsniffer)
     alias(libs.plugins.mavenPublish)
 }
 
@@ -32,8 +31,6 @@ allprojects {
 }
 
 dependencies {
-    signature(libs.java8Signature) { artifact { type = "signature" } }
-
     testImplementation(libs.junit)
     testImplementation(libs.truth)
 }
