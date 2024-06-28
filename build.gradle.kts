@@ -12,7 +12,6 @@ plugins {
     alias(libs.plugins.kotlin)
     alias(libs.plugins.pluginPublish)
     alias(libs.plugins.spotless)
-    alias(libs.plugins.animalsniffer)
     alias(libs.plugins.mavenPublish)
 }
 
@@ -32,8 +31,6 @@ allprojects {
 }
 
 dependencies {
-    signature(libs.java8Signature) { artifact { type = "signature" } }
-
     testImplementation(libs.junit)
     testImplementation(libs.truth)
 }
@@ -62,12 +59,6 @@ gradlePlugin {
 
 ext[GRADLE_PUBLISH_KEY] = System.getenv("GRADLE_PORTAL_PUBLISH_KEY")
 ext[GRADLE_PUBLISH_SECRET] = System.getenv("GRADLE_PORTAL_PUBLISH_SECRET")
-
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(11))
-    }
-}
 
 kotlin {
     jvmToolchain {

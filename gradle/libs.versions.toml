@@ -1,20 +1,15 @@
 [versions]
 # plugins
-animalsniffer = "1.7.1"
 kotlin = "1.9.24"
 mavenPublish = "0.29.0"
 pluginPublish = "1.2.1"
 spotless = "6.25.0"
-
-# signature
-java8Signature = "1.0"
 
 # test
 junit = "5.10.2"
 truth = "1.4.2"
 
 [plugins]
-animalsniffer = { id = "ru.vyarus.animalsniffer", version.ref = "animalsniffer" }
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 mavenPublish = { id = "com.vanniktech.maven.publish.base", version.ref = "mavenPublish" }
 pluginPublish = { id = "com.gradle.plugin-publish", version.ref = "pluginPublish" }
