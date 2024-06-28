@@ -27,12 +27,12 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
       - name: Publish
         run: |
-          ./gradlew
-          publishToMavenCentral
-          publishPlugins
-          --no-configuration-cache
-          -Dorg.gradle.internal.http.socketTimeout=120000
-          -Dorg.gradle.internal.network.retry.max.attempts=1
+          ./gradlew \
+            publishToMavenCentral \
+            publishPlugins \
+            --no-configuration-cache \
+            -Dorg.gradle.internal.http.socketTimeout=120000 \
+            -Dorg.gradle.internal.network.retry.max.attempts=1
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_USER }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_PASSWORD }}
