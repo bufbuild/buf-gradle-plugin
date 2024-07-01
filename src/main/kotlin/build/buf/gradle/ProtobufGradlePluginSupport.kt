@@ -153,9 +153,7 @@ private fun Task.allProtoDirs() =
 //
 // Protobuf-gradle-plugin change that introduced this behavior: https://github.com/google/protobuf-gradle-plugin/pull/637/
 // Line: https://github.com/google/protobuf-gradle-plugin/blob/9d2a328a0d577bf4439d3b482a953715b3a03027/src/main/groovy/com/google/protobuf/gradle/ProtobufPlugin.groovy#L425
-internal fun Project.projectDefinedProtoDirs() =
-    (allProtoSourceSetDirs() - file(Paths.get(BUILD_EXTRACTED_PROTOS_MAIN)))
-        .filter { anyProtos(it) }
+internal fun Project.projectDefinedProtoDirs() = allProtoSourceSetDirs() - file(Paths.get(BUILD_EXTRACTED_PROTOS_MAIN))
 
 // Returns deduplicated list of all proto source set directories.
 private fun Project.allProtoSourceSetDirs() = projectProtoSourceSetDirs() + androidProtoSourceSetDirs()
@@ -186,7 +184,7 @@ private fun ExtensionAware.projectProtoSourceSetDirs() =
 internal fun AbstractBufTask.makeMangledRelativizedPathStr(file: File) = mangle(projectDir.get().toPath().relativize(file.toPath()))
 
 // Indicates if the specified directory contains any proto files.
-private fun anyProtos(directory: File) = directory.walkTopDown().any { it.extension == "proto" }
+internal fun anyProtos(directory: File) = directory.walkTopDown().any { it.extension == "proto" }
 
 private fun mangle(name: Path) = name.toString().replace("-", "--").replace(File.separator, "-")
 
@@ -205,7 +203,12 @@ internal inline fun <reified T : AbstractBufExecTask> Project.registerBufExecTas
 ): TaskProvider<T> =
     registerBufTask<T>(name) {
         bufExecutable.setFrom(configurations.getByName(BUF_BINARY_CONFIGURATION_NAME))
-        hasProtobufGradlePlugin.set(project.hasProtobufGradlePlugin())
+        if (project.hasProtobufGradlePlugin()) {
+            hasProtobufGradlePlugin.set(true)
+            candidateProtoDirs.setFrom(projectDefinedProtoDirs())
+        } else {
+            hasProtobufGradlePlugin.set(false)
+        }
         hasWorkspace.set(project.hasWorkspace())
         configuration()
     }.also { taskProvider ->
