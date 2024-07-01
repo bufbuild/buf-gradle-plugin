@@ -31,6 +31,10 @@ abstract class AbstractBufExecTask : AbstractBufTask() {
     @get:Input
     internal abstract val hasProtobufGradlePlugin: Property<Boolean>
 
+    /** Directories possibly containing input .proto files. */
+    @get:InputFiles
+    internal abstract val candidateProtoDirs: ConfigurableFileCollection
+
     /** Whether the project has buf workspace or not. */
     @get:Input
     internal abstract val hasWorkspace: Property<Boolean>
