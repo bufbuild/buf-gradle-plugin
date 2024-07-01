@@ -6,7 +6,7 @@ pluginPublish = "1.2.1"
 spotless = "6.25.0"
 
 # test
-junit = "5.10.2"
+junit = "5.10.3"
 truth = "1.4.2"
 
 [plugins]
