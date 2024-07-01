@@ -76,7 +76,7 @@ internal fun AbstractBufExecTask.execBuf(
         }
 
         val workingDir =
-            if (hasProtobufGradlePlugin()) {
+            if (hasProtobufGradlePlugin.get()) {
                 bufbuildDir
             } else {
                 projectDir

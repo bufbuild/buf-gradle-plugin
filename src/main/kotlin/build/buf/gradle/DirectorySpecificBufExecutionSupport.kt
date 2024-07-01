@@ -39,7 +39,7 @@ private fun AbstractBufExecTask.execBufInSpecificDirectory(
     fun runWithArgs(file: File? = null) = bufCommand + listOfNotNull(file?.let { makeMangledRelativizedPathStr(it) }) + extraArgs
 
     when {
-        project.hasProtobufGradlePlugin() ->
+        hasProtobufGradlePlugin.get() ->
             project.projectDefinedProtoDirs().forEach { execBuf(runWithArgs(it), customErrorMessage) }
         hasWorkspace.get() ->
             execBuf(bufCommand, customErrorMessage)

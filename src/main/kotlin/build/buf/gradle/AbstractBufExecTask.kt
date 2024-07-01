@@ -27,6 +27,10 @@ abstract class AbstractBufExecTask : AbstractBufTask() {
     @get:InputFiles
     internal abstract val bufExecutable: ConfigurableFileCollection
 
+    /** Whether the project has protobuf plugin enabled. */
+    @get:Input
+    internal abstract val hasProtobufGradlePlugin: Property<Boolean>
+
     /** Whether the project has buf workspace or not. */
     @get:Input
     internal abstract val hasWorkspace: Property<Boolean>
