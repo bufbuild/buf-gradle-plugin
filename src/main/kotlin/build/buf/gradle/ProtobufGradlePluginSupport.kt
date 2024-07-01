@@ -205,6 +205,7 @@ internal inline fun <reified T : AbstractBufExecTask> Project.registerBufExecTas
 ): TaskProvider<T> =
     registerBufTask<T>(name) {
         bufExecutable.setFrom(configurations.getByName(BUF_BINARY_CONFIGURATION_NAME))
+        hasProtobufGradlePlugin.set(project.hasProtobufGradlePlugin())
         hasWorkspace.set(project.hasWorkspace())
         configuration()
     }.also { taskProvider ->
