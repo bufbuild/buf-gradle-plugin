@@ -18,6 +18,7 @@ import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
+import java.io.File
 
 /**
  * A task executing buf executable as part of its operation.
@@ -26,6 +27,14 @@ abstract class AbstractBufExecTask : AbstractBufTask() {
     /** The buf executable. */
     @get:InputFiles
     internal abstract val bufExecutable: ConfigurableFileCollection
+
+    /**
+     * The directory in which buf is executed.
+     * The actual real input files in this directory have to be tracked per command separately,
+     * so it is just an @Input, not @InputDirectory.
+     */
+    @get:Input
+    internal abstract val workingDir: Property<File>
 
     /** Whether the project has protobuf plugin enabled. */
     @get:Input

@@ -239,8 +239,10 @@ internal inline fun <reified T : AbstractBufExecTask> Project.registerBufExecTas
         if (project.hasProtobufGradlePlugin()) {
             hasProtobufGradlePlugin.set(true)
             candidateProtoDirs.setFrom(projectDefinedProtoDirs())
+            workingDir.set(bufbuildDir)
         } else {
             hasProtobufGradlePlugin.set(false)
+            workingDir.set(project.projectDir)
         }
         hasWorkspace.set(project.hasWorkspace())
         configuration()

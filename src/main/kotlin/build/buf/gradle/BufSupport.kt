@@ -75,17 +75,11 @@ internal fun AbstractBufExecTask.execBuf(
             executable.setExecutable(true)
         }
 
-        val workingDir =
-            if (hasProtobufGradlePlugin.get()) {
-                bufbuildDir
-            } else {
-                projectDir
-            }
-
         val processArgs = listOf(executable.absolutePath) + args
+        val workingDirValue = workingDir.get()
 
-        logger.info("Running buf from $workingDir: `buf ${args.joinToString(" ")}`")
-        val result = ProcessRunner().use { it.shell(workingDir, processArgs) }
+        logger.info("Running buf from $workingDirValue: `buf ${args.joinToString(" ")}`")
+        val result = ProcessRunner().use { it.shell(workingDirValue, processArgs) }
 
         if (result.exitCode != 0) {
             if (customErrorMessage != null) {
