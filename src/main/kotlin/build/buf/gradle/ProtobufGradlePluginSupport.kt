@@ -55,16 +55,18 @@ internal fun Project.configureCreateSymLinksToModules() {
 abstract class CreateSymLinksToModulesTask : DefaultTask() {
     @TaskAction
     fun createSymLinksToModules() {
-        allProtoDirs().forEach {
-            val symLinkFile = File(bufbuildDir, project.makeMangledRelativizedPathStr(it))
-            if (!symLinkFile.exists()) {
-                logger.info("Creating symlink for $it at $symLinkFile")
-                Files.createSymbolicLink(
-                    symLinkFile.toPath(),
-                    bufbuildDir.toPath().relativize(project.file(it).toPath()),
-                )
+        allProtoDirs()
+            .filter { anyProtos(it) }
+            .forEach {
+                val symLinkFile = File(bufbuildDir, project.makeMangledRelativizedPathStr(it))
+                if (!symLinkFile.exists()) {
+                    logger.info("Creating symlink for $it at $symLinkFile")
+                    Files.createSymbolicLink(
+                        symLinkFile.toPath(),
+                        bufbuildDir.toPath().relativize(project.file(it).toPath()),
+                    )
+                }
             }
-        }
     }
 }
 
@@ -101,6 +103,7 @@ private fun Task.workspaceCommonConfig() {
 
 private fun Task.workspaceSymLinkEntries() =
     allProtoDirs()
+        .filter { anyProtos(it) }
         .map { project.makeMangledRelativizedPathStr(it) }
         .joinToString("\n") { "|  - $it" }
 
@@ -110,7 +113,6 @@ private fun Task.workspaceSymLinkEntries() =
 private fun Task.allProtoDirs() =
     project.allProtoSourceSetDirs()
         .plus(project.file(Paths.get(BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN)))
-        .filter { anyProtos(it) }
         .toSet()
 
 // Returns the list of directories containing proto files defined in *this* project. The returned directories do *not*
