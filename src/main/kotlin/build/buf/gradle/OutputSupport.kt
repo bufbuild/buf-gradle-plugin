@@ -25,8 +25,4 @@ internal val Project.bufbuildDir
 internal val Task.bufbuildDir
     get() = project.bufbuildDir
 
-internal fun Task.createsOutput() {
-    doFirst { project.bufbuildDir.mkdirs() }
-}
-
 internal fun ArtifactDetails.groupAndArtifact() = "$groupId:$artifactId"
