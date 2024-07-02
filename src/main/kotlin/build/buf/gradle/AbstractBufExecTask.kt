@@ -15,6 +15,8 @@
 package build.buf.gradle
 
 import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.provider.Property
+import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
 
 /**
@@ -24,4 +26,8 @@ abstract class AbstractBufExecTask : AbstractBufTask() {
     /** The buf executable. */
     @get:InputFiles
     internal abstract val bufExecutable: ConfigurableFileCollection
+
+    /** Whether the project has buf workspace or not. */
+    @get:Input
+    internal abstract val hasWorkspace: Property<Boolean>
 }

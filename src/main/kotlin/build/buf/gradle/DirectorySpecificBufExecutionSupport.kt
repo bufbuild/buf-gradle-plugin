@@ -41,7 +41,7 @@ private fun AbstractBufExecTask.execBufInSpecificDirectory(
     when {
         project.hasProtobufGradlePlugin() ->
             project.projectDefinedProtoDirs().forEach { execBuf(runWithArgs(it), customErrorMessage) }
-        project.hasWorkspace() ->
+        hasWorkspace.get() ->
             execBuf(bufCommand, customErrorMessage)
         else ->
             execBuf(runWithArgs(), customErrorMessage)
