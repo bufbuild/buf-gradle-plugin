@@ -55,5 +55,8 @@ private fun Project.configureBreakingTask() {
         description = "Checks that Protobuf API definitions are backwards-compatible with previous versions."
 
         dependsOn(BUF_BUILD_TASK_NAME)
+
+        publicationFile.set(project.bufBuildPublicationFile)
+        configFile.set(singleFileFromConfiguration(BUF_BREAKING_CONFIGURATION_NAME))
     }
 }
