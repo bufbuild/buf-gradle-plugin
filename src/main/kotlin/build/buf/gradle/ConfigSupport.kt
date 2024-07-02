@@ -15,7 +15,6 @@
 package build.buf.gradle
 
 import org.gradle.api.Project
-import org.gradle.api.Task
 import org.gradle.api.tasks.Copy
 import org.gradle.kotlin.dsl.register
 import java.io.File
@@ -46,8 +45,6 @@ internal fun Project.bufConfigFile() =
             }
         }
     }
-
-internal fun Task.bufConfigFile() = project.bufConfigFile()
 
 private fun Project.resolveConfig(): File? {
     val ext = getExtension()
