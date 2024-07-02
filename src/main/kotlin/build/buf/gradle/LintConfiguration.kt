@@ -24,6 +24,9 @@ internal fun Project.configureLint() {
     registerBufExecTask<LintTask>(BUF_LINT_TASK_NAME) {
         group = VERIFICATION_GROUP
         description = "Checks that a Protobuf schema conforms to the Buf lint configuration."
+
+        bufConfigFile.set(project.bufConfigFile())
+        inputFiles.setFrom(obtainDefaultProtoFileSet())
     }
 
     tasks.named(CHECK_TASK_NAME).dependsOn(BUF_LINT_TASK_NAME)
