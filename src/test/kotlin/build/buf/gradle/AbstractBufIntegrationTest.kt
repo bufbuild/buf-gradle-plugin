@@ -70,6 +70,7 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
                 "-PprotobufVersion=3.23.4",
                 "-PkotlinVersion=1.7.20",
                 "-PandroidGradleVersion=7.3.0",
+                "--configuration-cache",
             )
             .let { WrappedRunner(it) }
 
