@@ -236,7 +236,10 @@ internal inline fun <reified T : AbstractBufExecTask> Project.registerBufExecTas
     name: String,
     noinline configuration: T.() -> Unit,
 ): TaskProvider<T> =
-    registerBufTask(name, configuration).also { taskProvider ->
+    registerBufTask<T>(name) {
+        bufExecutable.setFrom(configurations.getByName(BUF_BINARY_CONFIGURATION_NAME))
+        configuration()
+    }.also { taskProvider ->
         withProtobufGradlePlugin {
             afterEvaluate {
                 taskProvider.dependsOn(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME)

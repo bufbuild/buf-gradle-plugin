@@ -14,7 +14,14 @@
 
 package build.buf.gradle
 
+import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.tasks.InputFiles
+
 /**
  * A task executing buf executable as part of its operation.
  */
-abstract class AbstractBufExecTask : AbstractBufTask()
+abstract class AbstractBufExecTask : AbstractBufTask() {
+    /** The buf executable. */
+    @get:InputFiles
+    internal abstract val bufExecutable: ConfigurableFileCollection
+}
