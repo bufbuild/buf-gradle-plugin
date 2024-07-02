@@ -15,9 +15,14 @@
 package build.buf.gradle
 
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.dependencies
 import java.nio.charset.StandardCharsets
 
 const val BUF_BINARY_CONFIGURATION_NAME = "bufTool"
+
+internal fun Project.createBufBinaryDependencyConfiguration() {
+    configurations.create(BUF_BINARY_CONFIGURATION_NAME)
+}
 
 internal fun Project.configureBufDependency() {
     val os = System.getProperty("os.name").lowercase()
@@ -38,16 +43,18 @@ internal fun Project.configureBufDependency() {
 
     val extension = getExtension()
 
-    createConfigurationWithDependency(
-        BUF_BINARY_CONFIGURATION_NAME,
-        mapOf(
-            "group" to "build.buf",
-            "name" to "buf",
-            "version" to extension.toolVersion,
-            "classifier" to "$osPart-$archPart",
-            "ext" to "exe",
-        ),
-    )
+    dependencies {
+        add(
+            BUF_BINARY_CONFIGURATION_NAME,
+            mapOf(
+                "group" to "build.buf",
+                "name" to "buf",
+                "version" to extension.toolVersion,
+                "classifier" to "$osPart-$archPart",
+                "ext" to "exe",
+            ),
+        )
+    }
 }
 
 internal fun AbstractBufExecTask.execBuf(
@@ -62,7 +69,7 @@ internal fun AbstractBufExecTask.execBuf(
     customErrorMessage: ((String) -> String)? = null,
 ) {
     with(project) {
-        val executable = singleFileFromConfiguration(BUF_BINARY_CONFIGURATION_NAME)
+        val executable = bufExecutable.singleFile
 
         if (!executable.canExecute()) {
             executable.setExecutable(true)

@@ -2,6 +2,11 @@ plugins {
   id 'build.buf'
 }
 
+
+repositories {
+  mavenCentral()
+}
+
 buf {
   generate {
     templateFileLocation = project.file("subdir/buf.gen.yaml")
