@@ -68,31 +68,29 @@ internal fun AbstractBufExecTask.execBuf(
     args: Iterable<Any>,
     customErrorMessage: ((String) -> String)? = null,
 ) {
-    with(project) {
-        val executable = bufExecutable.singleFile
+    val executable = bufExecutable.singleFile
 
-        if (!executable.canExecute()) {
-            executable.setExecutable(true)
-        }
+    if (!executable.canExecute()) {
+        executable.setExecutable(true)
+    }
 
-        val processArgs = listOf(executable.absolutePath) + args
-        val workingDirValue = workingDir.get()
+    val processArgs = listOf(executable.absolutePath) + args
+    val workingDirValue = workingDir.get()
 
-        logger.info("Running buf from $workingDirValue: `buf ${args.joinToString(" ")}`")
-        val result = ProcessRunner().use { it.shell(workingDirValue, processArgs) }
+    logger.info("Running buf from $workingDirValue: `buf ${args.joinToString(" ")}`")
+    val result = ProcessRunner().use { it.shell(workingDirValue, processArgs) }
 
-        if (result.exitCode != 0) {
-            if (customErrorMessage != null) {
-                val stdOut = result.stdOut.toString(StandardCharsets.UTF_8)
-                val stdErr = result.stdErr.toString(StandardCharsets.UTF_8)
-                val ex = IllegalStateException(customErrorMessage(stdOut))
-                if (stdErr.isNotEmpty()) {
-                    ex.addSuppressed(IllegalStateException(result.toString()))
-                }
-                throw ex
-            } else {
-                error(result.toString())
+    if (result.exitCode != 0) {
+        if (customErrorMessage != null) {
+            val stdOut = result.stdOut.toString(StandardCharsets.UTF_8)
+            val stdErr = result.stdErr.toString(StandardCharsets.UTF_8)
+            val ex = IllegalStateException(customErrorMessage(stdOut))
+            if (stdErr.isNotEmpty()) {
+                ex.addSuppressed(IllegalStateException(result.toString()))
             }
+            throw ex
+        } else {
+            error(result.toString())
         }
     }
 }
