@@ -14,13 +14,12 @@
 
 package build.buf.gradle
 
-import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 import java.nio.file.Files.lines
 import kotlin.streams.asSequence
 
-abstract class LintTask : DefaultTask() {
+abstract class LintTask : AbstractBufExecTask() {
     @TaskAction
     fun bufLint() {
         execBufInSpecificDirectory(
