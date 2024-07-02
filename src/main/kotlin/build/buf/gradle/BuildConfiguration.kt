@@ -15,7 +15,6 @@
 package build.buf.gradle
 
 import org.gradle.api.Project
-import org.gradle.api.Task
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.kotlin.dsl.create
@@ -34,10 +33,10 @@ internal fun Project.configureBuild() {
 
         if (hasProtobufGradlePlugin()) {
             dependsOn(COPY_BUF_CONFIG_TASK_NAME)
-        } else {
-            // Called already during workspace configuration if the protobuf-gradle-plugin has been applied
-            createsOutput()
         }
+
+        inputFiles.setFrom(obtainDefaultProtoFileSet())
+        publicationFile.set(project.bufBuildPublicationFile)
     }
 }
 
@@ -66,6 +65,3 @@ private val Project.bufBuildPublicationFileExtension
 
 internal val Project.bufBuildPublicationFile
     get() = File(bufbuildDir, "$BUF_BUILD_PUBLICATION_FILE_BASE_NAME.$bufBuildPublicationFileExtension")
-
-internal val Task.bufBuildPublicationFile
-    get() = project.bufBuildPublicationFile

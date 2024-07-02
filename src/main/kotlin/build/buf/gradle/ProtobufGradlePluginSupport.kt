@@ -239,7 +239,9 @@ internal inline fun <reified T : AbstractBufExecTask> Project.registerBufExecTas
         if (project.hasProtobufGradlePlugin()) {
             hasProtobufGradlePlugin.set(true)
             candidateProtoDirs.setFrom(projectDefinedProtoDirs())
-            workingDir.set(bufbuildDir)
+            workingDir.set(project.bufbuildDir)
+            // whenever this task is part of the build, we must run it before any buf execution
+            mustRunAfter(COPY_BUF_CONFIG_TASK_NAME)
         } else {
             hasProtobufGradlePlugin.set(false)
             workingDir.set(project.projectDir)

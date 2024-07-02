@@ -94,3 +94,10 @@ internal fun AbstractBufExecTask.execBuf(
         }
     }
 }
+
+internal fun AbstractBufExecTask.obtainDefaultProtoFileSet() =
+    project.fileTree(workingDir.get()) {
+        include("**/*.proto")
+        // not to interfere with random plugins producing output to build dir
+        exclude("build")
+    }
