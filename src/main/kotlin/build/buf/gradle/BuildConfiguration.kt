@@ -64,7 +64,7 @@ private val Project.bufBuildPublicationFileExtension
             deets.imageFormat.formatName + deets.compressionFormat?.let { ".${it.ext}" }.orEmpty()
         }
 
-private val Project.bufBuildPublicationFile
+internal val Project.bufBuildPublicationFile
     get() = File(bufbuildDir, "$BUF_BUILD_PUBLICATION_FILE_BASE_NAME.$bufBuildPublicationFileExtension")
 
 internal val Task.bufBuildPublicationFile
