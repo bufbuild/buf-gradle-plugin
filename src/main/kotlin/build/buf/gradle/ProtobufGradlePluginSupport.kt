@@ -23,6 +23,7 @@ import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
@@ -87,10 +88,21 @@ abstract class CreateSymLinksToModulesTask : AbstractBufTask() {
 internal fun Project.configureWriteWorkspaceYaml() {
     registerBufTask<WriteWorkspaceYamlTask>(WRITE_WORKSPACE_YAML_TASK_NAME) {
         workspaceCommonConfig()
+        projectDir.set(project.projectDir)
+        candidateProtoDirs.setFrom(allProtoDirs())
+        outputFile.set(File(project.bufbuildDir, "buf.work.yaml"))
     }
 }
 
 abstract class WriteWorkspaceYamlTask : AbstractBufTask() {
+    /** Directories possibly containing input .proto files. */
+    @get:InputFiles
+    abstract val candidateProtoDirs: ConfigurableFileCollection
+
+    /** Output yaml file. */
+    @get:OutputFile
+    abstract val outputFile: Property<File>
+
     @TaskAction
     fun writeWorkspaceYaml() {
         val bufWork =
@@ -102,7 +114,7 @@ abstract class WriteWorkspaceYamlTask : AbstractBufTask() {
 
         logger.info("Writing generated buf.work.yaml:\n$bufWork")
 
-        File(bufbuildDir, "buf.work.yaml").writeText(bufWork)
+        outputFile.get().writeText(bufWork)
     }
 }
 
@@ -116,7 +128,7 @@ private fun Task.workspaceCommonConfig() {
 }
 
 private fun WriteWorkspaceYamlTask.workspaceSymLinkEntries() =
-    allProtoDirs()
+    candidateProtoDirs
         .filter { anyProtos(it) }
         .map { makeMangledRelativizedPathStr(it) }
         .joinToString("\n") { "|  - $it" }
