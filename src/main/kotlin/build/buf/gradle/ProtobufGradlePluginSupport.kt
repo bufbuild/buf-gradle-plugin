@@ -157,7 +157,6 @@ private fun Task.workspaceCommonConfig() {
             .tasks
             .matching { it::class.java.name == "com.google.protobuf.gradle.ProtobufExtract_Decorated" },
     )
-    createsOutput()
 }
 
 private fun WriteWorkspaceYamlTask.workspaceSymLinkEntries() =
