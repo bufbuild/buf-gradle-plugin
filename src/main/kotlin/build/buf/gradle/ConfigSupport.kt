@@ -24,7 +24,7 @@ const val COPY_BUF_CONFIG_TASK_NAME = "copyBufConfig"
 internal fun Project.configureCopyBufConfig() {
     tasks.register<Copy>(COPY_BUF_CONFIG_TASK_NAME) {
         from(listOfNotNull(bufConfigFile()))
-        into(bufbuildDir)
+        into(project.bufbuildDir)
         rename { "buf.yaml" }
     }
 }
