@@ -14,7 +14,6 @@
 
 package build.buf.gradle
 
-import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.file.SourceDirectorySet
@@ -52,7 +51,7 @@ internal fun Project.configureCreateSymLinksToModules() {
     }
 }
 
-abstract class CreateSymLinksToModulesTask : DefaultTask() {
+abstract class CreateSymLinksToModulesTask : AbstractBufTask() {
     @TaskAction
     fun createSymLinksToModules() {
         allProtoDirs()
@@ -76,7 +75,7 @@ internal fun Project.configureWriteWorkspaceYaml() {
     }
 }
 
-abstract class WriteWorkspaceYamlTask : DefaultTask() {
+abstract class WriteWorkspaceYamlTask : AbstractBufTask() {
     @TaskAction
     fun writeWorkspaceYaml() {
         val bufWork =

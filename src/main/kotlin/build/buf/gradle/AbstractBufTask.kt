@@ -14,7 +14,6 @@
 
 package build.buf.gradle
 
-/**
- * A task executing buf executable as part of its operation.
- */
-abstract class AbstractBufExecTask : AbstractBufTask()
+import org.gradle.api.DefaultTask
+
+abstract class AbstractBufTask : DefaultTask()
