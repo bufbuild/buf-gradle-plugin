@@ -28,7 +28,7 @@ private const val BUF_BUILD_PUBLICATION_FILE_BASE_NAME = "image"
 const val BUF_IMAGE_PUBLICATION_NAME = "bufImagePublication"
 
 internal fun Project.configureBuild() {
-    registerBufTask<BuildTask>(BUF_BUILD_TASK_NAME) {
+    registerBufExecTask<BuildTask>(BUF_BUILD_TASK_NAME) {
         group = BUILD_GROUP
         description = "Builds a Buf image from a Protobuf schema."
 
