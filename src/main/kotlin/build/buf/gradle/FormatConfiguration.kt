@@ -31,6 +31,8 @@ private fun Project.configureBufFormatCheck() {
         group = VERIFICATION_GROUP
         description = "Checks that a Protobuf schema is formatted according to Buf's formatting rules."
         enabled = getExtension().enforceFormat
+
+        inputFiles.setFrom(obtainDefaultProtoFileSet())
     }
 
     tasks.named(CHECK_TASK_NAME).dependsOn(BUF_FORMAT_CHECK_TASK_NAME)
@@ -40,5 +42,8 @@ private fun Project.configureBufFormatApply() {
     registerBufExecTask<FormatApplyTask>(BUF_FORMAT_APPLY_TASK_NAME) {
         group = VERIFICATION_GROUP
         description = "Formats a Protobuf schema according to Buf's formatting rules."
+
+        inputFiles.setFrom(obtainDefaultProtoFileSet())
+        outputFiles.setFrom(obtainDefaultProtoFileSet())
     }
 }
