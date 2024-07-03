@@ -100,7 +100,7 @@ private fun Task.workspaceCommonConfig() {
     createsOutput()
 }
 
-private fun Task.workspaceSymLinkEntries() =
+private fun WriteWorkspaceYamlTask.workspaceSymLinkEntries() =
     allProtoDirs()
         .filter { anyProtos(it) }
         .map { project.makeMangledRelativizedPathStr(it) }
