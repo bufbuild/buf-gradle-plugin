@@ -32,7 +32,13 @@ private fun Project.configureBufFormatCheck() {
         description = "Checks that a Protobuf schema is formatted according to Buf's formatting rules."
         enabled = getExtension().enforceFormat
 
-        inputFiles.setFrom(fileTree(workingDir.get()) { include("**/*.proto") })
+        inputFiles.setFrom(
+            fileTree(workingDir.get()) {
+                include("**/*.proto")
+                // not to interfere with random plugins producing output to build dir
+                exclude("build")
+            },
+        )
     }
 
     tasks.named(CHECK_TASK_NAME).dependsOn(BUF_FORMAT_CHECK_TASK_NAME)
@@ -43,7 +49,19 @@ private fun Project.configureBufFormatApply() {
         group = VERIFICATION_GROUP
         description = "Formats a Protobuf schema according to Buf's formatting rules."
 
-        inputFiles.setFrom(fileTree(workingDir.get()) { include("**/*.proto") })
-        outputFiles.setFrom(fileTree(workingDir.get()) { include("**/*.proto") })
+        inputFiles.setFrom(
+            fileTree(workingDir.get()) {
+                include("**/*.proto")
+                // not to interfere with random plugins producing output to build dir
+                exclude("build")
+            },
+        )
+        outputFiles.setFrom(
+            fileTree(workingDir.get()) {
+                include("**/*.proto")
+                // not to interfere with random plugins producing output to build dir
+                exclude("build")
+            },
+        )
     }
 }

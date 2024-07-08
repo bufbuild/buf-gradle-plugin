@@ -30,7 +30,13 @@ internal fun Project.configureGenerate() {
         val generateOptions = project.getExtension().generateOptions
         includeImports.set(generateOptions?.includeImports ?: false)
         templateFile.set(generateOptions?.let { resolveTemplateFile(it) })
-        inputFiles.setFrom(fileTree(workingDir.get()) { include("**/*.proto") })
+        inputFiles.setFrom(
+            fileTree(workingDir.get()) {
+                include("**/*.proto")
+                // not to interfere with random plugins producing output to build dir
+                exclude("build")
+            },
+        )
         outputDirectory.set(File(project.bufbuildDir, GENERATED_DIR))
     }
 }
