@@ -136,7 +136,7 @@ If you want to use generated code in your build, you must add the generated code
 ``` kotlin
 // build.gradle.kts
 
-import build.buf.gradle.BUF_GENERATED_DIR
+import build.buf.gradle.GENERATED_DIR
 
 plugins {
     `java`
@@ -147,7 +147,7 @@ plugins {
 tasks.named("compileJava").configure { dependsOn("bufGenerate") }
 
 // Add the generated code to the main source set
-sourceSets["main"].java { srcDir("$buildDir/$BUF_GENERATED_DIR/java") }
+sourceSets["main"].java { srcDir("$buildDir/$GENERATED_DIR/java") }
 
 // Configure dependencies for protobuf-java:
 repositories { mavenCentral() }
