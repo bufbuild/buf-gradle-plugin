@@ -147,7 +147,7 @@ plugins {
 tasks.named("compileJava").configure { dependsOn("bufGenerate") }
 
 // Add the generated code to the main source set
-sourceSets["main"].java { srcDir("$buildDir/$GENERATED_DIR/java") }
+sourceSets["main"].java { srcDir("$buildDir/bufbuild/$GENERATED_DIR/java") }
 
 // Configure dependencies for protobuf-java:
 repositories { mavenCentral() }
