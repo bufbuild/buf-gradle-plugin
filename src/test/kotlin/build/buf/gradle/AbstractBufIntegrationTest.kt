@@ -23,10 +23,21 @@ import org.junit.jupiter.api.io.TempDir
 import java.io.File
 import java.nio.file.Paths
 import java.util.Locale
+import java.util.regex.Pattern
 
 abstract class AbstractBufIntegrationTest : IntegrationTest {
     @TempDir
     lateinit var projectDir: File
+
+    // If true, allow this plugin to be invoked as a jar from the test project directory.
+    //
+    // 1. run `./gradlew jar` to build the plugin jar file.
+    // 2. Set a breakpoint in DefaultGradleRunner.run(Action<GradleExecutionResult>) at call to `this.gradleExecutor.run`
+    // 3. run the test to that breakpoint and note the test project directory (this.projectDirectory)
+    // 4. stop the test run
+    // 2. cd to the test project directory and run Gradle, appending the args `-Dorg.gradle.debug=true --no-daemon`
+    // 3. set breakpoints and invoke the remote JVM debugger.
+    private val enableRemoteDebug = false
 
     val buildFile
         get() = File(projectDir, "build.gradle").takeIf { it.exists() } ?: File(projectDir, "build.gradle.kts")
@@ -34,9 +45,49 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
     val protoDir
         get() = Paths.get(projectDir.path, "src", "main", "proto").toFile()
 
+    fun findPluginVersion(path: String): String? {
+        val startDir = File(path)
+        val regex = """buf-gradle-plugin-(.*?)-SNAPSHOT\.jar"""
+        val pattern = Pattern.compile(regex)
+
+        startDir.walkTopDown().forEach { file ->
+            if (file.isFile && file.name.matches(pattern.toRegex())) {
+                val matcher = pattern.matcher(file.name)
+                if (matcher.find()) {
+                    return matcher.group(1)
+                }
+            }
+        }
+
+        return null
+    }
+
     @BeforeEach
     fun setup(testInfo: TestInfo) {
-        File(projectDir, "settings.gradle").writeText("rootProject.name = 'testing'")
+        if (enableRemoteDebug) {
+            val path = Paths.get("").toAbsolutePath().toString()
+            val pluginVersion = findPluginVersion(path)
+            File(projectDir, "settings.gradle").writeText(
+                """
+pluginManagement {
+    buildscript {
+        repositories {
+            flatDir {
+                dirs '${path}/build/libs'
+            }
+        }
+        dependencies {
+            classpath ':buf-gradle-plugin-${pluginVersion}-SNAPSHOT:${pluginVersion}'
+        }
+    }
+}
+
+rootProject.name = 'testing'
+"""
+            )
+        } else {
+            File(projectDir, "settings.gradle").writeText("rootProject.name = 'testing'")
+        }
         File(projectDir, "gradle.properties").writeText("org.gradle.jvmargs=-Xmx5g")
 
         val testName =
