@@ -71,6 +71,7 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
                 "-PkotlinVersion=1.7.20",
                 "-PandroidGradleVersion=7.3.0",
             )
+            .withDebug(false) // Enable for interactive debugging
             .let { WrappedRunner(it) }
 
     override fun checkRunner() = gradleRunner().withArguments(CHECK_TASK_NAME)

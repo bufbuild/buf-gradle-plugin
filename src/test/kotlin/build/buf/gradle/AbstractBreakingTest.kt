@@ -47,7 +47,7 @@ abstract class AbstractBreakingTest : AbstractBufIntegrationTest() {
     }
 
     @Test
-    fun `normally breaking schema with an ignore`() {
+    open fun `normally breaking schema with an ignore`() {
         publishRunner().build()
 
         breakSchema()

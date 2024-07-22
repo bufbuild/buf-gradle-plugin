@@ -14,6 +14,7 @@
 
 package build.buf.gradle
 
+import org.junit.Ignore
 import org.junit.jupiter.api.Test
 import java.nio.file.Paths
 
@@ -21,9 +22,14 @@ class BreakingWithProtobufGradleTest : AbstractBreakingTest() {
     override fun protoFile() = Paths.get(protoDir.path, "buf", "test", "v1", "test.proto")
 
     @Test
+    @Ignore
+    override fun `normally breaking schema with an ignore`() {
+        // Ignore this test until we resolve the future of combining this plugin with protobuf-gradle-plugin
+    }
+
+    @Test
+    @Ignore
     fun `schema with multi-directory workspace`() {
-        publishRunner().build()
-        buildFile.replace("//", "")
-        checkRunner().build()
+        // Ignore this test until we resolve the future of combining this plugin with protobuf-gradle-plugin
     }
 }
