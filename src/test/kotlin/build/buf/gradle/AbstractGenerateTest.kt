@@ -44,6 +44,11 @@ abstract class AbstractGenerateTest : AbstractBufIntegrationTest() {
     }
 
     @Test
+    fun `buf generate with default template file path explicitly specifying`() {
+        gradleRunner().withArguments(BUILD_TASK_NAME).build()
+    }
+
+    @Test
     fun `buf generate fails with a nonexistent specified template file`() {
         val result = gradleRunner().withArguments(BUF_GENERATE_TASK_NAME).buildAndFail()
         assertThat(result.output).contains("Specified templateFileLocation does not exist.")
