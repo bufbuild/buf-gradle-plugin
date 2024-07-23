@@ -50,10 +50,8 @@ abstract class GenerateTask : DefaultTask() {
                 check(specifiedTemplateFile != null) {
                     "Specified templateFileLocation does not exist."
                 }
-                if (specifiedTemplateFile != defaultTemplateFile) {
-                    check(defaultTemplateFile == null) {
-                        "Buf gen template file specified in the project directory as well as with templateFileLocation; pick one."
-                    }
+                check(defaultTemplateFile == null || specifiedTemplateFile == defaultTemplateFile) {
+                    "Buf gen template file specified in the project directory as well as with templateFileLocation; pick one."
                 }
                 specifiedTemplateFile
             } else {
