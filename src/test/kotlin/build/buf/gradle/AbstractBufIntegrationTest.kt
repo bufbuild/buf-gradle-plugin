@@ -19,13 +19,14 @@ import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.TestInfo
+import org.junit.jupiter.api.io.CleanupMode
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
 import java.nio.file.Paths
 import java.util.Locale
 
 abstract class AbstractBufIntegrationTest : IntegrationTest {
-    @TempDir
+    @TempDir(cleanup = CleanupMode.ALWAYS)
     lateinit var projectDir: File
 
     val buildFile
