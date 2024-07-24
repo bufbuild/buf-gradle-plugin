@@ -14,6 +14,10 @@
 
 package build.buf.gradle
 
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -44,7 +48,8 @@ private val BUILD_EXTRACTED_PROTOS_MAIN =
 
 internal fun Project.hasProtobufGradlePlugin() = pluginManager.hasPlugin("com.google.protobuf")
 
-internal fun Project.withProtobufGradlePlugin(action: (AppliedPlugin) -> Unit) = pluginManager.withPlugin("com.google.protobuf", action)
+internal fun Project.withProtobufGradlePlugin(action: (AppliedPlugin) -> Unit) =
+    pluginManager.withPlugin("com.google.protobuf", action)
 
 internal fun Project.configureCreateSymLinksToModules() {
     tasks.register<CreateSymLinksToModulesTask>(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME) {
@@ -74,19 +79,72 @@ internal fun Project.configureWriteWorkspaceYaml() {
     }
 }
 
+/*
+
+version: v2
+modules:
+  - path: src-main-proto
+lint:
+  disallow_comment_ignores: true
+
+ */
+
+
 abstract class WriteWorkspaceYamlTask : DefaultTask() {
+    private val yamlMapper = ObjectMapper(YAMLFactory()).registerKotlinModule()
+
+    private fun rewriteBufYaml(bufYamlFile: File): MutableMap<String, Any> {
+        val bufYaml: MutableMap<String, Any> =
+            yamlMapper.readValue(bufYamlFile, object : TypeReference<MutableMap<String, Any>>() {})
+        val newYaml: MutableMap<String, Any> = mutableMapOf()
+        val ignores = mutableListOf<String>()
+
+        for ((key, value) in bufYaml) {
+            when (key) {
+                "version" -> newYaml["version"] = "v2" // Force v2
+                "breaking" -> {
+                    // Collect `breaking: ignore:` values
+                    if (value is Map<*, *>) {
+                        when (val ignoreStanza = value["ignore"]) {
+                            is List<*> -> {
+                                for (v in ignoreStanza) {
+                                    ignores.add(v.toString())
+                                }
+                            }
+                            is String -> {
+                                ignores.add(ignoreStanza)
+                            }
+                        }
+                    } else {
+                        // error
+                    }
+                }
+                // Preserve other config stanzas
+                else -> newYaml[key] = value
+            }
+        }
+
+        // Emit a module for each discovered workspace, copying ignores and concatenating their
+        // paths with the module root.
+        val modules = mutableListOf<Map<String, Any>>()
+        for (dir in allProtoDirs().map { project.makeMangledRelativizedPathStr(it) }) {
+            val module = mapOf(
+                "path" to dir,
+                "breaking" to mapOf(
+                    "ignore" to ignores.map { "$dir/$it" }
+                )
+            )
+            modules.add(module)
+        }
+        newYaml["modules"] = modules
+        return newYaml
+    }
+
     @TaskAction
     fun writeWorkspaceYaml() {
-        val bufWork =
-            """
-                |version: v1
-                |directories:
-                ${workspaceSymLinkEntries()}
-            """.trimMargin()
-
-        logger.info("Writing generated buf.work.yaml:\n$bufWork")
-
-        File(bufbuildDir, "buf.work.yaml").writeText(bufWork)
+        val bufYaml = rewriteBufYaml(project.bufConfigFile()!!)
+        logger.info("Writing generated buf.yaml:\n${yamlMapper.writeValueAsString(bufYaml)}")
+        yamlMapper.writeValue(File(bufbuildDir, "buf.yaml"), bufYaml)
     }
 }
 
@@ -102,7 +160,7 @@ private fun Task.workspaceCommonConfig() {
 private fun Task.workspaceSymLinkEntries() =
     allProtoDirs()
         .map { project.makeMangledRelativizedPathStr(it) }
-        .joinToString("\n") { "|  - $it" }
+        .joinToString("\n") { "|  - path: $it" }
 
 // Returns all directories that have may have proto files relevant to processing the project's proto files. This
 // includes any proto files that are simply references (includes) as well as those that will be processed (code
@@ -126,7 +184,8 @@ private fun Task.allProtoDirs() =
 //
 // Protobuf-gradle-plugin change that introduced this behavior: https://github.com/google/protobuf-gradle-plugin/pull/637/
 // Line: https://github.com/google/protobuf-gradle-plugin/blob/9d2a328a0d577bf4439d3b482a953715b3a03027/src/main/groovy/com/google/protobuf/gradle/ProtobufPlugin.groovy#L425
-internal fun Project.projectDefinedProtoDirs() = allProtoSourceSetDirs() - file(Paths.get(BUILD_EXTRACTED_PROTOS_MAIN))
+internal fun Project.projectDefinedProtoDirs() =
+    allProtoSourceSetDirs() - file(Paths.get(BUILD_EXTRACTED_PROTOS_MAIN))
 
 // Returns deduplicated list of all proto source set directories.
 private fun Project.allProtoSourceSetDirs() = projectProtoSourceSetDirs() + androidProtoSourceSetDirs()
@@ -155,7 +214,8 @@ private fun ExtensionAware.projectProtoSourceSetDirs() =
         .filter { anyProtos(it) }
         .toSet()
 
-internal fun Project.makeMangledRelativizedPathStr(file: File) = mangle(projectDir.toPath().relativize(file.toPath()))
+internal fun Project.makeMangledRelativizedPathStr(file: File) =
+    mangle(projectDir.toPath().relativize(file.toPath()))
 
 // Indicates if the specified directory contains any proto files.
 private fun anyProtos(directory: File) = directory.walkTopDown().any { it.extension == "proto" }

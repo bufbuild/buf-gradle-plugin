@@ -22,7 +22,7 @@ abstract class BreakingTask : DefaultTask() {
     fun bufBreaking() {
         execBuf(
             "breaking",
-            bufBuildPublicationFile,
+//            bufBuildPublicationFile,
             "--against",
             singleFileFromConfiguration(BUF_BREAKING_CONFIGURATION_NAME),
         ) {

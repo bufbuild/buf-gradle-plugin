@@ -20,6 +20,6 @@ import org.gradle.api.tasks.TaskAction
 abstract class BuildTask : DefaultTask() {
     @TaskAction
     fun bufBuild() {
-        execBuf("build", "--output", bufBuildPublicationFile)
+        execBuf("build", "--verbose", "--output", bufBuildPublicationFile)
     }
 }

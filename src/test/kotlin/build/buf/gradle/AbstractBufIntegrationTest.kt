@@ -19,13 +19,14 @@ import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.TestInfo
+import org.junit.jupiter.api.io.CleanupMode
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
 import java.nio.file.Paths
 import java.util.Locale
 
 abstract class AbstractBufIntegrationTest : IntegrationTest {
-    @TempDir
+    @TempDir(cleanup = CleanupMode.NEVER)
     lateinit var projectDir: File
 
     val buildFile
@@ -71,6 +72,7 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
                 "-PkotlinVersion=1.7.20",
                 "-PandroidGradleVersion=7.3.0",
             )
+            .withDebug(true)
             .let { WrappedRunner(it) }
 
     override fun checkRunner() = gradleRunner().withArguments(CHECK_TASK_NAME)
