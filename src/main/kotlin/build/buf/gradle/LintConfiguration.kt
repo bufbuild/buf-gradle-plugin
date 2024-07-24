@@ -26,13 +26,7 @@ internal fun Project.configureLint() {
         description = "Checks that a Protobuf schema conforms to the Buf lint configuration."
 
         bufConfigFile.set(project.bufConfigFile())
-        inputFiles.setFrom(
-            fileTree(workingDir.get()) {
-                include("**/*.proto")
-                // not to interfere with random plugins producing output to build dir
-                exclude("build")
-            },
-        )
+        inputFiles.setFrom(obtainDefaultProtoFileSet())
     }
 
     tasks.named(CHECK_TASK_NAME).dependsOn(BUF_LINT_TASK_NAME)

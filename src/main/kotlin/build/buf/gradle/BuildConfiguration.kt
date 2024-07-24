@@ -35,13 +35,7 @@ internal fun Project.configureBuild() {
             dependsOn(COPY_BUF_CONFIG_TASK_NAME)
         }
 
-        inputFiles.setFrom(
-            fileTree(workingDir.get()) {
-                include("**/*.proto")
-                // not to interfere with random plugins producing output to build dir
-                exclude("build")
-            },
-        )
+        inputFiles.setFrom(obtainDefaultProtoFileSet())
         publicationFile.set(project.bufBuildPublicationFile)
     }
 }
