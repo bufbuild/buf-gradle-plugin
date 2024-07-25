@@ -1,6 +1,4 @@
-version: v2
-modules:
-  - path: workspace
+version: v1
 breaking:
   ignore:
-    - workspace/buf
+    - buf

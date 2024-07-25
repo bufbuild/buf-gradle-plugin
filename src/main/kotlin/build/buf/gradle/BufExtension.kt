@@ -49,7 +49,7 @@ open class BufExtension {
     /**
      * Specify the version of Buf.
      */
-    var toolVersion = "1.34.0"
+    var toolVersion = "1.35.1"
 
     internal var buildDetails: BuildDetails? = null
 

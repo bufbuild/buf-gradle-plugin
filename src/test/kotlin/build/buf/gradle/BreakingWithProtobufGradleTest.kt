@@ -23,13 +23,9 @@ class BreakingWithProtobufGradleTest : AbstractBreakingTest() {
 
     @Test
     @Ignore
-    override fun `normally breaking schema with an ignore`() {
-        // Ignore this test until we resolve the future of combining this plugin with protobuf-gradle-plugin
-    }
-
-    @Test
-    @Ignore
     fun `schema with multi-directory workspace`() {
-        // Ignore this test until we resolve the future of combining this plugin with protobuf-gradle-plugin
+        publishRunner().build()
+        buildFile.replace("//", "")
+        checkRunner().build()
     }
 }

@@ -5,6 +5,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 repositories {
     gradlePluginPortal()
+    mavenCentral()
 }
 
 plugins {
@@ -30,7 +31,11 @@ allprojects {
     }
 }
 
+extra["jacksonVersion"] = "2.17.2"
+
 dependencies {
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:${project.extra["jacksonVersion"]}")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${project.extra["jacksonVersion"]}")
     testImplementation(libs.junit)
     testImplementation(libs.truth)
 }

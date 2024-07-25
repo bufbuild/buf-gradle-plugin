@@ -14,6 +14,10 @@
 
 package build.buf.gradle
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -75,18 +79,66 @@ internal fun Project.configureWriteWorkspaceYaml() {
 }
 
 abstract class WriteWorkspaceYamlTask : DefaultTask() {
+    private val yamlMapper = ObjectMapper(YAMLFactory()).registerKotlinModule()
+
     @TaskAction
     fun writeWorkspaceYaml() {
-        val bufWork =
-            """
-                |version: v1
-                |directories:
-                ${workspaceSymLinkEntries()}
-            """.trimMargin()
+        val bufYaml = rewriteBufYaml(project.bufConfigFile())
+        logger.info("Writing generated buf.yaml:\n${yamlMapper.writeValueAsString(bufYaml)}")
+        yamlMapper.writeValue(File(bufbuildDir, "buf.yaml"), bufYaml)
+    }
 
-        logger.info("Writing generated buf.work.yaml:\n$bufWork")
+    private fun rewriteBufYaml(bufYamlFile: File?): MutableMap<String, Any> {
+        val bufYaml: MutableMap<String, Any> = if (bufYamlFile != null) {
+            yamlMapper.readValue(bufYamlFile, object : TypeReference<MutableMap<String, Any>>() {})
+        } else {
+            mutableMapOf("version" to "v2")
+        }
+        val newYaml: MutableMap<String, Any> = mutableMapOf()
+        val ignores = mutableListOf<String>()
 
-        File(bufbuildDir, "buf.work.yaml").writeText(bufWork)
+        for ((key, value) in bufYaml) {
+            when (key) {
+                "version" -> newYaml["version"] = "v2" // Force v2
+                "breaking" -> {
+                    // Collect `breaking: ignore:` values
+                    if (value is Map<*, *>) {
+                        when (val ignoreStanza = value["ignore"]) {
+                            is String -> ignores.add(ignoreStanza)
+                            is List<*> -> {
+                                for (v in ignoreStanza) {
+                                    ignores.add(v.toString())
+                                }
+                            }
+                        }
+                    } else {
+                        // error
+                    }
+                }
+                // Preserve other config stanzas
+                else -> newYaml[key] = value
+            }
+        }
+
+        // Emit a module for each discovered workspace, copying ignores and concatenating their
+        // paths with the module root.
+        val modules = mutableListOf<Map<String, Any>>()
+        for (dir in allProtoDirs().map { project.makeMangledRelativizedPathStr(it) }) {
+            if (ignores.isEmpty()) {
+                modules.add(
+                    mapOf("path" to dir)
+                )
+            } else {
+                modules.add(mapOf(
+                    "path" to dir,
+                    "breaking" to mapOf(
+                        "ignore" to ignores.map { "$dir/$it" }
+                    )
+                ))
+            }
+        }
+        newYaml["modules"] = modules
+        return newYaml
     }
 }
 
@@ -98,11 +150,6 @@ private fun Task.workspaceCommonConfig() {
     )
     createsOutput()
 }
-
-private fun Task.workspaceSymLinkEntries() =
-    allProtoDirs()
-        .map { project.makeMangledRelativizedPathStr(it) }
-        .joinToString("\n") { "|  - $it" }
 
 // Returns all directories that have may have proto files relevant to processing the project's proto files. This
 // includes any proto files that are simply references (includes) as well as those that will be processed (code
