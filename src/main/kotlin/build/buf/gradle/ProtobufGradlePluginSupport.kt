@@ -14,7 +14,7 @@
 
 package build.buf.gradle
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
@@ -89,11 +89,12 @@ abstract class WriteWorkspaceYamlTask : DefaultTask() {
     }
 
     private fun rewriteBufYaml(bufYamlFile: File?): MutableMap<String, Any> {
-        val bufYaml: MutableMap<String, Any> = if (bufYamlFile != null) {
-            yamlMapper.readValue(bufYamlFile, object : TypeReference<MutableMap<String, Any>>() {})
-        } else {
-            mutableMapOf("version" to "v2")
-        }
+        val bufYaml: MutableMap<String, Any> =
+            if (bufYamlFile != null) {
+                yamlMapper.readValue(bufYamlFile, object : TypeReference<MutableMap<String, Any>>() {})
+            } else {
+                mutableMapOf("version" to "v2")
+            }
         val newYaml: MutableMap<String, Any> = mutableMapOf()
         val ignores = mutableListOf<String>()
 
@@ -126,15 +127,18 @@ abstract class WriteWorkspaceYamlTask : DefaultTask() {
         for (dir in allProtoDirs().map { project.makeMangledRelativizedPathStr(it) }) {
             if (ignores.isEmpty()) {
                 modules.add(
-                    mapOf("path" to dir)
+                    mapOf("path" to dir),
                 )
             } else {
-                modules.add(mapOf(
-                    "path" to dir,
-                    "breaking" to mapOf(
-                        "ignore" to ignores.map { "$dir/$it" }
-                    )
-                ))
+                modules.add(
+                    mapOf(
+                        "path" to dir,
+                        "breaking" to
+                            mapOf(
+                                "ignore" to ignores.map { "$dir/$it" },
+                            ),
+                    ),
+                )
             }
         }
         newYaml["modules"] = modules
