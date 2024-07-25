@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import org.gradle.api.DefaultTask
+import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.file.SourceDirectorySet
@@ -107,13 +108,11 @@ abstract class WriteWorkspaceYamlTask : DefaultTask() {
                         when (val ignoreStanza = value["ignore"]) {
                             is String -> ignores.add(ignoreStanza)
                             is List<*> -> {
-                                for (v in ignoreStanza) {
-                                    ignores.add(v.toString())
-                                }
+                                for (v in ignoreStanza) ignores.add(v.toString())
                             }
                         }
                     } else {
-                        // error
+                        throw GradleException("Syntax error in buf.yaml - breaking: must define a map")
                     }
                 }
                 // Preserve other config stanzas
