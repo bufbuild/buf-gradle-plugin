@@ -23,6 +23,10 @@ class BreakingWithProtobufGradleTest : AbstractBreakingTest() {
 
     @Test
     @Ignore
+    override fun `normally breaking schema with an ignore`() {
+    }
+
+    @Test
     fun `schema with multi-directory workspace`() {
         publishRunner().build()
         buildFile.replace("//", "")
