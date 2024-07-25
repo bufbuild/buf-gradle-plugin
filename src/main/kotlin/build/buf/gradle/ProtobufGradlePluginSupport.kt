@@ -81,7 +81,7 @@ abstract class WriteWorkspaceYamlTask : DefaultTask() {
     fun writeWorkspaceYaml() {
         val protoDirs = allProtoDirs().map { project.makeMangledRelativizedPathStr(it) }
         val bufYaml = bufYamlGenerator.generate(project.bufConfigFile(), protoDirs)
-        logger.info("Writing generated buf.yaml:\n${bufYaml}")
+        logger.info("Writing generated buf.yaml:\n$bufYaml")
         File(bufbuildDir, "buf.yaml").writeText(bufYaml)
     }
 }
