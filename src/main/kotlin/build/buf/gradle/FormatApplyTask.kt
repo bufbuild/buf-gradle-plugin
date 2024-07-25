@@ -14,10 +14,20 @@
 
 package build.buf.gradle
 
-import org.gradle.api.DefaultTask
+import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.OutputFiles
 import org.gradle.api.tasks.TaskAction
 
-abstract class FormatApplyTask : DefaultTask() {
+abstract class FormatApplyTask : AbstractBufExecTask() {
+    /** The input files to be formatted. */
+    @get:InputFiles
+    internal abstract val inputFiles: ConfigurableFileCollection
+
+    /** The output files that have been formatted. */
+    @get:OutputFiles
+    internal abstract val outputFiles: ConfigurableFileCollection
+
     @TaskAction
     fun bufFormatApply() {
         execBufInSpecificDirectory("format", "-w")

@@ -14,12 +14,16 @@
 
 package build.buf.gradle
 
-import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.plugins.AppliedPlugin
 import org.gradle.api.plugins.ExtensionAware
+import org.gradle.api.provider.Property
+import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
@@ -47,34 +51,58 @@ internal fun Project.hasProtobufGradlePlugin() = pluginManager.hasPlugin("com.go
 internal fun Project.withProtobufGradlePlugin(action: (AppliedPlugin) -> Unit) = pluginManager.withPlugin("com.google.protobuf", action)
 
 internal fun Project.configureCreateSymLinksToModules() {
-    tasks.register<CreateSymLinksToModulesTask>(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME) {
+    registerBufTask<CreateSymLinksToModulesTask>(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME) {
         workspaceCommonConfig()
+        bufbuildDir.set(project.bufbuildDir)
+        candidateProtoDirs.setFrom(allProtoDirs())
     }
 }
 
-abstract class CreateSymLinksToModulesTask : DefaultTask() {
+abstract class CreateSymLinksToModulesTask : AbstractBufTask() {
+    /** Buf output directory. Should be set to [BUF_BUILD_DIR]. */
+    @get:OutputDirectory
+    internal abstract val bufbuildDir: Property<File>
+
+    /** Directories possibly containing input .proto files. */
+    @get:InputFiles
+    internal abstract val candidateProtoDirs: ConfigurableFileCollection
+
     @TaskAction
     fun createSymLinksToModules() {
-        allProtoDirs().forEach {
-            val symLinkFile = File(bufbuildDir, project.makeMangledRelativizedPathStr(it))
-            if (!symLinkFile.exists()) {
-                logger.info("Creating symlink for $it at $symLinkFile")
-                Files.createSymbolicLink(
-                    symLinkFile.toPath(),
-                    bufbuildDir.toPath().relativize(project.file(it).toPath()),
-                )
+        val bufbuildDirValue = bufbuildDir.get()
+        candidateProtoDirs
+            .filter { anyProtos(it) }
+            .forEach {
+                val symLinkFile = File(bufbuildDirValue, makeMangledRelativizedPathStr(it))
+                if (!symLinkFile.exists()) {
+                    logger.info("Creating symlink for $it at $symLinkFile")
+                    Files.createSymbolicLink(
+                        symLinkFile.toPath(),
+                        bufbuildDirValue.toPath().relativize(it.toPath()),
+                    )
+                }
             }
-        }
     }
 }
 
 internal fun Project.configureWriteWorkspaceYaml() {
-    tasks.register<WriteWorkspaceYamlTask>(WRITE_WORKSPACE_YAML_TASK_NAME) {
+    registerBufTask<WriteWorkspaceYamlTask>(WRITE_WORKSPACE_YAML_TASK_NAME) {
         workspaceCommonConfig()
+        projectDir.set(project.projectDir)
+        candidateProtoDirs.setFrom(allProtoDirs())
+        outputFile.set(File(project.bufbuildDir, "buf.work.yaml"))
     }
 }
 
-abstract class WriteWorkspaceYamlTask : DefaultTask() {
+abstract class WriteWorkspaceYamlTask : AbstractBufTask() {
+    /** Directories possibly containing input .proto files. */
+    @get:InputFiles
+    internal abstract val candidateProtoDirs: ConfigurableFileCollection
+
+    /** Output yaml file. */
+    @get:OutputFile
+    internal abstract val outputFile: Property<File>
+
     @TaskAction
     fun writeWorkspaceYaml() {
         val bufWork =
@@ -86,7 +114,7 @@ abstract class WriteWorkspaceYamlTask : DefaultTask() {
 
         logger.info("Writing generated buf.work.yaml:\n$bufWork")
 
-        File(bufbuildDir, "buf.work.yaml").writeText(bufWork)
+        outputFile.get().writeText(bufWork)
     }
 }
 
@@ -96,12 +124,12 @@ private fun Task.workspaceCommonConfig() {
             .tasks
             .matching { it::class.java.name == "com.google.protobuf.gradle.ProtobufExtract_Decorated" },
     )
-    createsOutput()
 }
 
-private fun Task.workspaceSymLinkEntries() =
-    allProtoDirs()
-        .map { project.makeMangledRelativizedPathStr(it) }
+private fun WriteWorkspaceYamlTask.workspaceSymLinkEntries() =
+    candidateProtoDirs
+        .filter { anyProtos(it) }
+        .map { makeMangledRelativizedPathStr(it) }
         .joinToString("\n") { "|  - $it" }
 
 // Returns all directories that have may have proto files relevant to processing the project's proto files. This
@@ -110,7 +138,6 @@ private fun Task.workspaceSymLinkEntries() =
 private fun Task.allProtoDirs() =
     project.allProtoSourceSetDirs()
         .plus(project.file(Paths.get(BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN)))
-        .filter { anyProtos(it) }
         .toSet()
 
 // Returns the list of directories containing proto files defined in *this* project. The returned directories do *not*
@@ -152,26 +179,47 @@ private fun Project.projectProtoSourceSetDirs() =
 // directories explicitly added to the source set, as well as directories containing files from "protobuf" dependencies.
 private fun ExtensionAware.projectProtoSourceSetDirs() =
     extensions.getByName<SourceDirectorySet>("proto").srcDirs
-        .filter { anyProtos(it) }
         .toSet()
 
-internal fun Project.makeMangledRelativizedPathStr(file: File) = mangle(projectDir.toPath().relativize(file.toPath()))
+internal fun AbstractBufTask.makeMangledRelativizedPathStr(file: File) = mangle(projectDir.get().toPath().relativize(file.toPath()))
 
 // Indicates if the specified directory contains any proto files.
-private fun anyProtos(directory: File) = directory.walkTopDown().any { it.extension == "proto" }
+internal fun anyProtos(directory: File) = directory.walkTopDown().any { it.extension == "proto" }
 
 private fun mangle(name: Path) = name.toString().replace("-", "--").replace(File.separator, "-")
 
-internal inline fun <reified T : Task> Project.registerBufTask(
+internal inline fun <reified T : AbstractBufTask> Project.registerBufTask(
     name: String,
     noinline configuration: T.() -> Unit,
-): TaskProvider<T> {
-    val taskProvider = tasks.register(name, configuration)
-    withProtobufGradlePlugin {
-        afterEvaluate {
-            taskProvider.dependsOn(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME)
-            taskProvider.dependsOn(WRITE_WORKSPACE_YAML_TASK_NAME)
+): TaskProvider<T> =
+    tasks.register<T>(name) {
+        projectDir.set(project.projectDir)
+        configuration()
+    }
+
+internal inline fun <reified T : AbstractBufExecTask> Project.registerBufExecTask(
+    name: String,
+    noinline configuration: T.() -> Unit,
+): TaskProvider<T> =
+    registerBufTask<T>(name) {
+        bufExecutable.setFrom(configurations.getByName(BUF_BINARY_CONFIGURATION_NAME))
+        if (project.hasProtobufGradlePlugin()) {
+            hasProtobufGradlePlugin.set(true)
+            candidateProtoDirs.setFrom(projectDefinedProtoDirs())
+            workingDir.set(project.bufbuildDir)
+            // whenever this task is part of the build, we must run it before any buf execution
+            mustRunAfter(COPY_BUF_CONFIG_TASK_NAME)
+        } else {
+            hasProtobufGradlePlugin.set(false)
+            workingDir.set(project.projectDir)
+        }
+        hasWorkspace.set(project.hasWorkspace())
+        configuration()
+    }.also { taskProvider ->
+        withProtobufGradlePlugin {
+            afterEvaluate {
+                taskProvider.dependsOn(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME)
+                taskProvider.dependsOn(WRITE_WORKSPACE_YAML_TASK_NAME)
+            }
         }
     }
-    return taskProvider
-}

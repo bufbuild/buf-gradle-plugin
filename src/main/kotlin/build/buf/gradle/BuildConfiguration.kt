@@ -15,7 +15,6 @@
 package build.buf.gradle
 
 import org.gradle.api.Project
-import org.gradle.api.Task
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.kotlin.dsl.create
@@ -28,16 +27,16 @@ private const val BUF_BUILD_PUBLICATION_FILE_BASE_NAME = "image"
 const val BUF_IMAGE_PUBLICATION_NAME = "bufImagePublication"
 
 internal fun Project.configureBuild() {
-    registerBufTask<BuildTask>(BUF_BUILD_TASK_NAME) {
+    registerBufExecTask<BuildTask>(BUF_BUILD_TASK_NAME) {
         group = BUILD_GROUP
         description = "Builds a Buf image from a Protobuf schema."
 
         if (hasProtobufGradlePlugin()) {
             dependsOn(COPY_BUF_CONFIG_TASK_NAME)
-        } else {
-            // Called already during workspace configuration if the protobuf-gradle-plugin has been applied
-            createsOutput()
         }
+
+        inputFiles.setFrom(obtainDefaultProtoFileSet())
+        publicationFile.set(project.bufBuildPublicationFile)
     }
 }
 
@@ -64,8 +63,5 @@ private val Project.bufBuildPublicationFileExtension
             deets.imageFormat.formatName + deets.compressionFormat?.let { ".${it.ext}" }.orEmpty()
         }
 
-private val Project.bufBuildPublicationFile
+internal val Project.bufBuildPublicationFile
     get() = File(bufbuildDir, "$BUF_BUILD_PUBLICATION_FILE_BASE_NAME.$bufBuildPublicationFileExtension")
-
-internal val Task.bufBuildPublicationFile
-    get() = project.bufBuildPublicationFile

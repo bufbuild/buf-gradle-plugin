@@ -14,12 +14,24 @@
 
 package build.buf.gradle
 
-import org.gradle.api.DefaultTask
+import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.provider.Property
+import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
+import java.io.File
 
-abstract class BuildTask : DefaultTask() {
+abstract class BuildTask : AbstractBufExecTask() {
+    /** The input files. */
+    @get:InputFiles
+    internal abstract val inputFiles: ConfigurableFileCollection
+
+    /** The output publication file. */
+    @get:OutputFile
+    internal abstract val publicationFile: Property<File>
+
     @TaskAction
     fun bufBuild() {
-        execBuf("build", "--output", bufBuildPublicationFile)
+        execBuf("build", "--output", publicationFile.get())
     }
 }

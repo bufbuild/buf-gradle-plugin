@@ -1,4 +1,4 @@
-// Copyright 2023 Buf Technologies, Inc.
+// Copyright 2024 Buf Technologies, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,20 +14,16 @@
 
 package build.buf.gradle
 
-import org.gradle.api.Project
-import org.gradle.api.tasks.TaskProvider
-import org.gradle.kotlin.dsl.dependencies
+import org.gradle.api.DefaultTask
+import org.gradle.api.provider.Property
+import org.gradle.api.tasks.Input
+import java.io.File
 
-internal fun TaskProvider<*>.dependsOn(obj: Any) {
-    configure { dependsOn(obj) }
+abstract class AbstractBufTask : DefaultTask() {
+    /**
+     * This property has to be set to project directory. It is only used for relativization of paths,
+     * so it is just an @Input, not @InputDirectory.
+     */
+    @get:Input
+    internal abstract val projectDir: Property<File>
 }
-
-internal fun Project.createConfigurationWithDependency(
-    configuration: String,
-    notation: Any,
-) {
-    configurations.create(configuration)
-    dependencies { add(configuration, notation) }
-}
-
-internal fun Project.singleFileFromConfiguration(configuration: String) = configurations.getByName(configuration).singleFile

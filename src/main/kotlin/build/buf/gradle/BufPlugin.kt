@@ -35,6 +35,7 @@ class BufPlugin : Plugin<Project> {
     }
 
     private fun Project.configureBuf() {
+        createBufBinaryDependencyConfiguration()
         configureLint()
         configureFormat()
         configureBuild()

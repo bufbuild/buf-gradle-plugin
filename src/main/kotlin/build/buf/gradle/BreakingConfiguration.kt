@@ -50,10 +50,13 @@ private fun Project.addSchemaDependency(artifactDetails: ArtifactDetails) {
 }
 
 private fun Project.configureBreakingTask() {
-    registerBufTask<BreakingTask>(BUF_BREAKING_TASK_NAME) {
+    registerBufExecTask<BreakingTask>(BUF_BREAKING_TASK_NAME) {
         group = VERIFICATION_GROUP
         description = "Checks that Protobuf API definitions are backwards-compatible with previous versions."
 
         dependsOn(BUF_BUILD_TASK_NAME)
+
+        publicationFile.set(project.bufBuildPublicationFile)
+        configFile.set(singleFileFromConfiguration(BUF_BREAKING_CONFIGURATION_NAME))
     }
 }
