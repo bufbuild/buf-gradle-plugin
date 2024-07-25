@@ -24,11 +24,11 @@ import java.io.File
 abstract class BuildTask : AbstractBufExecTask() {
     /** The input files. */
     @get:InputFiles
-    abstract val inputFiles: ConfigurableFileCollection
+    internal abstract val inputFiles: ConfigurableFileCollection
 
     /** The output publication file. */
     @get:OutputFile
-    abstract val publicationFile: Property<File>
+    internal abstract val publicationFile: Property<File>
 
     @TaskAction
     fun bufBuild() {

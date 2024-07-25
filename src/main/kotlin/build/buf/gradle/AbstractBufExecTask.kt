@@ -26,7 +26,7 @@ import java.io.File
 abstract class AbstractBufExecTask : AbstractBufTask() {
     /** The buf executable. */
     @get:InputFiles
-    abstract val bufExecutable: ConfigurableFileCollection
+    internal abstract val bufExecutable: ConfigurableFileCollection
 
     /**
      * The directory in which buf is executed.
@@ -34,17 +34,17 @@ abstract class AbstractBufExecTask : AbstractBufTask() {
      * so it is just an @Input, not @InputDirectory.
      */
     @get:Input
-    abstract val workingDir: Property<File>
+    internal abstract val workingDir: Property<File>
 
     /** Whether the project has protobuf plugin enabled. */
     @get:Input
-    abstract val hasProtobufGradlePlugin: Property<Boolean>
+    internal abstract val hasProtobufGradlePlugin: Property<Boolean>
 
     /** Directories possibly containing input .proto files. */
     @get:InputFiles
-    abstract val candidateProtoDirs: ConfigurableFileCollection
+    internal abstract val candidateProtoDirs: ConfigurableFileCollection
 
     /** Whether the project has buf workspace or not. */
     @get:Input
-    abstract val hasWorkspace: Property<Boolean>
+    internal abstract val hasWorkspace: Property<Boolean>
 }

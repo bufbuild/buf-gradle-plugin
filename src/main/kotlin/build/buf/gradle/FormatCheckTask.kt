@@ -21,7 +21,7 @@ import org.gradle.api.tasks.TaskAction
 abstract class FormatCheckTask : AbstractBufExecTask() {
     /** The input files to be checked. */
     @get:InputFiles
-    abstract val inputFiles: ConfigurableFileCollection
+    internal abstract val inputFiles: ConfigurableFileCollection
 
     @TaskAction
     fun bufFormatCheck() {

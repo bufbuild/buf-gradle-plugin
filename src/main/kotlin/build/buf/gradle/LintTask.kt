@@ -27,12 +27,12 @@ import kotlin.streams.asSequence
 abstract class LintTask : AbstractBufExecTask() {
     /** The input proto files. */
     @get:InputFiles
-    abstract val inputFiles: ConfigurableFileCollection
+    internal abstract val inputFiles: ConfigurableFileCollection
 
     /** The input buf configuration file. */
     @get:InputFile
     @get:Optional
-    abstract val bufConfigFile: Property<File>
+    internal abstract val bufConfigFile: Property<File>
 
     @TaskAction
     fun bufLint() {

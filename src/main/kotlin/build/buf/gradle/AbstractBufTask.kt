@@ -25,5 +25,5 @@ abstract class AbstractBufTask : DefaultTask() {
      * so it is just an @Input, not @InputDirectory.
      */
     @get:Input
-    abstract val projectDir: Property<File>
+    internal abstract val projectDir: Property<File>
 }

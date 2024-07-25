@@ -61,11 +61,11 @@ internal fun Project.configureCreateSymLinksToModules() {
 abstract class CreateSymLinksToModulesTask : AbstractBufTask() {
     /** Buf output directory. Should be set to [BUF_BUILD_DIR]. */
     @get:OutputDirectory
-    abstract val bufbuildDir: Property<File>
+    internal abstract val bufbuildDir: Property<File>
 
     /** Directories possibly containing input .proto files. */
     @get:InputFiles
-    abstract val candidateProtoDirs: ConfigurableFileCollection
+    internal abstract val candidateProtoDirs: ConfigurableFileCollection
 
     @TaskAction
     fun createSymLinksToModules() {
@@ -97,11 +97,11 @@ internal fun Project.configureWriteWorkspaceYaml() {
 abstract class WriteWorkspaceYamlTask : AbstractBufTask() {
     /** Directories possibly containing input .proto files. */
     @get:InputFiles
-    abstract val candidateProtoDirs: ConfigurableFileCollection
+    internal abstract val candidateProtoDirs: ConfigurableFileCollection
 
     /** Output yaml file. */
     @get:OutputFile
-    abstract val outputFile: Property<File>
+    internal abstract val outputFile: Property<File>
 
     @TaskAction
     fun writeWorkspaceYaml() {

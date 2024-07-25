@@ -22,11 +22,11 @@ import org.gradle.api.tasks.TaskAction
 abstract class FormatApplyTask : AbstractBufExecTask() {
     /** The input files to be formatted. */
     @get:InputFiles
-    abstract val inputFiles: ConfigurableFileCollection
+    internal abstract val inputFiles: ConfigurableFileCollection
 
     /** The output files that have been formatted. */
     @get:OutputFiles
-    abstract val outputFiles: ConfigurableFileCollection
+    internal abstract val outputFiles: ConfigurableFileCollection
 
     @TaskAction
     fun bufFormatApply() {

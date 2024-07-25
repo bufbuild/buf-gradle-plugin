@@ -27,20 +27,20 @@ import java.io.File
 abstract class GenerateTask : AbstractBufExecTask() {
     /** Whether to include imports. */
     @get:Input
-    abstract val includeImports: Property<Boolean>
+    internal abstract val includeImports: Property<Boolean>
 
     /** Template file. */
     @get:InputFile
     @get:Optional
-    abstract val templateFile: Property<File>
+    internal abstract val templateFile: Property<File>
 
     /** The input proto files. */
     @get:InputFiles
-    abstract val inputFiles: ConfigurableFileCollection
+    internal abstract val inputFiles: ConfigurableFileCollection
 
     /** The directory to output generated files. */
     @get:OutputDirectory
-    abstract val outputDirectory: Property<File>
+    internal abstract val outputDirectory: Property<File>
 
     @TaskAction
     fun bufGenerate() {

@@ -22,11 +22,11 @@ import java.io.File
 abstract class BreakingTask : AbstractBufExecTask() {
     /** The input publication file. */
     @get:InputFile
-    abstract val publicationFile: Property<File>
+    internal abstract val publicationFile: Property<File>
 
     /** The input breaking config file. */
     @get:InputFile
-    abstract val configFile: Property<File>
+    internal abstract val configFile: Property<File>
 
     @TaskAction
     fun bufBreaking() {
