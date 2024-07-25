@@ -14,12 +14,7 @@
 
 package build.buf.gradle
 
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import org.gradle.api.DefaultTask
-import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.file.SourceDirectorySet
@@ -80,68 +75,14 @@ internal fun Project.configureWriteWorkspaceYaml() {
 }
 
 abstract class WriteWorkspaceYamlTask : DefaultTask() {
-    private val yamlMapper = ObjectMapper(YAMLFactory()).registerKotlinModule()
+    private val bufYamlGenerator = BufYamlGenerator()
 
     @TaskAction
     fun writeWorkspaceYaml() {
-        val bufYaml = rewriteBufYaml(project.bufConfigFile())
-        logger.info("Writing generated buf.yaml:\n${yamlMapper.writeValueAsString(bufYaml)}")
-        yamlMapper.writeValue(File(bufbuildDir, "buf.yaml"), bufYaml)
-    }
-
-    private fun rewriteBufYaml(bufYamlFile: File?): MutableMap<String, Any> {
-        val bufYaml: MutableMap<String, Any> =
-            if (bufYamlFile != null) {
-                yamlMapper.readValue(bufYamlFile, object : TypeReference<MutableMap<String, Any>>() {})
-            } else {
-                mutableMapOf("version" to "v2")
-            }
-        val newYaml: MutableMap<String, Any> = mutableMapOf()
-        val ignores = mutableListOf<String>()
-
-        for ((key, value) in bufYaml) {
-            when (key) {
-                "version" -> newYaml["version"] = "v2" // Force v2
-                "breaking" -> {
-                    // Collect `breaking: ignore:` values
-                    if (value is Map<*, *>) {
-                        when (val ignoreStanza = value["ignore"]) {
-                            is String -> ignores.add(ignoreStanza)
-                            is List<*> -> {
-                                for (v in ignoreStanza) ignores.add(v.toString())
-                            }
-                        }
-                    } else {
-                        throw GradleException("Syntax error in buf.yaml - breaking: must define a map")
-                    }
-                }
-                // Preserve other config stanzas
-                else -> newYaml[key] = value
-            }
-        }
-
-        // Emit a module for each discovered workspace, copying ignores and concatenating their
-        // paths with the module root.
-        val modules = mutableListOf<Map<String, Any>>()
-        for (dir in allProtoDirs().map { project.makeMangledRelativizedPathStr(it) }) {
-            if (ignores.isEmpty()) {
-                modules.add(
-                    mapOf("path" to dir),
-                )
-            } else {
-                modules.add(
-                    mapOf(
-                        "path" to dir,
-                        "breaking" to
-                            mapOf(
-                                "ignore" to ignores.map { "$dir/$it" },
-                            ),
-                    ),
-                )
-            }
-        }
-        newYaml["modules"] = modules
-        return newYaml
+        val protoDirs = allProtoDirs().map { project.makeMangledRelativizedPathStr(it) }
+        val bufYaml = bufYamlGenerator.generate(project.bufConfigFile(), protoDirs)
+        logger.info("Writing generated buf.yaml:\n${bufYaml}")
+        File(bufbuildDir, "buf.yaml").writeText(bufYaml)
     }
 }
 

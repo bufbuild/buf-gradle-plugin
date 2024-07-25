@@ -31,11 +31,9 @@ allprojects {
     }
 }
 
-extra["jacksonVersion"] = "2.17.2"
-
 dependencies {
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:${project.extra["jacksonVersion"]}")
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${project.extra["jacksonVersion"]}")
+    implementation(libs.jacksonModuleKotlin)
+    implementation(libs.jacksonDataformatYaml)
     testImplementation(libs.junit)
     testImplementation(libs.truth)
 }
