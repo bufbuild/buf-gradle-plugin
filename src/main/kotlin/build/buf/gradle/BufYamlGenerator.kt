@@ -18,15 +18,10 @@ class BufYamlGenerator {
         protoDirs: List<String>,
     ): String {
         val bufYaml =
-            bufYamlFile?.let {
+            (bufYamlFile?.let {
                 yamlMapper.readValue(it, object : TypeReference<MutableMap<String, Any>>() {})
-            } ?: mutableMapOf("version" to "v2")
-
-        // Copy existing buf.yaml and force version to v2.
-        val newYaml =
-            bufYaml.toMutableMap().apply {
-                this["version"] = "v2" // Force v2
-            }
+            } ?: emptyMap()).toMutableMap()
+        bufYaml["version"] = "v2"
 
         // Collect `breaking: ignore:` entries.
         val ignores =
@@ -47,7 +42,7 @@ class BufYamlGenerator {
                     )
                 }
             }
-        newYaml["modules"] = modules
-        return yamlMapper.writeValueAsString(newYaml)
+        bufYaml["modules"] = modules
+        return yamlMapper.writeValueAsString(bufYaml)
     }
 }
