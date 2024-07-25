@@ -6,7 +6,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import java.io.File
 
-class BufYamlGenerator {
+internal class BufYamlGenerator {
     val yamlMapper = ObjectMapper(YAMLFactory()).registerKotlinModule()
 
     /**
@@ -18,9 +18,9 @@ class BufYamlGenerator {
         protoDirs: List<String>,
     ): String {
         val bufYaml =
-            (bufYamlFile?.let {
+            bufYamlFile?.let {
                 yamlMapper.readValue(it, object : TypeReference<MutableMap<String, Any>>() {})
-            } ?: emptyMap()).toMutableMap()
+            }.orEmpty().toMutableMap()
         bufYaml["version"] = "v2"
 
         // Collect `breaking: ignore:` entries.
