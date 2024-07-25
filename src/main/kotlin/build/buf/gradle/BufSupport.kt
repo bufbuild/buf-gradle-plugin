@@ -15,7 +15,6 @@
 package build.buf.gradle
 
 import org.gradle.api.Project
-import org.gradle.api.Task
 import java.nio.charset.StandardCharsets
 
 const val BUF_BINARY_CONFIGURATION_NAME = "bufTool"
@@ -51,14 +50,14 @@ internal fun Project.configureBufDependency() {
     )
 }
 
-internal fun Task.execBuf(
+internal fun AbstractBufExecTask.execBuf(
     vararg args: Any,
     customErrorMessage: ((String) -> String)? = null,
 ) {
     execBuf(args.asList(), customErrorMessage)
 }
 
-internal fun Task.execBuf(
+internal fun AbstractBufExecTask.execBuf(
     args: Iterable<Any>,
     customErrorMessage: ((String) -> String)? = null,
 ) {
