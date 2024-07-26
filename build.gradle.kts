@@ -32,8 +32,9 @@ allprojects {
 }
 
 dependencies {
-    implementation(libs.jacksonModuleKotlin)
     implementation(libs.jacksonDataformatYaml)
+    implementation(libs.jacksonModuleKotlin)
+
     testImplementation(libs.junit)
     testImplementation(libs.truth)
 }

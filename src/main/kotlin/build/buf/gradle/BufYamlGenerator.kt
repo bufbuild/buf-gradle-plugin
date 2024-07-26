@@ -1,13 +1,11 @@
 package build.buf.gradle
 
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import java.io.File
 
 internal class BufYamlGenerator {
-    val yamlMapper = ObjectMapper(YAMLFactory()).registerKotlinModule()
+    private val mapper = jacksonObjectMapper()
 
     /**
      * Read the user-supplied buf.yaml file and generate an equivalent file, adding a
@@ -17,10 +15,7 @@ internal class BufYamlGenerator {
         bufYamlFile: File?,
         protoDirs: List<String>,
     ): String {
-        val bufYaml =
-            bufYamlFile?.let {
-                yamlMapper.readValue(it, object : TypeReference<MutableMap<String, Any>>() {})
-            }.orEmpty().toMutableMap()
+        val bufYaml = bufYamlFile?.let { mapper.readValue<Map<String, Any>>(it) }.orEmpty().toMutableMap()
         bufYaml["version"] = "v2"
 
         // Collect `breaking: ignore:` entries.
@@ -43,6 +38,6 @@ internal class BufYamlGenerator {
                 }
             }
         bufYaml["modules"] = modules
-        return yamlMapper.writeValueAsString(bufYaml)
+        return mapper.writeValueAsString(bufYaml)
     }
 }
