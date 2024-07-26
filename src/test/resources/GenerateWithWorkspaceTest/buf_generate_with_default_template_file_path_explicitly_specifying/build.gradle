@@ -8,6 +8,7 @@ repositories {
 }
 
 buf {
+  toolVersion = "1.31.0"
   generate {
     configFileLocation = rootProject.file("./buf.yaml")
     templateFileLocation = project.file("./buf.gen.yaml")

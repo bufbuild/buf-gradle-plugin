@@ -16,6 +16,7 @@ publishing {
 }
 
 buf {
+  toolVersion = "1.31.0"
   publishSchema = true
   //previousVersion = '2319'
 

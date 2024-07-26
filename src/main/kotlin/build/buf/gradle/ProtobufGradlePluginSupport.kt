@@ -75,18 +75,14 @@ internal fun Project.configureWriteWorkspaceYaml() {
 }
 
 abstract class WriteWorkspaceYamlTask : DefaultTask() {
+    private val bufYamlGenerator = BufYamlGenerator()
+
     @TaskAction
     fun writeWorkspaceYaml() {
-        val bufWork =
-            """
-                |version: v1
-                |directories:
-                ${workspaceSymLinkEntries()}
-            """.trimMargin()
-
-        logger.info("Writing generated buf.work.yaml:\n$bufWork")
-
-        File(bufbuildDir, "buf.work.yaml").writeText(bufWork)
+        val protoDirs = allProtoDirs().map { project.makeMangledRelativizedPathStr(it) }
+        val bufYaml = bufYamlGenerator.generate(project.bufConfigFile(), protoDirs)
+        logger.info("Writing generated buf.yaml:{}\n", bufYaml)
+        File(bufbuildDir, "buf.yaml").writeText(bufYaml)
     }
 }
 
@@ -98,11 +94,6 @@ private fun Task.workspaceCommonConfig() {
     )
     createsOutput()
 }
-
-private fun Task.workspaceSymLinkEntries() =
-    allProtoDirs()
-        .map { project.makeMangledRelativizedPathStr(it) }
-        .joinToString("\n") { "|  - $it" }
 
 // Returns all directories that have may have proto files relevant to processing the project's proto files. This
 // includes any proto files that are simply references (includes) as well as those that will be processed (code

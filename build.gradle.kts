@@ -5,6 +5,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 repositories {
     gradlePluginPortal()
+    mavenCentral()
 }
 
 plugins {
@@ -31,6 +32,9 @@ allprojects {
 }
 
 dependencies {
+    implementation(libs.jacksonDataformatYaml)
+    implementation(libs.jacksonModuleKotlin)
+
     testImplementation(libs.junit)
     testImplementation(libs.truth)
 }
