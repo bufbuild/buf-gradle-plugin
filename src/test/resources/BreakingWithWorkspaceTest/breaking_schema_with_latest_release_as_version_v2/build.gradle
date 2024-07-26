@@ -1,6 +1,5 @@
 plugins {
   id 'java'
-  id 'com.google.protobuf' version "$protobufGradleVersion"
   id 'build.buf'
   id 'maven-publish'
 }
@@ -10,14 +9,6 @@ repositories {
   maven { url 'build/repos/test' }
 }
 
-protobuf {
-  protoc {
-    artifact = "com.google.protobuf:protoc:$protobufVersion"
-  }
-}
-
-compileJava.enabled = false
-
 publishing {
   repositories {
     maven { url 'build/repos/test' }
@@ -25,7 +16,6 @@ publishing {
 }
 
 buf {
-  toolVersion = "1.31.0"
   publishSchema = true
   //checkSchemaAgainstLatestRelease = true
 
@@ -34,8 +24,4 @@ buf {
     artifactId = 'bar'
     version = '2319'
   }
-}
-
-dependencies {
-  implementation "com.google.protobuf:protobuf-java:$protobufVersion"
 }

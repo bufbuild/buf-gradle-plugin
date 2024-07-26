@@ -29,16 +29,17 @@ internal class BufYamlGenerator {
         // Emit a module for each discovered workspace, copying ignores and concatenating their
         // paths with the module root.
         val modules =
-            protoDirs.map { dir ->
-                if (ignores.isEmpty()) {
-                    mapOf("path" to dir)
-                } else {
-                    mapOf(
-                        "path" to dir,
-                        "breaking" to mapOf("ignore" to ignores.map { "$dir/$it" }),
-                    )
+            protoDirs
+                .map { dir ->
+                    if (ignores.isEmpty()) {
+                        mapOf("path" to dir)
+                    } else {
+                        mapOf(
+                            "path" to dir,
+                            "breaking" to mapOf("ignore" to ignores.map { "$dir/$it" }),
+                        )
+                    }
                 }
-            }
         bufYaml["modules"] = modules
         return mapper.writeValueAsString(bufYaml)
     }

@@ -10,9 +10,9 @@ This plugin supports straightforward usage of `buf lint`, `buf format`, and `buf
 
 ## Usage
 
-This plugin assumes that Buf is configured for the project root with a configured `buf.work.yaml`, and instructions for setting up a Buf workspace can be found in the [Buf docs][buf-docs].
+This plugin assumes that Buf is configured for the project root with a configured `buf.yaml`, and instructions for setting up a Buf workspace can be found in the [Buf docs][buf-docs].
 
-The plugin can also be used without specifying a `buf.work.yaml`, in which case the plugin will scan all top-level directories for Protobuf sources.
+The plugin can also be used without specifying a `buf.yaml`, in which case the plugin will scan all top-level directories for Protobuf sources.
 
 If the project includes the `protobuf-gradle-plugin`, this plugin will use an implicit Buf workspace that includes the following:
 - All specified Protobuf source directories
@@ -60,7 +60,7 @@ For a basic Buf project or one that uses the `protobuf-gradle-plugin`, you can c
 ``` yaml
 # buf.yaml
 
-version: v1
+version: v2
 lint:
   ignore:
     - path/to/dir/to/ignore
@@ -125,7 +125,7 @@ If your `buf.yaml` declares any dependencies using the `deps` key, you must run 
 An example, for Java code generation using the remote plugin:
 
 ``` yaml
-version: v1
+version: v2
 plugins:
   - plugin: buf.build/protocolbuffers/java:<version>
     out: java
