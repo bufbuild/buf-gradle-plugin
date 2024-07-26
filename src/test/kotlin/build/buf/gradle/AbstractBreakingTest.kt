@@ -62,7 +62,7 @@ abstract class AbstractBreakingTest : AbstractBufIntegrationTest() {
         assertThat(result.output).contains("Cannot configure $BUF_BREAKING_TASK_NAME against latest release and a previous version.")
     }
 
-    private fun checkBreaking() {
+    protected fun checkBreaking() {
         checkRunner().build()
 
         buildFile.replace("//", "")
@@ -80,7 +80,7 @@ abstract class AbstractBreakingTest : AbstractBufIntegrationTest() {
         assertThat(result.output).contains("Previously present message \"BasicMessage\" was deleted from file.")
     }
 
-    private fun breakSchema() {
+    protected fun breakSchema() {
         val protoFile = protoFile().toFile()
         protoFile.replace("BasicMessage", "BasicMessage2")
     }
