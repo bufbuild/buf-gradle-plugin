@@ -74,11 +74,11 @@ abstract class AbstractBuildTest : AbstractBufIntegrationTest() {
         )
     }
 
-    private fun assertImageGeneration(publicationFileName: String) {
+    protected fun assertImageGeneration(publicationFileName: String) {
         assertThat(buildRunner().build().task(":$BUF_BUILD_TASK_NAME")?.outcome).isEqualTo(SUCCESS)
         val image = Paths.get(projectDir.path, "build", "bufbuild", publicationFileName).toFile().readText()
         assertThat(image).isNotEmpty()
     }
 
-    private fun buildRunner() = gradleRunner().withArguments(":$BUF_BUILD_TASK_NAME")
+    protected fun buildRunner() = gradleRunner().withArguments(":$BUF_BUILD_TASK_NAME")
 }
