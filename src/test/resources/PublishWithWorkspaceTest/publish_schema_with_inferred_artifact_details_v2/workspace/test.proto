@@ -12,18 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package build.buf.gradle
+syntax = "proto3";
 
-import org.junit.jupiter.api.Test
+package buf.test.v1;
 
-class PublishWithWorkspaceTest : AbstractPublishTest() {
-    @Test
-    fun `publish schema with explicit artifact details v2`() {
-        super.`publish schema with explicit artifact details`()
-    }
-
-    @Test
-    fun `publish schema with inferred artifact details v2`() {
-        super.`publish schema with inferred artifact details`()
-    }
-}
+message BasicMessage {}
