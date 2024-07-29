@@ -32,9 +32,11 @@ allprojects {
     }
 }
 
+val bufCliDependabotConfig = configurations.create("bufCliDependabotConfig")
+
 dependencies {
-    // Used to set the default value for BufExtension.toolVersion and to trigger dependabot.
-    implementation(libs.bufbuild)
+    // Trigger dependabot on a new Buf CLI release.
+    bufCliDependabotConfig(libs.bufbuild)
 
     implementation(libs.jacksonDataformatYaml)
     implementation(libs.jacksonModuleKotlin)
