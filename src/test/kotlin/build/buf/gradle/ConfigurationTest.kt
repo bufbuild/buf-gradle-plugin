@@ -24,7 +24,17 @@ class ConfigurationTest : AbstractBufIntegrationTest() {
     }
 
     @Test
+    fun `project cannot use both workspaces and the protobuf-gradle-plugin, protobuf applied first v2`() {
+        assertFailure()
+    }
+
+    @Test
     fun `project cannot use both workspaces and the protobuf-gradle-plugin, protobuf applied second`() {
+        assertFailure()
+    }
+
+    @Test
+    fun `project cannot use both workspaces and the protobuf-gradle-plugin, protobuf applied second v2`() {
         assertFailure()
     }
 

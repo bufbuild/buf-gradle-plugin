@@ -12,9 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package build.buf.gradle
+syntax = "proto3";
 
-import org.gradle.api.Project
+package buf.test.v1;
 
-internal fun Project.hasWorkspace() = file("buf.work.yaml").let { it.exists() && it.isFile } ||
-        file("buf.yaml").let { it.exists() && it.isFile }
+message BasicMessage {}

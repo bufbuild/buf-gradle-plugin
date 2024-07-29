@@ -14,4 +14,16 @@
 
 package build.buf.gradle
 
-class PublishWithWorkspaceTest : AbstractPublishTest()
+import org.junit.jupiter.api.Test
+
+class PublishWithWorkspaceTest : AbstractPublishTest() {
+    @Test
+    fun `publish schema with explicit artifact details v2`() {
+        super.`publish schema with explicit artifact details`()
+    }
+
+    @Test
+    fun `publish schema with inferred artifact details v2`() {
+        super.`publish schema with inferred artifact details`()
+    }
+}

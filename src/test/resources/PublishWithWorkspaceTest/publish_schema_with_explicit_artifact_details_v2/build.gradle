@@ -1,0 +1,24 @@
+plugins {
+  id 'java'
+  id 'build.buf'
+  id 'maven-publish'
+}
+
+repositories {
+  mavenCentral()
+}
+
+buf {
+  publishSchema = true
+  imageArtifact {
+    groupId = 'foo'
+    artifactId = 'bar'
+    version = '2319'
+  }
+}
+
+publishing {
+  repositories {
+    maven { url 'build/repos/test' }
+  }
+}
