@@ -26,7 +26,7 @@ import java.nio.file.Paths
 import java.util.Locale
 
 abstract class AbstractBufIntegrationTest : IntegrationTest {
-    @TempDir(cleanup = CleanupMode.ON_SUCCESS)
+    @TempDir(cleanup = CleanupMode.ALWAYS)
     lateinit var projectDir: File
 
     val buildFile
@@ -72,7 +72,7 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
                 "-PkotlinVersion=1.7.20",
                 "-PandroidGradleVersion=7.3.0",
             )
-            .withDebug(true) // Enable for interactive debugging
+            .withDebug(false) // Enable for interactive debugging
             .let { WrappedRunner(it) }
 
     override fun checkRunner() = gradleRunner().withArguments(CHECK_TASK_NAME)
