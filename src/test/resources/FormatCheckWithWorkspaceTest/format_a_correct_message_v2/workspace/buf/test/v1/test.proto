@@ -12,23 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package build.buf.gradle
+syntax = "proto3";
 
-import org.junit.jupiter.api.Test
+package buf.test.v1;
 
-class FormatCheckWithWorkspaceTest : AbstractFormatCheckTest() {
-    @Test
-    fun `format a correct message v2`() {
-        super.`format a correct message`()
-    }
-
-    @Test
-    fun `format an incorrect message v2`() {
-        super.`format an incorrect message`()
-    }
-
-    @Test
-    fun `do not format an incorrect message when enforcement is disabled v2`() {
-        super.`do not format an incorrect message when enforcement is disabled`()
-    }
-}
+message Foo {}
