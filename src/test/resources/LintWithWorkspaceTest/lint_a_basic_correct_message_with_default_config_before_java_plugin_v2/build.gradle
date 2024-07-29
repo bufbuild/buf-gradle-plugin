@@ -1,0 +1,8 @@
+plugins {
+  id 'build.buf'
+  id 'java'
+}
+
+repositories {
+  mavenCentral()
+}

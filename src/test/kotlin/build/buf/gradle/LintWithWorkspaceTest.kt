@@ -21,4 +21,34 @@ class LintWithWorkspaceTest : NonProtobufGradlePluginLintTests, AbstractLintTest
     fun `lint with a config in workspace`() {
         assertSuccess()
     }
+
+    @Test
+    fun `lint a basic correct message with default config v2`() {
+        super.`lint a basic correct message with default config`()
+    }
+
+    @Test
+    fun `lint a basic correct message with default config before java plugin v2`() {
+        super.`lint a basic correct message with default config before java plugin`()
+    }
+
+    @Test
+    fun `lint a basic correct message with default config and the kotlin jvm plugin v2`() {
+        super.`lint a basic correct message with default config and the kotlin jvm plugin`()
+    }
+
+    @Test
+    fun `lint a basic correct message with default config and the kotlin android plugin v2`() {
+        super.`lint a basic correct message with default config and the kotlin android plugin`()
+    }
+
+    @Test
+    fun `lint a basic incorrect message with bad enum v2`() {
+        super.`lint a basic incorrect message with bad enum`()
+    }
+
+    @Test
+    fun `lint a file with a google dependency v2`() {
+        super.`lint a file with a google dependency`()
+    }
 }

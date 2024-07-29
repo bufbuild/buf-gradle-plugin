@@ -1,0 +1,8 @@
+plugins {
+  id 'org.jetbrains.kotlin.jvm' version "$kotlinVersion"
+  id 'build.buf'
+}
+
+repositories {
+  mavenCentral()
+}
