@@ -10,10 +10,11 @@ repositories {
 
 plugins {
     `kotlin-dsl`
+    alias(libs.plugins.buildConfig)
     alias(libs.plugins.kotlin)
+    alias(libs.plugins.mavenPublish)
     alias(libs.plugins.pluginPublish)
     alias(libs.plugins.spotless)
-    alias(libs.plugins.mavenPublish)
 }
 
 group = "build.buf"
@@ -31,7 +32,12 @@ allprojects {
     }
 }
 
+val bufCliDependabotConfig = configurations.create("bufCliDependabotConfig")
+
 dependencies {
+    // Trigger dependabot on a new Buf CLI release.
+    bufCliDependabotConfig(libs.bufbuild)
+
     implementation(libs.jacksonDataformatYaml)
     implementation(libs.jacksonModuleKotlin)
 
@@ -119,4 +125,10 @@ tasks {
             allWarningsAsErrors = true
         }
     }
+}
+
+buildConfig {
+    useKotlinOutput { topLevelConstants = true }
+    packageName.set("build.buf.gradle")
+    buildConfigField("String", "DEFAULT_BUF_VERSION", "\"${libs.bufbuild.get().version}\"")
 }
