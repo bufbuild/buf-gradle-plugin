@@ -51,7 +51,7 @@ abstract class AbstractLintTest : LintTestUtilities, AbstractBufIntegrationTest(
         assertSuccess()
     }
 
-    private fun assertBadEnumSuffix() {
+    protected fun assertBadEnumSuffix() {
         val result = checkRunner().buildAndFail()
         assertThat(result.task(":$BUF_LINT_TASK_NAME")?.outcome).isEqualTo(FAILED)
         assertThat(result.output).contains(

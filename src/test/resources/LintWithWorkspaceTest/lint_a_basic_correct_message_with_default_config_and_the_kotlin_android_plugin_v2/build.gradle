@@ -1,0 +1,27 @@
+buildscript {
+  repositories {
+    gradlePluginPortal()
+    google()
+  }
+
+  dependencies {
+    classpath "com.android.tools.build:gradle:$androidGradleVersion"
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+  }
+}
+
+plugins {
+  id 'build.buf'
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'org.jetbrains.kotlin.android'
+
+repositories {
+  mavenCentral()
+  google()
+}
+
+android {
+  compileSdkVersion 31
+}
