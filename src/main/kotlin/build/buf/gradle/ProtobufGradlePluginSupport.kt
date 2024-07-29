@@ -36,7 +36,8 @@ import kotlin.reflect.full.declaredMemberProperties
 
 const val CREATE_SYM_LINKS_TO_MODULES_TASK_NAME = "createSymLinksToModules"
 const val WRITE_WORKSPACE_YAML_TASK_NAME = "writeWorkspaceYaml"
-const val BUF_CLI_V2_INITIAL_VERSION = "1.32.0"
+
+internal const val BUF_CLI_V2_INITIAL_VERSION = "1.32.0"
 
 private val BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN =
     listOf("build", "extracted-include-protos", "main").joinToString(File.separator)
