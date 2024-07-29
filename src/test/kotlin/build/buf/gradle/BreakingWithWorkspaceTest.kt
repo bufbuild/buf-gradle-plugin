@@ -14,8 +14,6 @@
 
 package build.buf.gradle
 
-import build.buf.gradle.ImageGenerationSupport.replaceBuildDetails
-import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
@@ -26,20 +24,17 @@ class BreakingWithWorkspaceTest : AbstractBreakingTest() {
 
     @Test
     fun `breaking schema v2`() {
-        publishRunner().build()
-        checkBreaking()
+        super.`breaking schema`()
     }
 
     @Test
     fun `breaking schema fails with latest-release and previousVersion v2`() {
-        val result = checkRunner().buildAndFail()
-        assertThat(result.output).contains("Cannot configure $BUF_BREAKING_TASK_NAME against latest release and a previous version.")
+        super.`breaking schema fails with latest-release and previousVersion`()
     }
 
     @Test
     fun `breaking schema with latest-release as version v2`() {
-        publishRunner().build()
-        checkBreaking()
+        super.`breaking schema with latest-release as version`()
     }
 
     @ParameterizedTest
@@ -48,18 +43,11 @@ class BreakingWithWorkspaceTest : AbstractBreakingTest() {
         format: String,
         compression: String?,
     ) {
-        replaceBuildDetails(format, compression)
-        publishRunner().build()
-        checkBreaking()
+        super.`breaking schema with specified publication file extension`(format, compression)
     }
 
     @Test
     fun `normally breaking schema with an ignore v2`() {
-        publishRunner().build()
-
-        breakSchema()
-
-        buildFile.replace("//", "")
-        checkRunner().build()
+        super.`normally breaking schema with an ignore`()
     }
 }
