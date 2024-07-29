@@ -14,7 +14,6 @@
 
 package build.buf.gradle
 
-import io.github.g00fy2.versioncompare.Version
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
@@ -23,7 +22,7 @@ abstract class BreakingTask : DefaultTask() {
     fun bufBreaking() {
         val args = mutableListOf<Any>()
         args.add("breaking")
-        if (Version(project.getExtension().toolVersion) < Version("1.32.0")) {
+        if (project.bufV1SyntaxOnly()) {
             args.add(bufBuildPublicationFile)
         }
         args.add("--against")

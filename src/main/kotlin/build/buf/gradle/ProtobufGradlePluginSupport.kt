@@ -36,6 +36,7 @@ import kotlin.reflect.full.declaredMemberProperties
 
 const val CREATE_SYM_LINKS_TO_MODULES_TASK_NAME = "createSymLinksToModules"
 const val WRITE_WORKSPACE_YAML_TASK_NAME = "writeWorkspaceYaml"
+const val BUF_CLI_V2_INITIAL_VERSION = "1.32.0"
 
 private val BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN =
     listOf("build", "extracted-include-protos", "main").joinToString(File.separator)
@@ -44,6 +45,8 @@ private val BUILD_EXTRACTED_PROTOS_MAIN =
     listOf("build", "extracted-protos", "main").joinToString(File.separator)
 
 internal fun Project.hasProtobufGradlePlugin() = pluginManager.hasPlugin("com.google.protobuf")
+
+internal fun Project.bufV1SyntaxOnly() = Version(getExtension().toolVersion) < Version(BUF_CLI_V2_INITIAL_VERSION)
 
 internal fun Project.withProtobufGradlePlugin(action: (AppliedPlugin) -> Unit) = pluginManager.withPlugin("com.google.protobuf", action)
 
@@ -80,7 +83,7 @@ abstract class WriteWorkspaceYamlTask : DefaultTask() {
 
     @TaskAction
     fun writeWorkspaceYaml() {
-        if (Version(project.getExtension().toolVersion) < Version("1.32.0")) {
+        if (project.bufV1SyntaxOnly()) {
             val bufWork =
                 """
                 |version: v1
