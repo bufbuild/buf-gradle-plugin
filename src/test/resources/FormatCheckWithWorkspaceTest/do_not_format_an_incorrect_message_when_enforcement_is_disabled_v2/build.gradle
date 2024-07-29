@@ -1,0 +1,12 @@
+plugins {
+  id 'java'
+  id 'build.buf'
+}
+
+repositories {
+  mavenCentral()
+}
+
+buf {
+  enforceFormat = true
+}
