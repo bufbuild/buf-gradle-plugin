@@ -14,4 +14,42 @@
 
 package build.buf.gradle
 
-class BuildWithWorkspaceTest : AbstractBuildTest()
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.MethodSource
+
+class BuildWithWorkspaceTest : AbstractBuildTest() {
+    @Test
+    fun `build image with explicit artifact details v2`() {
+        super.`build image with explicit artifact details`()
+    }
+
+    @Test
+    fun `build image with inferred artifact details v2`() {
+        super.`build image with inferred artifact details`()
+    }
+
+    @Test
+    fun `build image with no artifact details should fail v2`() {
+        super.`build image with no artifact details should fail`()
+    }
+
+    @ParameterizedTest
+    @MethodSource("build.buf.gradle.ImageGenerationSupport#publicationFileExtensionTestCase")
+    fun `build image with specified publication file extension v2`(
+        format: String,
+        compression: String?,
+    ) {
+        super.`build image with specified publication file extension`(format, compression)
+    }
+
+    @Test
+    fun `build image with two publications should fail v2`() {
+        super.`build image with two publications should fail`()
+    }
+
+    @Test
+    fun `build image with two publications should succeed if details are provided explicitly v2`() {
+        super.`build image with two publications should succeed if details are provided explicitly`()
+    }
+}

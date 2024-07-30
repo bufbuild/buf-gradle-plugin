@@ -1,0 +1,13 @@
+plugins {
+  id 'java'
+  id 'build.buf'
+  id 'maven-publish'
+}
+
+repositories {
+  mavenCentral()
+}
+
+buf {
+  publishSchema = true
+}
