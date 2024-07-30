@@ -30,20 +30,16 @@ class ConfigurationTest : AbstractBufIntegrationTest() {
 
     @Test
     fun `project can use both buf-yaml and the protobuf-gradle-plugin, protobuf applied first`() {
-        assertSuccess()
+        gradleRunner().withArguments(":tasks").build()
     }
 
     @Test
     fun `project can use both buf-yaml and the protobuf-gradle-plugin, protobuf applied second`() {
-        assertSuccess()
+        gradleRunner().withArguments(":tasks").build()
     }
 
     private fun assertFailure() {
         val result = gradleRunner().withArguments(":tasks").buildAndFail()
         assertThat(result.output).contains("cannot use both the protobuf-gradle-plugin and a Buf workspace")
-    }
-
-    private fun assertSuccess() {
-        assertThat(gradleRunner().withArguments(":tasks").build().output.contains("BUILD SUCCESSFUL"))
     }
 }
