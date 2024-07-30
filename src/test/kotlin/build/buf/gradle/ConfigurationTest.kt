@@ -29,12 +29,12 @@ class ConfigurationTest : AbstractBufIntegrationTest() {
     }
 
     @Test
-    fun `project cannot use buf yaml workspaces and the protobuf gradle plugin first`() {
+    fun `project cannot use buf yaml workspaces and the protobuf gradle plugin, protobuf applied first`() {
         assertFailure()
     }
 
     @Test
-    fun `project cannot use buf yaml workspaces and the protobuf gradle plugin second`() {
+    fun `project cannot use buf yaml workspaces and the protobuf gradle plugin, protobuf applied second`() {
         assertFailure()
     }
 
