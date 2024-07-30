@@ -29,6 +29,16 @@ class ConfigurationTest : AbstractBufIntegrationTest() {
     }
 
     @Test
+    fun `project cannot use buf yaml workspaces and the protobuf gradle plugin first`() {
+        assertFailure()
+    }
+
+    @Test
+    fun `project cannot use buf yaml workspaces and the protobuf gradle plugin second`() {
+        assertFailure()
+    }
+
+    @Test
     fun `project can use both buf-yaml and the protobuf-gradle-plugin, protobuf applied first`() {
         gradleRunner().withArguments(":tasks").build()
     }
