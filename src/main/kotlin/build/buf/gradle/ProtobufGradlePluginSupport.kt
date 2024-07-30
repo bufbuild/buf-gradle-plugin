@@ -14,6 +14,7 @@
 
 package build.buf.gradle
 
+import io.github.g00fy2.versioncompare.Version
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -36,6 +37,8 @@ import kotlin.reflect.full.declaredMemberProperties
 const val CREATE_SYM_LINKS_TO_MODULES_TASK_NAME = "createSymLinksToModules"
 const val WRITE_WORKSPACE_YAML_TASK_NAME = "writeWorkspaceYaml"
 
+internal const val BUF_CLI_V2_INITIAL_VERSION = "1.32.0"
+
 private val BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN =
     listOf("build", "extracted-include-protos", "main").joinToString(File.separator)
 
@@ -43,6 +46,8 @@ private val BUILD_EXTRACTED_PROTOS_MAIN =
     listOf("build", "extracted-protos", "main").joinToString(File.separator)
 
 internal fun Project.hasProtobufGradlePlugin() = pluginManager.hasPlugin("com.google.protobuf")
+
+internal fun Project.bufV1SyntaxOnly() = Version(getExtension().toolVersion) < Version(BUF_CLI_V2_INITIAL_VERSION)
 
 internal fun Project.withProtobufGradlePlugin(action: (AppliedPlugin) -> Unit) = pluginManager.withPlugin("com.google.protobuf", action)
 
@@ -79,10 +84,22 @@ abstract class WriteWorkspaceYamlTask : DefaultTask() {
 
     @TaskAction
     fun writeWorkspaceYaml() {
-        val protoDirs = allProtoDirs().map { project.makeMangledRelativizedPathStr(it) }
-        val bufYaml = bufYamlGenerator.generate(project.bufConfigFile(), protoDirs)
-        logger.info("Writing generated buf.yaml:{}\n", bufYaml)
-        File(bufbuildDir, "buf.yaml").writeText(bufYaml)
+        if (project.bufV1SyntaxOnly()) {
+            val bufWork =
+                """
+                |version: v1
+                |directories:
+                ${workspaceSymLinkEntries()}
+                """.trimMargin()
+
+            logger.info("Writing generated buf.work.yaml:\n$bufWork")
+            File(bufbuildDir, "buf.work.yaml").writeText(bufWork)
+        } else {
+            val protoDirs = allProtoDirs().map { project.makeMangledRelativizedPathStr(it) }
+            val bufYaml = bufYamlGenerator.generate(project.bufConfigFile(), protoDirs)
+            logger.info("Writing generated buf.yaml:{}\n", bufYaml)
+            File(bufbuildDir, "buf.yaml").writeText(bufYaml)
+        }
     }
 }
 
@@ -94,6 +111,11 @@ private fun Task.workspaceCommonConfig() {
     )
     createsOutput()
 }
+
+private fun Task.workspaceSymLinkEntries() =
+    allProtoDirs()
+        .map { project.makeMangledRelativizedPathStr(it) }
+        .joinToString("\n") { "|  - $it" }
 
 // Returns all directories that have may have proto files relevant to processing the project's proto files. This
 // includes any proto files that are simply references (includes) as well as those that will be processed (code

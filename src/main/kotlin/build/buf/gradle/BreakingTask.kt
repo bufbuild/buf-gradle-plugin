@@ -20,12 +20,14 @@ import org.gradle.api.tasks.TaskAction
 abstract class BreakingTask : DefaultTask() {
     @TaskAction
     fun bufBreaking() {
-        execBuf(
-            "breaking",
-            bufBuildPublicationFile,
-            "--against",
-            singleFileFromConfiguration(BUF_BREAKING_CONFIGURATION_NAME),
-        ) {
+        val args = mutableListOf<Any>()
+        args.add("breaking")
+        if (project.bufV1SyntaxOnly()) {
+            args.add(bufBuildPublicationFile)
+        }
+        args.add("--against")
+        args.add(singleFileFromConfiguration(BUF_BREAKING_CONFIGURATION_NAME))
+        execBuf(*args.toTypedArray()) {
             """
                 |Some Protobuf files had breaking changes:
                 |$it

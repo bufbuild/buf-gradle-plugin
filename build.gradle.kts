@@ -40,6 +40,7 @@ dependencies {
 
     implementation(libs.jacksonDataformatYaml)
     implementation(libs.jacksonModuleKotlin)
+    implementation(libs.versioncompare)
 
     testImplementation(libs.junit)
     testImplementation(libs.truth)

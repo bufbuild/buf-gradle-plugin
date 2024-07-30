@@ -14,8 +14,40 @@
 
 package build.buf.gradle
 
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.MethodSource
 import java.nio.file.Paths
 
 class BreakingWithWorkspaceTest : AbstractBreakingTest() {
     override fun protoFile() = Paths.get(projectDir.path, "workspace", "buf", "test", "v1", "test.proto")
+
+    @Test
+    fun `breaking schema v2`() {
+        super.`breaking schema`()
+    }
+
+    @Test
+    fun `breaking schema fails with latest-release and previousVersion v2`() {
+        super.`breaking schema fails with latest-release and previousVersion`()
+    }
+
+    @Test
+    fun `breaking schema with latest-release as version v2`() {
+        super.`breaking schema with latest-release as version`()
+    }
+
+    @ParameterizedTest
+    @MethodSource("build.buf.gradle.ImageGenerationSupport#publicationFileExtensionTestCase")
+    fun `breaking schema with specified publication file extension v2`(
+        format: String,
+        compression: String?,
+    ) {
+        super.`breaking schema with specified publication file extension`(format, compression)
+    }
+
+    @Test
+    fun `normally breaking schema with an ignore v2`() {
+        super.`normally breaking schema with an ignore`()
+    }
 }
