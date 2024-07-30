@@ -14,7 +14,6 @@
 
 package build.buf.gradle
 
-import io.github.g00fy2.versioncompare.Version
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
