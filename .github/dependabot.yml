@@ -3,7 +3,8 @@ updates:
   - package-ecosystem: "gradle"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "daily"
+      time: "17:00"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
