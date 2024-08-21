@@ -12,7 +12,7 @@ jackson = "2.17.2"
 versioncompare = "1.5.0"
 
 # test
-junit = "5.10.3"
+junit = "5.11.0"
 truth = "1.4.4"
 
 [plugins]
