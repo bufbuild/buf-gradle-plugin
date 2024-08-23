@@ -142,7 +142,7 @@ private fun Task.allProtoDirs() =
 internal fun Project.projectDefinedProtoDirs() = allProtoSourceSetDirs() - file(Paths.get(BUILD_EXTRACTED_PROTOS_MAIN))
 
 // Returns deduplicated list of all proto source set directories.
-private fun Project.allProtoSourceSetDirs() = projectProtoSourceSetDirs() + androidProtoSourceSetDirs()
+private fun Project.allProtoSourceSetDirs() = projectProtoSourceSetDirs().filter { anyProtos(it) } + androidProtoSourceSetDirs()
 
 // Returns android proto source set directories that protobuf-gradle-plugin will codegen.
 private fun Project.androidProtoSourceSetDirs() =
@@ -160,7 +160,6 @@ private fun Project.androidProtoSourceSetDirs() =
 // Returns all proto source set directories that the protobuf-gradle-plugin will codegen.
 private fun Project.projectProtoSourceSetDirs() =
     the<SourceSetContainer>().flatMap { it.projectProtoSourceSetDirs() }
-        .filter { anyProtos(it) }
         .toSet()
 
 // Returns all directories within the "proto" source set of the receiver that actually contain proto files. This includes
