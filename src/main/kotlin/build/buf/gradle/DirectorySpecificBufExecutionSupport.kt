@@ -14,17 +14,16 @@
 
 package build.buf.gradle
 
-import org.gradle.api.Task
 import java.io.File
 
-internal fun Task.execBufInSpecificDirectory(
+internal fun AbstractBufExecTask.execBufInSpecificDirectory(
     vararg bufCommand: String,
     customErrorMessage: ((String) -> String)? = null,
 ) {
     execBufInSpecificDirectory(bufCommand.asList(), emptyList(), customErrorMessage)
 }
 
-internal fun Task.execBufInSpecificDirectory(
+internal fun AbstractBufExecTask.execBufInSpecificDirectory(
     bufCommand: String,
     extraArgs: Iterable<String>,
     customErrorMessage: (String) -> String,
@@ -32,7 +31,7 @@ internal fun Task.execBufInSpecificDirectory(
     execBufInSpecificDirectory(listOf(bufCommand), extraArgs, customErrorMessage)
 }
 
-private fun Task.execBufInSpecificDirectory(
+private fun AbstractBufExecTask.execBufInSpecificDirectory(
     bufCommand: Iterable<String>,
     extraArgs: Iterable<String>,
     customErrorMessage: ((String) -> String)? = null,
