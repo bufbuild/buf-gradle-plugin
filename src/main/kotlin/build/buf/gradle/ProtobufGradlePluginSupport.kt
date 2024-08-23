@@ -62,7 +62,7 @@ abstract class CreateSymLinksToModulesTask : AbstractBufTask() {
         allProtoDirs()
             .filter { anyProtos(it) }
             .forEach {
-                val symLinkFile = File(bufbuildDir, project.makeMangledRelativizedPathStr(it))
+                val symLinkFile = File(bufbuildDir, makeMangledRelativizedPathStr(it))
                 if (!symLinkFile.exists()) {
                     logger.info("Creating symlink for $it at $symLinkFile")
                     Files.createSymbolicLink(
@@ -99,7 +99,7 @@ abstract class WriteWorkspaceYamlTask : AbstractBufTask() {
             val protoDirs =
                 allProtoDirs()
                     .filter { anyProtos(it) }
-                    .map { project.makeMangledRelativizedPathStr(it) }
+                    .map { makeMangledRelativizedPathStr(it) }
             val bufYaml = bufYamlGenerator.generate(project.bufConfigFile(), protoDirs)
             logger.info("Writing generated buf.yaml:{}\n", bufYaml)
             File(bufbuildDir, "buf.yaml").writeText(bufYaml)
@@ -119,7 +119,7 @@ private fun Task.workspaceCommonConfig() {
 private fun WriteWorkspaceYamlTask.workspaceSymLinkEntries() =
     allProtoDirs()
         .filter { anyProtos(it) }
-        .map { project.makeMangledRelativizedPathStr(it) }
+        .map { makeMangledRelativizedPathStr(it) }
         .joinToString("\n") { "|  - $it" }
 
 // Returns all directories that have may have proto files relevant to processing the project's proto files. This
@@ -173,7 +173,7 @@ private fun ExtensionAware.projectProtoSourceSetDirs() =
     extensions.getByName<SourceDirectorySet>("proto").srcDirs
         .toSet()
 
-internal fun Project.makeMangledRelativizedPathStr(file: File) = mangle(projectDir.toPath().relativize(file.toPath()))
+internal fun AbstractBufTask.makeMangledRelativizedPathStr(file: File) = mangle(project.projectDir.toPath().relativize(file.toPath()))
 
 // Indicates if the specified directory contains any proto files.
 private fun anyProtos(directory: File) = directory.walkTopDown().any { it.extension == "proto" }
