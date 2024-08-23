@@ -154,18 +154,19 @@ private fun Project.androidProtoSourceSetDirs() =
         }
         .orEmpty()
         .flatMap { it.projectProtoSourceSetDirs() }
+        .filter { anyProtos(it) }
         .toSet()
 
 // Returns all proto source set directories that the protobuf-gradle-plugin will codegen.
 private fun Project.projectProtoSourceSetDirs() =
     the<SourceSetContainer>().flatMap { it.projectProtoSourceSetDirs() }
+        .filter { anyProtos(it) }
         .toSet()
 
 // Returns all directories within the "proto" source set of the receiver that actually contain proto files. This includes
 // directories explicitly added to the source set, as well as directories containing files from "protobuf" dependencies.
 private fun ExtensionAware.projectProtoSourceSetDirs() =
     extensions.getByName<SourceDirectorySet>("proto").srcDirs
-        .filter { anyProtos(it) }
         .toSet()
 
 internal fun Project.makeMangledRelativizedPathStr(file: File) = mangle(projectDir.toPath().relativize(file.toPath()))
