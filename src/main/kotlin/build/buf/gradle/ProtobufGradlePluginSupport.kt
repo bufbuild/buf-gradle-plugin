@@ -15,7 +15,6 @@
 package build.buf.gradle
 
 import io.github.g00fy2.versioncompare.Version
-import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.file.SourceDirectorySet
@@ -57,7 +56,7 @@ internal fun Project.configureCreateSymLinksToModules() {
     }
 }
 
-abstract class CreateSymLinksToModulesTask : DefaultTask() {
+abstract class CreateSymLinksToModulesTask : AbstractBufTask() {
     @TaskAction
     fun createSymLinksToModules() {
         allProtoDirs()
@@ -81,7 +80,7 @@ internal fun Project.configureWriteWorkspaceYaml() {
     }
 }
 
-abstract class WriteWorkspaceYamlTask : DefaultTask() {
+abstract class WriteWorkspaceYamlTask : AbstractBufTask() {
     private val bufYamlGenerator = BufYamlGenerator()
 
     @TaskAction
