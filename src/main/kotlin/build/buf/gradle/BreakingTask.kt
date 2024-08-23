@@ -14,10 +14,9 @@
 
 package build.buf.gradle
 
-import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
-abstract class BreakingTask : DefaultTask() {
+abstract class BreakingTask : AbstractBufExecTask() {
     @TaskAction
     fun bufBreaking() {
         val args = mutableListOf<Any>()

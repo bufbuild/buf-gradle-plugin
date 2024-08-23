@@ -14,10 +14,9 @@
 
 package build.buf.gradle
 
-import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
-abstract class FormatApplyTask : DefaultTask() {
+abstract class FormatApplyTask : AbstractBufExecTask() {
     @TaskAction
     fun bufFormatApply() {
         execBufInSpecificDirectory("format", "-w")

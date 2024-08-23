@@ -181,7 +181,7 @@ private fun anyProtos(directory: File) = directory.walkTopDown().any { it.extens
 
 private fun mangle(name: Path) = name.toString().replace("-", "--").replace(File.separator, "-")
 
-internal inline fun <reified T : Task> Project.registerBufTask(
+internal inline fun <reified T : AbstractBufExecTask> Project.registerBufTask(
     name: String,
     noinline configuration: T.() -> Unit,
 ): TaskProvider<T> {

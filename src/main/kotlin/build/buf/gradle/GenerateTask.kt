@@ -14,11 +14,10 @@
 
 package build.buf.gradle
 
-import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 
-abstract class GenerateTask : DefaultTask() {
+abstract class GenerateTask : AbstractBufExecTask() {
     @TaskAction
     fun bufGenerate() {
         val args = listOf("generate", "--output", File(bufbuildDir, GENERATED_DIR))

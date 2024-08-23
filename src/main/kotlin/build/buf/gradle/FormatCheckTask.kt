@@ -14,10 +14,9 @@
 
 package build.buf.gradle
 
-import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
-abstract class FormatCheckTask : DefaultTask() {
+abstract class FormatCheckTask : AbstractBufExecTask() {
     @TaskAction
     fun bufFormatCheck() {
         execBufInSpecificDirectory("format", "-d", "--exit-code") {

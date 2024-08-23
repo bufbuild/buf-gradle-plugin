@@ -1,4 +1,4 @@
-// Copyright 2023 Buf Technologies, Inc.
+// Copyright 2024 Buf Technologies, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,11 +14,9 @@
 
 package build.buf.gradle
 
-import org.gradle.api.tasks.TaskAction
+import org.gradle.api.DefaultTask
 
-abstract class BuildTask : AbstractBufExecTask() {
-    @TaskAction
-    fun bufBuild() {
-        execBuf("build", "--output", bufBuildPublicationFile)
-    }
-}
+/**
+ * A task executing buf executable as part of its operation.
+ */
+abstract class AbstractBufExecTask : DefaultTask()
