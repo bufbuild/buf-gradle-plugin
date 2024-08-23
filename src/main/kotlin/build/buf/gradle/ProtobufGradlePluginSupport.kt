@@ -51,7 +51,7 @@ internal fun Project.bufV1SyntaxOnly() = Version(getExtension().toolVersion) < V
 internal fun Project.withProtobufGradlePlugin(action: (AppliedPlugin) -> Unit) = pluginManager.withPlugin("com.google.protobuf", action)
 
 internal fun Project.configureCreateSymLinksToModules() {
-    tasks.register<CreateSymLinksToModulesTask>(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME) {
+    registerBufTask<CreateSymLinksToModulesTask>(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME) {
         workspaceCommonConfig()
     }
 }
@@ -75,7 +75,7 @@ abstract class CreateSymLinksToModulesTask : AbstractBufTask() {
 }
 
 internal fun Project.configureWriteWorkspaceYaml() {
-    tasks.register<WriteWorkspaceYamlTask>(WRITE_WORKSPACE_YAML_TASK_NAME) {
+    registerBufTask<WriteWorkspaceYamlTask>(WRITE_WORKSPACE_YAML_TASK_NAME) {
         workspaceCommonConfig()
     }
 }
@@ -180,16 +180,20 @@ private fun anyProtos(directory: File) = directory.walkTopDown().any { it.extens
 
 private fun mangle(name: Path) = name.toString().replace("-", "--").replace(File.separator, "-")
 
+internal inline fun <reified T : AbstractBufTask> Project.registerBufTask(
+    name: String,
+    noinline configuration: T.() -> Unit,
+): TaskProvider<T> = tasks.register(name, configuration)
+
 internal inline fun <reified T : AbstractBufExecTask> Project.registerBufExecTask(
     name: String,
     noinline configuration: T.() -> Unit,
-): TaskProvider<T> {
-    val taskProvider = tasks.register(name, configuration)
-    withProtobufGradlePlugin {
-        afterEvaluate {
-            taskProvider.dependsOn(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME)
-            taskProvider.dependsOn(WRITE_WORKSPACE_YAML_TASK_NAME)
+): TaskProvider<T> =
+    registerBufTask(name, configuration).also { taskProvider ->
+        withProtobufGradlePlugin {
+            afterEvaluate {
+                taskProvider.dependsOn(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME)
+                taskProvider.dependsOn(WRITE_WORKSPACE_YAML_TASK_NAME)
+            }
         }
     }
-    return taskProvider
-}
