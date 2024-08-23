@@ -139,13 +139,12 @@ private fun Task.allProtoDirs() =
 //
 // Protobuf-gradle-plugin change that introduced this behavior: https://github.com/google/protobuf-gradle-plugin/pull/637/
 // Line: https://github.com/google/protobuf-gradle-plugin/blob/9d2a328a0d577bf4439d3b482a953715b3a03027/src/main/groovy/com/google/protobuf/gradle/ProtobufPlugin.groovy#L425
-internal fun Project.projectDefinedProtoDirs() = allProtoSourceSetDirs() - file(Paths.get(BUILD_EXTRACTED_PROTOS_MAIN))
+internal fun Project.projectDefinedProtoDirs() =
+    (allProtoSourceSetDirs() - file(Paths.get(BUILD_EXTRACTED_PROTOS_MAIN)))
+        .filter { anyProtos(it) }
 
 // Returns deduplicated list of all proto source set directories.
-private fun Project.allProtoSourceSetDirs() =
-    projectProtoSourceSetDirs().filter {
-        anyProtos(it)
-    } + androidProtoSourceSetDirs().filter { anyProtos(it) }
+private fun Project.allProtoSourceSetDirs() = projectProtoSourceSetDirs() + androidProtoSourceSetDirs()
 
 // Returns android proto source set directories that protobuf-gradle-plugin will codegen.
 private fun Project.androidProtoSourceSetDirs() =
