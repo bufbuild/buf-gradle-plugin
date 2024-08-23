@@ -17,9 +17,13 @@ package build.buf.gradle
 import io.github.g00fy2.versioncompare.Version
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.plugins.AppliedPlugin
 import org.gradle.api.plugins.ExtensionAware
+import org.gradle.api.provider.Property
+import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
@@ -53,21 +57,32 @@ internal fun Project.withProtobufGradlePlugin(action: (AppliedPlugin) -> Unit) =
 internal fun Project.configureCreateSymLinksToModules() {
     registerBufTask<CreateSymLinksToModulesTask>(CREATE_SYM_LINKS_TO_MODULES_TASK_NAME) {
         workspaceCommonConfig()
+        bufbuildDir.set(project.bufbuildDir)
+        candidateProtoDirs.setFrom(allProtoDirs())
     }
 }
 
 abstract class CreateSymLinksToModulesTask : AbstractBufTask() {
+    /** Buf output directory. Should be set to [BUF_BUILD_DIR]. */
+    @get:OutputDirectory
+    internal abstract val bufbuildDir: Property<File>
+
+    /** Directories possibly containing input .proto files. */
+    @get:InputFiles
+    internal abstract val candidateProtoDirs: ConfigurableFileCollection
+
     @TaskAction
     fun createSymLinksToModules() {
-        allProtoDirs()
+        val bufbuildDirValue = bufbuildDir.get()
+        candidateProtoDirs
             .filter { anyProtos(it) }
             .forEach {
-                val symLinkFile = File(bufbuildDir, makeMangledRelativizedPathStr(it))
+                val symLinkFile = File(bufbuildDirValue, makeMangledRelativizedPathStr(it))
                 if (!symLinkFile.exists()) {
                     logger.info("Creating symlink for $it at $symLinkFile")
                     Files.createSymbolicLink(
                         symLinkFile.toPath(),
-                        bufbuildDir.toPath().relativize(project.file(it).toPath()),
+                        bufbuildDirValue.toPath().relativize(it.toPath()),
                     )
                 }
             }
