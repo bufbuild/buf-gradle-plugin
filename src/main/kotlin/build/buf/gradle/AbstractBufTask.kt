@@ -15,5 +15,15 @@
 package build.buf.gradle
 
 import org.gradle.api.DefaultTask
+import org.gradle.api.provider.Property
+import org.gradle.api.tasks.Input
+import java.io.File
 
-abstract class AbstractBufTask : DefaultTask()
+abstract class AbstractBufTask : DefaultTask() {
+    /**
+     * This property has to be set to project directory. It is only used for relativization of paths,
+     * so it is just an @Input, not @InputDirectory.
+     */
+    @get:Input
+    internal abstract val projectDir: Property<File>
+}

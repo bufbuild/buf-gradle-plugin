@@ -173,7 +173,7 @@ private fun ExtensionAware.projectProtoSourceSetDirs() =
     extensions.getByName<SourceDirectorySet>("proto").srcDirs
         .toSet()
 
-internal fun AbstractBufTask.makeMangledRelativizedPathStr(file: File) = mangle(project.projectDir.toPath().relativize(file.toPath()))
+internal fun AbstractBufTask.makeMangledRelativizedPathStr(file: File) = mangle(projectDir.get().toPath().relativize(file.toPath()))
 
 // Indicates if the specified directory contains any proto files.
 private fun anyProtos(directory: File) = directory.walkTopDown().any { it.extension == "proto" }
@@ -183,7 +183,11 @@ private fun mangle(name: Path) = name.toString().replace("-", "--").replace(File
 internal inline fun <reified T : AbstractBufTask> Project.registerBufTask(
     name: String,
     noinline configuration: T.() -> Unit,
-): TaskProvider<T> = tasks.register(name, configuration)
+): TaskProvider<T> =
+    tasks.register<T>(name) {
+        projectDir.set(project.projectDir)
+        configuration()
+    }
 
 internal inline fun <reified T : AbstractBufExecTask> Project.registerBufExecTask(
     name: String,
