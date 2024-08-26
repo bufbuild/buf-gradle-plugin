@@ -18,25 +18,20 @@ import com.google.common.truth.Truth.assertThat
 import org.gradle.language.base.plugins.LifecycleBasePlugin.BUILD_TASK_NAME
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInfo
 import java.io.File
-import java.nio.file.Files
 import java.nio.file.Paths
-import kotlin.io.path.isRegularFile
-import kotlin.io.path.name
 
 abstract class AbstractGenerateTest : AbstractBufIntegrationTest() {
     @BeforeEach
-    override fun setup(testInfo: TestInfo) {
-        super.setup(testInfo)
-        val protocPath = System.getProperty("protoc.path") ?: throw RuntimeException("protoc.path not set")
+    fun configureBufGenYamlProtocPath() {
+        val protocPath = System.getProperty("protoc.path") ?: error("protoc.path not set")
         val protocFile = File(protocPath)
         if (!protocFile.canExecute()) {
             protocFile.setExecutable(true)
         }
-        Files.walk(super.projectDir.toPath()).forEach { path ->
-            if (path.name == "buf.gen.yaml" && path.isRegularFile()) {
-                path.toFile().replace("PROTOC_PATH", protocFile.absolutePath)
+        projectDir.walkTopDown().forEach { file ->
+            if (file.name == "buf.gen.yaml") {
+                file.replace("PROTOC_PATH", protocFile.absolutePath)
             }
         }
     }

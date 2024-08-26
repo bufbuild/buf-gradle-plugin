@@ -36,7 +36,7 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
         get() = Paths.get(projectDir.path, "src", "main", "proto").toFile()
 
     @BeforeEach
-    open fun setup(testInfo: TestInfo) {
+    fun setup(testInfo: TestInfo) {
         File(projectDir, "settings.gradle").writeText("rootProject.name = 'testing'")
         File(projectDir, "gradle.properties").writeText("org.gradle.jvmargs=-Xmx5g")
 
