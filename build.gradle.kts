@@ -13,6 +13,7 @@ plugins {
     alias(libs.plugins.buildConfig)
     alias(libs.plugins.kotlin)
     alias(libs.plugins.mavenPublish)
+    alias(libs.plugins.osDetector)
     alias(libs.plugins.pluginPublish)
     alias(libs.plugins.spotless)
 }
@@ -33,6 +34,7 @@ allprojects {
 }
 
 val bufCliDependabotConfig = configurations.create("bufCliDependabotConfig")
+val protoc: Configuration by configurations.creating
 
 dependencies {
     // Trigger dependabot on a new Buf CLI release.
@@ -44,6 +46,7 @@ dependencies {
 
     testImplementation(libs.junit)
     testImplementation(libs.truth)
+    protoc("com.google.protobuf:protoc:${libs.versions.protoc.get()}:${osdetector.classifier}@exe")
 }
 
 object ProjectInfo {
@@ -119,6 +122,8 @@ tasks {
 
     withType<Test> {
         useJUnitPlatform()
+
+        systemProperty("protoc.path", protoc.asPath)
     }
 
     withType<KotlinCompile> {
