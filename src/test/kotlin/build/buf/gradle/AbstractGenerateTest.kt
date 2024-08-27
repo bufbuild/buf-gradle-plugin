@@ -16,10 +16,26 @@ package build.buf.gradle
 
 import com.google.common.truth.Truth.assertThat
 import org.gradle.language.base.plugins.LifecycleBasePlugin.BUILD_TASK_NAME
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.io.File
 import java.nio.file.Paths
 
 abstract class AbstractGenerateTest : AbstractBufIntegrationTest() {
+    @BeforeEach
+    fun configureBufGenYamlProtocPath() {
+        val protocPath = System.getProperty("protoc.path") ?: error("protoc.path not set")
+        val protocFile = File(protocPath)
+        if (!protocFile.canExecute()) {
+            protocFile.setExecutable(true)
+        }
+        projectDir.walkTopDown().forEach { file ->
+            if (file.name == "buf.gen.yaml") {
+                file.replace("PROTOC_PATH", protocFile.absolutePath)
+            }
+        }
+    }
+
     @Test
     fun `generate java`() {
         gradleRunner().withArguments(BUILD_TASK_NAME).build()
