@@ -1,6 +1,6 @@
 [versions]
 # plugins
-kotlin = "1.9.24"
+kotlin = "2.0.20"
 mavenPublish = "0.29.0"
 osDetector = "1.7.3"
 pluginPublish = "1.2.1"
