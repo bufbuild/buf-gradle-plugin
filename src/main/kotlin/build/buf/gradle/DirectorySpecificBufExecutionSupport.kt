@@ -14,17 +14,16 @@
 
 package build.buf.gradle
 
-import org.gradle.api.Task
 import java.io.File
 
-internal fun Task.execBufInSpecificDirectory(
+internal fun AbstractBufExecTask.execBufInSpecificDirectory(
     vararg bufCommand: String,
     customErrorMessage: ((String) -> String)? = null,
 ) {
     execBufInSpecificDirectory(bufCommand.asList(), emptyList(), customErrorMessage)
 }
 
-internal fun Task.execBufInSpecificDirectory(
+internal fun AbstractBufExecTask.execBufInSpecificDirectory(
     bufCommand: String,
     extraArgs: Iterable<String>,
     customErrorMessage: (String) -> String,
@@ -32,17 +31,19 @@ internal fun Task.execBufInSpecificDirectory(
     execBufInSpecificDirectory(listOf(bufCommand), extraArgs, customErrorMessage)
 }
 
-private fun Task.execBufInSpecificDirectory(
+private fun AbstractBufExecTask.execBufInSpecificDirectory(
     bufCommand: Iterable<String>,
     extraArgs: Iterable<String>,
     customErrorMessage: ((String) -> String)? = null,
 ) {
-    fun runWithArgs(file: File? = null) = bufCommand + listOfNotNull(file?.let { project.makeMangledRelativizedPathStr(it) }) + extraArgs
+    fun runWithArgs(file: File? = null) = bufCommand + listOfNotNull(file?.let { makeMangledRelativizedPathStr(it) }) + extraArgs
 
     when {
-        project.hasProtobufGradlePlugin() ->
-            project.projectDefinedProtoDirs().forEach { execBuf(runWithArgs(it), customErrorMessage) }
-        project.hasWorkspace() ->
+        hasProtobufGradlePlugin.get() ->
+            candidateProtoDirs
+                .filter { anyProtos(it) }
+                .forEach { execBuf(runWithArgs(it), customErrorMessage) }
+        hasWorkspace.get() ->
             execBuf(bufCommand, customErrorMessage)
         else ->
             execBuf(runWithArgs(), customErrorMessage)

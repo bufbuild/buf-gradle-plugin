@@ -15,10 +15,14 @@
 package build.buf.gradle
 
 import org.gradle.api.Project
-import org.gradle.api.Task
+import org.gradle.kotlin.dsl.dependencies
 import java.nio.charset.StandardCharsets
 
 const val BUF_BINARY_CONFIGURATION_NAME = "bufTool"
+
+internal fun Project.createBufBinaryDependencyConfiguration() {
+    configurations.create(BUF_BINARY_CONFIGURATION_NAME)
+}
 
 internal fun Project.configureBufDependency() {
     val os = System.getProperty("os.name").lowercase()
@@ -39,60 +43,61 @@ internal fun Project.configureBufDependency() {
 
     val extension = getExtension()
 
-    createConfigurationWithDependency(
-        BUF_BINARY_CONFIGURATION_NAME,
-        mapOf(
-            "group" to "build.buf",
-            "name" to "buf",
-            "version" to extension.toolVersion,
-            "classifier" to "$osPart-$archPart",
-            "ext" to "exe",
-        ),
-    )
+    dependencies {
+        add(
+            BUF_BINARY_CONFIGURATION_NAME,
+            mapOf(
+                "group" to "build.buf",
+                "name" to "buf",
+                "version" to extension.toolVersion,
+                "classifier" to "$osPart-$archPart",
+                "ext" to "exe",
+            ),
+        )
+    }
 }
 
-internal fun Task.execBuf(
+internal fun AbstractBufExecTask.execBuf(
     vararg args: Any,
     customErrorMessage: ((String) -> String)? = null,
 ) {
     execBuf(args.asList(), customErrorMessage)
 }
 
-internal fun Task.execBuf(
+internal fun AbstractBufExecTask.execBuf(
     args: Iterable<Any>,
     customErrorMessage: ((String) -> String)? = null,
 ) {
-    with(project) {
-        val executable = singleFileFromConfiguration(BUF_BINARY_CONFIGURATION_NAME)
+    val executable = bufExecutable.singleFile
 
-        if (!executable.canExecute()) {
-            executable.setExecutable(true)
-        }
+    if (!executable.canExecute()) {
+        executable.setExecutable(true)
+    }
 
-        val workingDir =
-            if (hasProtobufGradlePlugin()) {
-                bufbuildDir
-            } else {
-                projectDir
+    val processArgs = listOf(executable.absolutePath) + args
+    val workingDirValue = workingDir.get()
+
+    logger.info("Running buf from $workingDirValue: `buf ${args.joinToString(" ")}`")
+    val result = ProcessRunner().use { it.shell(workingDirValue, processArgs) }
+
+    if (result.exitCode != 0) {
+        if (customErrorMessage != null) {
+            val stdOut = result.stdOut.toString(StandardCharsets.UTF_8)
+            val stdErr = result.stdErr.toString(StandardCharsets.UTF_8)
+            val ex = IllegalStateException(customErrorMessage(stdOut))
+            if (stdErr.isNotEmpty()) {
+                ex.addSuppressed(IllegalStateException(result.toString()))
             }
-
-        val processArgs = listOf(executable.absolutePath) + args
-
-        logger.info("Running buf from $workingDir: `buf ${args.joinToString(" ")}`")
-        val result = ProcessRunner().use { it.shell(workingDir, processArgs) }
-
-        if (result.exitCode != 0) {
-            if (customErrorMessage != null) {
-                val stdOut = result.stdOut.toString(StandardCharsets.UTF_8)
-                val stdErr = result.stdErr.toString(StandardCharsets.UTF_8)
-                val ex = IllegalStateException(customErrorMessage(stdOut))
-                if (stdErr.isNotEmpty()) {
-                    ex.addSuppressed(IllegalStateException(result.toString()))
-                }
-                throw ex
-            } else {
-                error(result.toString())
-            }
+            throw ex
+        } else {
+            error(result.toString())
         }
     }
 }
+
+internal fun AbstractBufExecTask.obtainDefaultProtoFileSet() =
+    project.fileTree(workingDir.get()) {
+        include("**/*.proto")
+        // not to interfere with random plugins producing output to build dir
+        exclude("build")
+    }

@@ -14,54 +14,53 @@
 
 package build.buf.gradle
 
-import org.gradle.api.DefaultTask
+import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.provider.Property
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 
-abstract class GenerateTask : DefaultTask() {
+abstract class GenerateTask : AbstractBufExecTask() {
+    /** Whether to include imports. */
+    @get:Input
+    internal abstract val includeImports: Property<Boolean>
+
+    /** Template file. */
+    @get:InputFile
+    @get:Optional
+    internal abstract val templateFile: Property<File>
+
+    /** The input proto files. */
+    @get:InputFiles
+    internal abstract val inputFiles: ConfigurableFileCollection
+
+    /** The directory to output generated files. */
+    @get:OutputDirectory
+    internal abstract val outputDirectory: Property<File>
+
     @TaskAction
     fun bufGenerate() {
-        val args = listOf("generate", "--output", File(bufbuildDir, GENERATED_DIR))
+        val args = listOf("generate", "--output", outputDirectory.get())
         execBuf(args + additionalArgs())
     }
 
     private fun additionalArgs(): List<String> {
-        val generateOptions = getExtension().generateOptions
         val importOptions =
-            if (generateOptions?.includeImports == true) {
+            if (includeImports.get()) {
                 listOf("--include-imports")
             } else {
                 emptyList()
             }
 
         val templateFileOption =
-            resolveTemplateFile()?.let {
+            templateFile.orNull?.let {
                 listOf("--template", it.absolutePath)
             } ?: emptyList()
 
         return importOptions + templateFileOption
     }
-
-    private fun resolveTemplateFile(): File? {
-        return getExtension().generateOptions?.let { generateOptions ->
-            val defaultTemplateFile = project.file("buf.gen.yaml").validOrNull()
-            if (generateOptions.templateFileLocation != null) {
-                val specifiedTemplateFile = generateOptions.templateFileLocation.validOrNull()
-                check(specifiedTemplateFile != null) {
-                    "Specified templateFileLocation does not exist."
-                }
-                check(defaultTemplateFile == null || specifiedTemplateFile == defaultTemplateFile) {
-                    "Buf gen template file specified in the project directory as well as with templateFileLocation; pick one."
-                }
-                specifiedTemplateFile
-            } else {
-                check(defaultTemplateFile != null) {
-                    "No buf.gen.yaml file found in the project directory."
-                }
-                defaultTemplateFile
-            }
-        }
-    }
-
-    private fun File?.validOrNull() = this?.takeIf { it.isFile && it.exists() }
 }

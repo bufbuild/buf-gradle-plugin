@@ -14,19 +14,35 @@
 
 package build.buf.gradle
 
-import org.gradle.api.DefaultTask
+import org.gradle.api.provider.Property
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
+import java.io.File
 
-abstract class BreakingTask : DefaultTask() {
+abstract class BreakingTask : AbstractBufExecTask() {
+    @get:Input
+    internal abstract val v1SyntaxOnly: Property<Boolean>
+
+    /** The input publication file. */
+    @get:InputFile
+    @get:Optional
+    internal abstract val publicationFile: Property<File>
+
+    /** The input breaking config file. */
+    @get:InputFile
+    internal abstract val configFile: Property<File>
+
     @TaskAction
     fun bufBreaking() {
         val args = mutableListOf<Any>()
         args.add("breaking")
-        if (project.bufV1SyntaxOnly()) {
-            args.add(bufBuildPublicationFile)
+        if (v1SyntaxOnly.get()) {
+            args.add(publicationFile.get())
         }
         args.add("--against")
-        args.add(singleFileFromConfiguration(BUF_BREAKING_CONFIGURATION_NAME))
+        args.add(configFile.get())
         execBuf(*args.toTypedArray()) {
             """
                 |Some Protobuf files had breaking changes:

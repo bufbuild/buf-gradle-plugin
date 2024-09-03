@@ -15,7 +15,6 @@
 package build.buf.gradle
 
 import org.gradle.api.Project
-import org.gradle.api.Task
 import org.gradle.api.tasks.Copy
 import org.gradle.kotlin.dsl.register
 import java.io.File
@@ -25,7 +24,7 @@ const val COPY_BUF_CONFIG_TASK_NAME = "copyBufConfig"
 internal fun Project.configureCopyBufConfig() {
     tasks.register<Copy>(COPY_BUF_CONFIG_TASK_NAME) {
         from(listOfNotNull(bufConfigFile()))
-        into(bufbuildDir)
+        into(project.bufbuildDir)
         rename { "buf.yaml" }
     }
 }
@@ -46,8 +45,6 @@ internal fun Project.bufConfigFile() =
             }
         }
     }
-
-internal fun Task.bufConfigFile() = project.bufConfigFile()
 
 private fun Project.resolveConfig(): File? {
     val ext = getExtension()

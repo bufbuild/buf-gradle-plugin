@@ -16,16 +16,42 @@ package build.buf.gradle
 
 import org.gradle.api.Project
 import org.gradle.language.base.plugins.LifecycleBasePlugin.BUILD_GROUP
+import java.io.File
 
 const val BUF_GENERATE_TASK_NAME = "bufGenerate"
 
 const val GENERATED_DIR = "generated"
 
 internal fun Project.configureGenerate() {
-    registerBufTask<GenerateTask>(BUF_GENERATE_TASK_NAME) {
+    registerBufExecTask<GenerateTask>(BUF_GENERATE_TASK_NAME) {
         group = BUILD_GROUP
         description = "Generates code from a Protobuf schema."
 
-        createsOutput()
+        val generateOptions = project.getExtension().generateOptions
+        includeImports.set(generateOptions?.includeImports ?: false)
+        templateFile.set(generateOptions?.let { resolveTemplateFile(it) })
+        inputFiles.setFrom(obtainDefaultProtoFileSet())
+        outputDirectory.set(File(project.bufbuildDir, GENERATED_DIR))
     }
 }
+
+private fun Project.resolveTemplateFile(generateOptions: GenerateOptions): File {
+    val defaultTemplateFile = project.file("buf.gen.yaml").validOrNull()
+    return if (generateOptions.templateFileLocation != null) {
+        val specifiedTemplateFile = generateOptions.templateFileLocation.validOrNull()
+        check(specifiedTemplateFile != null) {
+            "Specified templateFileLocation does not exist."
+        }
+        check(defaultTemplateFile == null || specifiedTemplateFile == defaultTemplateFile) {
+            "Buf gen template file specified in the project directory as well as with templateFileLocation; pick one."
+        }
+        specifiedTemplateFile
+    } else {
+        check(defaultTemplateFile != null) {
+            "No buf.gen.yaml file found in the project directory."
+        }
+        defaultTemplateFile
+    }
+}
+
+private fun File?.validOrNull() = this?.takeIf { it.isFile && it.exists() }

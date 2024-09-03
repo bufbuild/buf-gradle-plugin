@@ -14,18 +14,31 @@
 
 package build.buf.gradle
 
-import org.gradle.api.DefaultTask
+import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.provider.Property
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 import java.nio.file.Files.lines
 import kotlin.streams.asSequence
 
-abstract class LintTask : DefaultTask() {
+abstract class LintTask : AbstractBufExecTask() {
+    /** The input proto files. */
+    @get:InputFiles
+    internal abstract val inputFiles: ConfigurableFileCollection
+
+    /** The input buf configuration file. */
+    @get:InputFile
+    @get:Optional
+    internal abstract val bufConfigFile: Property<File>
+
     @TaskAction
     fun bufLint() {
         execBufInSpecificDirectory(
             "lint",
-            bufConfigFile()?.let { listOf("--config", it.readAndStripComments()) }.orEmpty(),
+            bufConfigFile.orNull?.let { listOf("--config", it.readAndStripComments()) }.orEmpty(),
         ) {
             """
                  |Some Protobuf files had lint violations:
