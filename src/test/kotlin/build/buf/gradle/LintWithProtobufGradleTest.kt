@@ -41,4 +41,9 @@ class LintWithProtobufGradleTest : ConfigOverrideableLintTests, AbstractLintTest
     fun `lint a file with an implementation dependency and a google dependency with the protobuf-gradle-plugin`() {
         assertSuccess()
     }
+
+    @Test
+    fun `lint a file with an implementation dependency and a lint config with the protobuf-gradle-plugin`() {
+        assertSuccess()
+    }
 }
