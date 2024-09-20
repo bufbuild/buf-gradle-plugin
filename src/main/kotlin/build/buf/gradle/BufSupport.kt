@@ -16,6 +16,7 @@ package build.buf.gradle
 
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
+import org.jetbrains.annotations.VisibleForTesting
 import java.nio.charset.StandardCharsets
 
 const val BUF_BINARY_CONFIGURATION_NAME = "bufTool"
@@ -80,19 +81,7 @@ internal fun AbstractBufExecTask.execBuf(
     logger.info("Running buf from $workingDirValue: `buf ${args.joinToString(" ")}`")
     val result = ProcessRunner().use { it.shell(workingDirValue, processArgs) }
 
-    if (result.exitCode != 0) {
-        if (customErrorMessage != null) {
-            val stdOut = result.stdOut.toString(StandardCharsets.UTF_8)
-            val stdErr = result.stdErr.toString(StandardCharsets.UTF_8)
-            val ex = IllegalStateException(customErrorMessage(stdOut))
-            if (stdErr.isNotEmpty()) {
-                ex.addSuppressed(IllegalStateException(result.toString()))
-            }
-            throw ex
-        } else {
-            error(result.toString())
-        }
-    }
+    handleResult(result, customErrorMessage)
 }
 
 internal fun AbstractBufExecTask.obtainDefaultProtoFileSet() =
@@ -101,3 +90,27 @@ internal fun AbstractBufExecTask.obtainDefaultProtoFileSet() =
         // not to interfere with random plugins producing output to build dir
         exclude("build")
     }
+
+@VisibleForTesting
+internal fun handleResult(
+    result: ProcessRunner.Result,
+    customErrorMessage: ((String) -> String)?,
+) {
+    if (result.exitCode != 0) {
+        if (customErrorMessage != null) {
+            val stdOut = result.stdOut.toString(StandardCharsets.UTF_8)
+            val stdErr = result.stdErr.toString(StandardCharsets.UTF_8)
+            if (stdOut.isEmpty()) {
+                error(result.toString())
+            } else {
+                val ex = IllegalStateException(customErrorMessage(stdOut))
+                if (stdErr.isNotEmpty()) {
+                    ex.addSuppressed(IllegalStateException(result.toString()))
+                }
+                throw ex
+            }
+        } else {
+            error(result.toString())
+        }
+    }
+}
