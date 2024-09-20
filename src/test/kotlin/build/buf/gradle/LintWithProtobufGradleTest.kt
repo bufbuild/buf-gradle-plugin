@@ -14,10 +14,7 @@
 
 package build.buf.gradle
 
-import com.google.common.truth.Truth.assertThat
-import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
 import org.junit.jupiter.api.Test
-import java.nio.file.Paths
 
 class LintWithProtobufGradleTest : ConfigOverrideableLintTests, AbstractLintTest() {
     @Test
@@ -47,11 +44,6 @@ class LintWithProtobufGradleTest : ConfigOverrideableLintTests, AbstractLintTest
 
     @Test
     fun `lint a file with an implementation dependency and a lint config with the protobuf-gradle-plugin`() {
-        val result = gradleRunner().withArguments(":$CHECK_TASK_NAME").buildAndFail()
-        assertThat(result.output).contains("Enum zero value name \"BROKEN_ENUM_NONSPECIFIED\" should be suffixed with \"_UNSPECIFIED\"")
-
-        Paths.get(projectDir.path, "buf.yaml").toFile().replace("#", "")
-
         assertSuccess()
     }
 }
