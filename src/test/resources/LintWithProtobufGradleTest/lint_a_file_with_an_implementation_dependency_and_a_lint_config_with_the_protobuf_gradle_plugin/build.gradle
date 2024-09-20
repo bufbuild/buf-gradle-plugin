@@ -15,7 +15,7 @@ protobuf {
 }
 
 buf {
-  toolVersion = "1.31.0"
+
 }
 
 compileJava.enabled = false

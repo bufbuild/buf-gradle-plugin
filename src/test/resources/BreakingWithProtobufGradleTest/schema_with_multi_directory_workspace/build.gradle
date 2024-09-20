@@ -25,7 +25,7 @@ publishing {
 }
 
 buf {
-  toolVersion = "1.31.0"
+  /*toolVersion = "1.31.0" */
   publishSchema = true
   //checkSchemaAgainstLatestRelease = true
 

@@ -84,11 +84,15 @@ internal fun AbstractBufExecTask.execBuf(
         if (customErrorMessage != null) {
             val stdOut = result.stdOut.toString(StandardCharsets.UTF_8)
             val stdErr = result.stdErr.toString(StandardCharsets.UTF_8)
-            val ex = IllegalStateException(customErrorMessage(stdOut))
-            if (stdErr.isNotEmpty()) {
-                ex.addSuppressed(IllegalStateException(result.toString()))
+            if (stdOut.isEmpty()) {
+                error(result.toString())
+            } else {
+                val ex = IllegalStateException(customErrorMessage(stdOut))
+                if (stdErr.isNotEmpty()) {
+                    ex.addSuppressed(IllegalStateException(result.toString()))
+                }
+                throw ex
             }
-            throw ex
         } else {
             error(result.toString())
         }

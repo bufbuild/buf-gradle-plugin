@@ -38,9 +38,9 @@ abstract class BreakingTask : AbstractBufExecTask() {
     fun bufBreaking() {
         val args = mutableListOf<Any>()
         args.add("breaking")
-        if (v1SyntaxOnly.get()) {
+        //if (v1SyntaxOnly.get()) {
             args.add(publicationFile.get())
-        }
+        //}
         args.add("--against")
         args.add(configFile.get())
         execBuf(*args.toTypedArray()) {
