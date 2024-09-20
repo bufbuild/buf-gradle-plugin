@@ -84,13 +84,6 @@ internal fun AbstractBufExecTask.execBuf(
     handleResult(result, customErrorMessage)
 }
 
-internal fun AbstractBufExecTask.obtainDefaultProtoFileSet() =
-    project.fileTree(workingDir.get()) {
-        include("**/*.proto")
-        // not to interfere with random plugins producing output to build dir
-        exclude("build")
-    }
-
 @VisibleForTesting
 internal fun handleResult(
     result: ProcessRunner.Result,
@@ -114,3 +107,10 @@ internal fun handleResult(
         }
     }
 }
+
+internal fun AbstractBufExecTask.obtainDefaultProtoFileSet() =
+    project.fileTree(workingDir.get()) {
+        include("**/*.proto")
+        // not to interfere with random plugins producing output to build dir
+        exclude("build")
+    }
