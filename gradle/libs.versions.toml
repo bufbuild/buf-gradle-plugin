@@ -14,7 +14,7 @@ protoc = "3.23.4"
 versioncompare = "1.5.0"
 
 # test
-junit = "5.11.0"
+junit = "5.11.2"
 truth = "1.4.4"
 
 [plugins]
