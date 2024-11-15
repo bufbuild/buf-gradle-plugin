@@ -4,6 +4,6 @@ lint:
     - google
     - protokt
   use:
-    - DEFAULT
+    - STANDARD
   except:
     - ENUM_ZERO_VALUE_SUFFIX
