@@ -30,6 +30,6 @@ abstract class FormatApplyTask : AbstractBufExecTask() {
 
     @TaskAction
     fun bufFormatApply() {
-        execBufInSpecificDirectory("format", "-w")
+        execBufInSpecificDirectory("format", listOf("-w"))
     }
 }

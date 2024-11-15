@@ -25,7 +25,7 @@ abstract class FormatCheckTask : AbstractBufExecTask() {
 
     @TaskAction
     fun bufFormatCheck() {
-        execBufInSpecificDirectory("format", "-d", "--exit-code") {
+        execBufInSpecificDirectory("format", listOf("-d", "--exit-code")) {
             """
                  |Some Protobuf files had format violations:
                  |$it
