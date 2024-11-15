@@ -55,11 +55,9 @@ abstract class LintTask : AbstractBufExecTask() {
         }
     }
 
-    private fun noWorkspaceAndV1Syntax() =
-        !hasWorkspace.get() && v1SyntaxOnly.get()
+    private fun noWorkspaceAndV1Syntax() = !hasWorkspace.get() && v1SyntaxOnly.get()
 
-    private fun noWorkspaceAndNoProtobufGradlePlugin() =
-        !hasWorkspace.get() && !hasProtobufGradlePlugin.get()
+    private fun noWorkspaceAndNoProtobufGradlePlugin() = !hasWorkspace.get() && !hasProtobufGradlePlugin.get()
 
     private fun File.readAndStripComments() =
         lines(toPath()).use { lines ->
