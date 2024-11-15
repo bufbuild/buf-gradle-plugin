@@ -26,7 +26,7 @@ import java.nio.file.Paths
 import java.util.Locale
 
 abstract class AbstractBufIntegrationTest : IntegrationTest {
-    @TempDir(cleanup = CleanupMode.ALWAYS)
+    @TempDir(cleanup = CleanupMode.ON_SUCCESS)
     lateinit var projectDir: File
 
     val buildFile
