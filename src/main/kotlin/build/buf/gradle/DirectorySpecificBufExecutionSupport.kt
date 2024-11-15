@@ -21,7 +21,10 @@ internal fun AbstractBufExecTask.execBufInSpecificDirectory(
     args: Iterable<String>,
     customErrorMessage: ((String) -> String)? = null,
 ) {
-    fun runWithArgs(file: File? = null) = listOf(bufCommand) + listOfNotNull(file?.let { makeMangledRelativizedPathStr(it) }) + args
+    fun runWithArgs(file: File? = null) =
+        listOf(bufCommand) +
+            file?.let { listOf("--path", makeMangledRelativizedPathStr(it)) }.orEmpty() +
+            args
 
     when {
         hasProtobufGradlePlugin.get() ->
