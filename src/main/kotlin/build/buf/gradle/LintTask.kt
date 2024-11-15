@@ -16,6 +16,7 @@ package build.buf.gradle
 
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.provider.Property
+import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Optional
@@ -34,11 +35,18 @@ abstract class LintTask : AbstractBufExecTask() {
     @get:Optional
     internal abstract val bufConfigFile: Property<File>
 
+    @get:Input
+    internal abstract val v1SyntaxOnly: Property<Boolean>
+
     @TaskAction
     fun bufLint() {
         execBufInSpecificDirectory(
             "lint",
-            bufConfigFile.orNull?.let { listOf("--config", it.readAndStripComments()) }.orEmpty(),
+            if (noWorkspaceAndV1Syntax() || noWorkspaceAndNoProtobufGradlePlugin()) {
+                bufConfigFile.orNull?.let { listOf("--config", it.readAndStripComments()) }
+            } else {
+                null
+            }.orEmpty(),
         ) {
             """
                  |Some Protobuf files had lint violations:
@@ -46,6 +54,10 @@ abstract class LintTask : AbstractBufExecTask() {
             """.trimMargin()
         }
     }
+
+    private fun noWorkspaceAndV1Syntax() = !hasWorkspace.get() && v1SyntaxOnly.get()
+
+    private fun noWorkspaceAndNoProtobufGradlePlugin() = !hasWorkspace.get() && !hasProtobufGradlePlugin.get()
 
     private fun File.readAndStripComments() =
         lines(toPath()).use { lines ->

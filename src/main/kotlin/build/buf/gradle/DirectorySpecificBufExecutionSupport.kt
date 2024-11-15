@@ -17,26 +17,11 @@ package build.buf.gradle
 import java.io.File
 
 internal fun AbstractBufExecTask.execBufInSpecificDirectory(
-    vararg bufCommand: String,
-    customErrorMessage: ((String) -> String)? = null,
-) {
-    execBufInSpecificDirectory(bufCommand.asList(), emptyList(), customErrorMessage)
-}
-
-internal fun AbstractBufExecTask.execBufInSpecificDirectory(
     bufCommand: String,
-    extraArgs: Iterable<String>,
-    customErrorMessage: (String) -> String,
-) {
-    execBufInSpecificDirectory(listOf(bufCommand), extraArgs, customErrorMessage)
-}
-
-private fun AbstractBufExecTask.execBufInSpecificDirectory(
-    bufCommand: Iterable<String>,
-    extraArgs: Iterable<String>,
+    args: Iterable<String>,
     customErrorMessage: ((String) -> String)? = null,
 ) {
-    fun runWithArgs(file: File? = null) = bufCommand + listOfNotNull(file?.let { makeMangledRelativizedPathStr(it) }) + extraArgs
+    fun runWithArgs(file: File? = null) = listOf(bufCommand) + listOfNotNull(file?.let { makeMangledRelativizedPathStr(it) }) + args
 
     when {
         hasProtobufGradlePlugin.get() ->
@@ -44,7 +29,7 @@ private fun AbstractBufExecTask.execBufInSpecificDirectory(
                 .filter { anyProtos(it) }
                 .forEach { execBuf(runWithArgs(it), customErrorMessage) }
         hasWorkspace.get() ->
-            execBuf(bufCommand, customErrorMessage)
+            execBuf(listOf(bufCommand) + args, customErrorMessage)
         else ->
             execBuf(runWithArgs(), customErrorMessage)
     }

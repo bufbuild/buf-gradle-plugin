@@ -27,6 +27,7 @@ internal fun Project.configureLint() {
 
         bufConfigFile.set(project.bufConfigFile())
         inputFiles.setFrom(obtainDefaultProtoFileSet())
+        v1SyntaxOnly.set(bufV1SyntaxOnly())
     }
 
     tasks.named(CHECK_TASK_NAME).dependsOn(BUF_LINT_TASK_NAME)
