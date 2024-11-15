@@ -42,7 +42,7 @@ abstract class LintTask : AbstractBufExecTask() {
     fun bufLint() {
         execBufInSpecificDirectory(
             "lint",
-            if (v1SyntaxOnly.get() && !hasWorkspace.get()) {
+            if (noWorkspaceAndV1Syntax() || noWorkspaceAndNoProtobufGradlePlugin()) {
                 bufConfigFile.orNull?.let { listOf("--config", it.readAndStripComments()) }
             } else {
                 null
@@ -54,6 +54,12 @@ abstract class LintTask : AbstractBufExecTask() {
             """.trimMargin()
         }
     }
+
+    private fun noWorkspaceAndV1Syntax() =
+        !hasWorkspace.get() && v1SyntaxOnly.get()
+
+    private fun noWorkspaceAndNoProtobufGradlePlugin() =
+        !hasWorkspace.get() && !hasProtobufGradlePlugin.get()
 
     private fun File.readAndStripComments() =
         lines(toPath()).use { lines ->
