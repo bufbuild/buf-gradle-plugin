@@ -1,0 +1,9 @@
+version: v1
+lint:
+  ignore:
+    - google
+    - protokt
+  use:
+    - STANDARD
+  except:
+    - ENUM_ZERO_VALUE_SUFFIX
