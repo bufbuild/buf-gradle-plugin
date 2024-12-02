@@ -9,7 +9,7 @@ buildConfig = "5.5.1"
 
 # runtime
 bufbuild = "1.47.2"
-jackson = "2.18.1"
+jackson = "2.18.2"
 protoc = "3.23.4"
 versioncompare = "1.5.0"
 
