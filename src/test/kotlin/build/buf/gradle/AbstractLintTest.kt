@@ -20,7 +20,9 @@ import org.gradle.testkit.runner.TaskOutcome.FAILED
 import org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import org.junit.jupiter.api.Test
 
-abstract class AbstractLintTest : LintTestUtilities, AbstractBufIntegrationTest() {
+abstract class AbstractLintTest :
+    AbstractBufIntegrationTest(),
+    LintTestUtilities {
     @Test
     fun `lint a basic correct message with default config`() {
         assertSuccess()

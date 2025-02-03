@@ -22,9 +22,10 @@ internal class BufYamlGenerator {
 
         // Collect `breaking: ignore:` entries.
         val ignores =
-            bufYaml["breaking"]?.let { breaking ->
-                (breaking as? Map<*, *>)?.get("ignore") as? List<*>
-            }?.map { it.toString() } ?: emptyList()
+            bufYaml["breaking"]
+                ?.let { breaking ->
+                    (breaking as? Map<*, *>)?.get("ignore") as? List<*>
+                }?.map { it.toString() } ?: emptyList()
 
         // Emit a module for each discovered workspace, copying ignores and concatenating their
         // paths with the module root.

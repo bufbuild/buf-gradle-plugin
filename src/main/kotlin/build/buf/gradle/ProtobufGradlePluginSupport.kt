@@ -169,7 +169,8 @@ private fun WriteWorkspaceYamlTask.workspaceSymLinkEntries() =
 // includes any proto files that are simply references (includes) as well as those that will be processed (code
 // generation or validation).
 private fun Task.allProtoDirs() =
-    project.allProtoSourceSetDirs()
+    project
+        .allProtoSourceSetDirs()
         .plus(project.file(Paths.get(BUILD_EXTRACTED_INCLUDE_PROTOS_MAIN)))
         .toSet()
 
@@ -193,25 +194,28 @@ private fun Project.allProtoSourceSetDirs() = projectProtoSourceSetDirs() + andr
 
 // Returns android proto source set directories that protobuf-gradle-plugin will codegen.
 private fun Project.androidProtoSourceSetDirs() =
-    extensions.findByName("android")
+    extensions
+        .findByName("android")
         ?.let { baseExtension ->
             val prop = baseExtension::class.declaredMemberProperties.single { it.name == "sourceSets" }
             @Suppress("UNCHECKED_CAST")
             (prop as KProperty1<Any, Set<ExtensionAware>>).get(baseExtension)
-        }
-        .orEmpty()
+        }.orEmpty()
         .flatMap { it.projectProtoSourceSetDirs() }
         .toSet()
 
 // Returns all proto source set directories that the protobuf-gradle-plugin will codegen.
 private fun Project.projectProtoSourceSetDirs() =
-    the<SourceSetContainer>().flatMap { it.projectProtoSourceSetDirs() }
+    the<SourceSetContainer>()
+        .flatMap { it.projectProtoSourceSetDirs() }
         .toSet()
 
 // Returns all directories within the "proto" source set of the receiver that actually contain proto files. This includes
 // directories explicitly added to the source set, as well as directories containing files from "protobuf" dependencies.
 private fun ExtensionAware.projectProtoSourceSetDirs() =
-    extensions.getByName<SourceDirectorySet>("proto").srcDirs
+    extensions
+        .getByName<SourceDirectorySet>("proto")
+        .srcDirs
         .toSet()
 
 internal fun AbstractBufTask.makeMangledRelativizedPathStr(file: File) = mangle(projectDir.get().toPath().relativize(file.toPath()))
