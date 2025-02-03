@@ -14,4 +14,7 @@
 
 package build.buf.gradle
 
-class LintTest : ConfigOverrideableLintTests, NonProtobufGradlePluginLintTests, AbstractLintTest()
+class LintTest :
+    AbstractLintTest(),
+    ConfigOverrideableLintTests,
+    NonProtobufGradlePluginLintTests

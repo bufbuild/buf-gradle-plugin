@@ -41,7 +41,9 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
         File(projectDir, "gradle.properties").writeText("org.gradle.jvmargs=-Xmx5g")
 
         val testName =
-            testInfo.testMethod.get().name
+            testInfo.testMethod
+                .get()
+                .name
                 .replace(",", "")
                 .replace("--", "")
                 .replace(" ", "_")
@@ -63,7 +65,8 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
     }
 
     fun gradleRunner() =
-        GradleRunner.create()
+        GradleRunner
+            .create()
             .withProjectDir(projectDir)
             .withPluginClasspath()
             .withArguments(
@@ -72,8 +75,7 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
                 "-PkotlinVersion=1.7.20",
                 "-PandroidGradleVersion=7.3.0",
                 "--configuration-cache",
-            )
-            .withDebug(false) // Enable for interactive debugging
+            ).withDebug(false) // Enable for interactive debugging
             .let { WrappedRunner(it) }
 
     override fun checkRunner() = gradleRunner().withArguments(CHECK_TASK_NAME)

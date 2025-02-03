@@ -16,7 +16,9 @@ package build.buf.gradle
 
 import org.junit.jupiter.api.Test
 
-class LintWithWorkspaceTest : NonProtobufGradlePluginLintTests, AbstractLintTest() {
+class LintWithWorkspaceTest :
+    AbstractLintTest(),
+    NonProtobufGradlePluginLintTests {
     @Test
     fun `lint with a config in workspace`() {
         assertSuccess()

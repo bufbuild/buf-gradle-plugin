@@ -19,6 +19,10 @@ import org.gradle.api.Project
 const val BUF_BUILD_DIR = "bufbuild"
 
 internal val Project.bufbuildDir
-    get() = layout.buildDirectory.dir(BUF_BUILD_DIR).get().asFile
+    get() =
+        layout.buildDirectory
+            .dir(BUF_BUILD_DIR)
+            .get()
+            .asFile
 
 internal fun ArtifactDetails.groupAndArtifact() = "$groupId:$artifactId"

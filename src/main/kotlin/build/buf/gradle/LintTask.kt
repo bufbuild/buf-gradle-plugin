@@ -61,7 +61,8 @@ abstract class LintTask : AbstractBufExecTask() {
 
     private fun File.readAndStripComments() =
         lines(toPath()).use { lines ->
-            lines.asSequence()
+            lines
+                .asSequence()
                 .filterNot { it.matches("( ?)#.*".toRegex()) }
                 .joinToString(separator = lineSeparator)
         }
