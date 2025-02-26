@@ -70,10 +70,10 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
             .withProjectDir(projectDir)
             .withPluginClasspath()
             .withArguments(
-                "-PprotobufGradleVersion=0.9.3",
-                "-PprotobufVersion=3.23.4",
-                "-PkotlinVersion=1.7.20",
-                "-PandroidGradleVersion=7.3.0",
+                "-PprotobufGradleVersion=$PROTOBUF_GRADLE_PLUGIN_VERSION",
+                "-PprotobufVersion=$PROTOBUF_VERSION",
+                "-PkotlinVersion=$KOTLIN_VERSION",
+                "-PandroidGradleVersion=$ANDROID_GRADLE_PLUGIN_VERSION",
                 "--configuration-cache",
             ).withDebug(false) // Enable for interactive debugging
             .let { WrappedRunner(it) }
