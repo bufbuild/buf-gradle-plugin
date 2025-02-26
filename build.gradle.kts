@@ -127,14 +127,28 @@ tasks {
     }
 
     withType<KotlinCompile> {
-        kotlinOptions {
+        compilerOptions {
             allWarningsAsErrors = true
         }
     }
 }
 
+// declare dependencies used in integration tests so that dependabot picks them up
+val integrationTestingDependencies = configurations.create("integrationTestingDependencies")
+dependencies {
+    integrationTestingDependencies(libs.androidGradlePlugin)
+    integrationTestingDependencies(libs.protobufGradlePlugin)
+}
+
 buildConfig {
     useKotlinOutput { topLevelConstants = true }
     packageName.set("build.buf.gradle")
-    buildConfigField("String", "DEFAULT_BUF_VERSION", "\"${libs.bufbuild.get().version}\"")
+    buildConfigField("String", "DEFAULT_BUF_VERSION", "\"${libs.versions.bufbuild.get()}\"")
+
+    sourceSets.getByName("test") {
+        buildConfigField("String", "PROTOBUF_VERSION", "\"${libs.versions.protoc.get()}\"")
+        buildConfigField("String", "KOTLIN_VERSION", "\"${libs.versions.kotlin.get()}\"")
+        buildConfigField("String", "PROTOBUF_GRADLE_PLUGIN_VERSION", "\"${libs.versions.protobufGradlePlugin.get()}\"")
+        buildConfigField("String", "ANDROID_GRADLE_PLUGIN_VERSION", "\"${libs.versions.androidGradlePlugin.get()}\"")
+    }
 }
