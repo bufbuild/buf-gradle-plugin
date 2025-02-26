@@ -33,12 +33,14 @@ allprojects {
     }
 }
 
-val bufCliDependabotConfig = configurations.create("bufCliDependabotConfig")
+val dependabotConfig = configurations.create("dependabotConfig")
 val protoc: Configuration by configurations.creating
 
 dependencies {
-    // Trigger dependabot on a new Buf CLI release.
-    bufCliDependabotConfig(libs.bufbuild)
+    // Trigger dependabot on new releases.
+    dependabotConfig(libs.bufbuild)
+    dependabotConfig(libs.androidGradlePlugin)
+    dependabotConfig(libs.protobufGradlePlugin)
 
     implementation(libs.jacksonDataformatYaml)
     implementation(libs.jacksonModuleKotlin)
@@ -127,7 +129,7 @@ tasks {
     }
 
     withType<KotlinCompile> {
-        kotlinOptions {
+        compilerOptions {
             allWarningsAsErrors = true
         }
     }
@@ -136,5 +138,12 @@ tasks {
 buildConfig {
     useKotlinOutput { topLevelConstants = true }
     packageName.set("build.buf.gradle")
-    buildConfigField("String", "DEFAULT_BUF_VERSION", "\"${libs.bufbuild.get().version}\"")
+    buildConfigField("String", "DEFAULT_BUF_VERSION", "\"${libs.versions.bufbuild.get()}\"")
+
+    sourceSets.getByName("test") {
+        buildConfigField("String", "PROTOBUF_VERSION", "\"${libs.versions.protoc.get()}\"")
+        buildConfigField("String", "KOTLIN_VERSION", "\"${libs.versions.kotlin.get()}\"")
+        buildConfigField("String", "PROTOBUF_GRADLE_PLUGIN_VERSION", "\"${libs.versions.protobufGradlePlugin.get()}\"")
+        buildConfigField("String", "ANDROID_GRADLE_PLUGIN_VERSION", "\"${libs.versions.androidGradlePlugin.get()}\"")
+    }
 }

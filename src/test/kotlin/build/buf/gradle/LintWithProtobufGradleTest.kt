@@ -16,7 +16,9 @@ package build.buf.gradle
 
 import org.junit.jupiter.api.Test
 
-class LintWithProtobufGradleTest : ConfigOverrideableLintTests, AbstractLintTest() {
+class LintWithProtobufGradleTest :
+    AbstractLintTest(),
+    ConfigOverrideableLintTests {
     @Test
     fun `lint with protobuf plugin applied after buf plugin`() {
         assertSuccess()
