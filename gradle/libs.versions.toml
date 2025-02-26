@@ -3,12 +3,12 @@
 kotlin = "2.1.0"
 mavenPublish = "0.30.0"
 osDetector = "1.7.3"
-pluginPublish = "1.3.0"
-spotless = "6.25.0"
+pluginPublish = "1.3.1"
+spotless = "7.0.2"
 buildConfig = "5.5.1"
 
 # runtime
-bufbuild = "1.48.0"
+bufbuild = "1.50.0"
 jackson = "2.18.2"
 protoc = "4.29.3"
 versioncompare = "1.5.0"
