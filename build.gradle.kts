@@ -33,12 +33,14 @@ allprojects {
     }
 }
 
-val bufCliDependabotConfig = configurations.create("bufCliDependabotConfig")
+val dependabotConfig = configurations.create("dependabotConfig")
 val protoc: Configuration by configurations.creating
 
 dependencies {
-    // Trigger dependabot on a new Buf CLI release.
-    bufCliDependabotConfig(libs.bufbuild)
+    // Trigger dependabot on new releases.
+    dependabotConfig(libs.bufbuild)
+    dependabotConfig(libs.androidGradlePlugin)
+    dependabotConfig(libs.protobufGradlePlugin)
 
     implementation(libs.jacksonDataformatYaml)
     implementation(libs.jacksonModuleKotlin)
@@ -131,13 +133,6 @@ tasks {
             allWarningsAsErrors = true
         }
     }
-}
-
-// declare dependencies used in integration tests so that dependabot picks them up
-val integrationTestingDependencies = configurations.create("integrationTestingDependencies")
-dependencies {
-    integrationTestingDependencies(libs.androidGradlePlugin)
-    integrationTestingDependencies(libs.protobufGradlePlugin)
 }
 
 buildConfig {
