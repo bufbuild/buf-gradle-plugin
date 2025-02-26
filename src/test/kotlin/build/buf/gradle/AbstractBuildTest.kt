@@ -74,6 +74,11 @@ abstract class AbstractBuildTest : AbstractBufIntegrationTest() {
         )
     }
 
+    @Test
+    fun `build with a google dependency`() {
+        assertImageGeneration("image.json")
+    }
+
     private fun assertImageGeneration(publicationFileName: String) {
         assertThat(buildRunner().build().task(":$BUF_BUILD_TASK_NAME")?.outcome).isEqualTo(SUCCESS)
         val image = Paths.get(projectDir.path, "build", "bufbuild", publicationFileName).toFile().readText()
