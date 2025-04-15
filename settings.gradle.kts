@@ -2,7 +2,7 @@ buildscript { repositories { gradlePluginPortal() } }
 
 plugins {
     id("io.alcide.gradle-semantic-build-versioning") version "4.2.2"
-    id("org.gradle.toolchains.foojay-resolver-convention") version "0.9.0"
+    id("org.gradle.toolchains.foojay-resolver-convention") version "0.10.0"
 }
 
 rootProject.name = "buf-gradle-plugin"
