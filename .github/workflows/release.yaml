@@ -28,7 +28,7 @@ jobs:
       - name: Publish
         run: |
           ./gradlew \
-            publishToMavenCentral \
+            publishAndReleaseToMavenCentral \
             publishPlugins \
             --no-configuration-cache \
             -Dorg.gradle.internal.http.socketTimeout=120000 \
