@@ -14,7 +14,7 @@
 
 package build.buf.gradle
 
-import com.google.common.truth.Truth.assertThat
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
@@ -33,6 +33,6 @@ class BufSupportTest {
                 ) { "foo" }
             }
 
-        assertThat(thrown).hasMessageThat().contains("error that would be hidden")
+        assertThat(thrown).hasMessageContaining("error that would be hidden")
     }
 }

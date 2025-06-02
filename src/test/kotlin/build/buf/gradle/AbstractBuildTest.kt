@@ -15,7 +15,7 @@
 package build.buf.gradle
 
 import build.buf.gradle.ImageGenerationSupport.replaceBuildDetails
-import com.google.common.truth.Truth.assertThat
+import org.assertj.core.api.Assertions.assertThat
 import org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest

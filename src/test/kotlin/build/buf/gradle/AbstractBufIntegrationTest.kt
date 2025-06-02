@@ -14,7 +14,7 @@
 
 package build.buf.gradle
 
-import com.google.common.truth.Truth.assertWithMessage
+import org.assertj.core.api.Assertions.assertThat
 import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.BeforeEach
@@ -50,8 +50,8 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
                 .replace("-", "_")
                 .lowercase(Locale.US)
         val fixture = File("src/test/resources/${testInfo.testClass.get().simpleName}/$testName")
-        assertWithMessage("Directory ${fixture.path} does not exist").that(fixture.exists()).isTrue()
-        assertWithMessage("Failed to copy test fixture files").that(fixture.copyRecursively(projectDir)).isTrue()
+        assertThat(fixture.exists()).`as`("Directory ${fixture.path} does not exist").isTrue()
+        assertThat(fixture.copyRecursively(projectDir)).`as`("Failed to copy test fixture files").isTrue()
     }
 
     class WrappedRunner(

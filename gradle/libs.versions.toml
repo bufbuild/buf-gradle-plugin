@@ -15,9 +15,10 @@ versioncompare = "1.5.0"
 
 # test
 androidGradlePlugin = "7.3.1"
+assertj = "3.27.2"
+guava = "33.4.8-jre"
 junit = "5.11.4"
 protobufGradlePlugin = "0.9.5"
-truth = "1.4.4"
 
 [plugins]
 buildConfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig" }
@@ -37,6 +38,9 @@ versioncompare = { module = "io.github.g00fy2:versioncompare", version.ref = "ve
 
 # test
 androidGradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "androidGradlePlugin" }
-junit = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+assertj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
+guava = { module = "com.google.guava:guava", version.ref = "guava" }
+junit = { module = "org.junit:junit-bom", version.ref = "junit" }
+junitJupiter = { module = "org.junit.jupiter:junit-jupiter" }
+junitPlatformLauncher = { module = "org.junit.platform:junit-platform-launcher" }
 protobufGradlePlugin = { module = "com.google.protobuf:protobuf-gradle-plugin", version.ref = "protobufGradlePlugin" }
-truth = { module = "com.google.truth:truth", version.ref = "truth" }
