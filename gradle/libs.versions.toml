@@ -17,7 +17,7 @@ versioncompare = "1.5.0"
 androidGradlePlugin = "7.3.1"
 assertj = "3.27.2"
 guava = "33.4.8-jre"
-junit = "5.11.4"
+junit = "5.13.0"
 protobufGradlePlugin = "0.9.5"
 
 [plugins]
