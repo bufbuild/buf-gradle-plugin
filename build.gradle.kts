@@ -49,8 +49,8 @@ dependencies {
     testImplementation(platform(libs.junit))
     testImplementation(libs.assertj)
     testImplementation(libs.guava)
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    testImplementation("org.junit.platform:junit-platform-launcher")
+    testImplementation(libs.junitJupiter)
+    testImplementation(libs.junitPlatformLauncher)
     protoc("com.google.protobuf:protoc:${libs.versions.protoc.get()}:${osdetector.classifier}@exe")
 }
 
