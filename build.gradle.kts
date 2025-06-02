@@ -46,8 +46,11 @@ dependencies {
     implementation(libs.jacksonModuleKotlin)
     implementation(libs.versioncompare)
 
-    testImplementation(libs.junit)
-    testImplementation(libs.truth)
+    testImplementation(platform(libs.junit))
+    testImplementation(libs.assertj)
+    testImplementation(libs.guava)
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.junit.platform:junit-platform-launcher")
     protoc("com.google.protobuf:protoc:${libs.versions.protoc.get()}:${osdetector.classifier}@exe")
 }
 
