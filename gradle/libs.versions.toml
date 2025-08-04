@@ -8,7 +8,7 @@ spotless = "7.2.1"
 buildConfig = "5.6.7"
 
 # runtime
-bufbuild = "1.55.1"
+bufbuild = "1.56.0"
 jackson = "2.19.2"
 protoc = "4.31.1"
 versioncompare = "1.5.0"
