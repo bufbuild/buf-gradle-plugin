@@ -1,13 +1,17 @@
 package build.buf.gradle
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
-import com.fasterxml.jackson.module.kotlin.readValue
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import tools.jackson.dataformat.yaml.YAMLFactory
+import tools.jackson.dataformat.yaml.YAMLMapper
+import tools.jackson.module.kotlin.KotlinModule
+import tools.jackson.module.kotlin.readValue
 import java.io.File
 
 internal class BufYamlGenerator {
-    private val mapper = ObjectMapper(YAMLFactory()).registerKotlinModule()
+    private val mapper =
+        YAMLMapper
+            .builder(YAMLFactory.builder().build())
+            .addModule(KotlinModule.Builder().build())
+            .build()
 
     /**
      * Read the user-supplied buf.yaml file and generate an equivalent file, adding a

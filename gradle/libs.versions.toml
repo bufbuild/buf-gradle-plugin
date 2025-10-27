@@ -9,7 +9,7 @@ buildConfig = "5.6.8"
 
 # runtime
 bufbuild = "1.59.0"
-jackson = "2.20.0"
+jackson = "3.0.1"
 protoc = "4.33.0"
 versioncompare = "1.5.0"
 
@@ -31,8 +31,8 @@ spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 [libraries]
 # runtime
 bufbuild = { module = "build.buf:buf", version.ref = "bufbuild" }
-jacksonDataformatYaml = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml", version.ref = "jackson" }
-jacksonModuleKotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
+jacksonDataformatYaml = { module = "tools.jackson.dataformat:jackson-dataformat-yaml", version.ref = "jackson" }
+jacksonModuleKotlin = { module = "tools.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
 protoc = { module = "com.google.protobuf:protoc", version.ref = "protoc" }
 versioncompare = { module = "io.github.g00fy2:versioncompare", version.ref = "versioncompare" }
 
