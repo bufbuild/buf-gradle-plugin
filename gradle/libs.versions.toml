@@ -10,7 +10,7 @@ buildConfig = "6.0.6"
 # runtime
 bufbuild = "1.61.0"
 jackson = "3.0.3"
-protoc = "4.33.1"
+protoc = "4.33.2"
 versioncompare = "1.5.0"
 
 # test
