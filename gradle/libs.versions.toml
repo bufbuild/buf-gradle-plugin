@@ -18,7 +18,7 @@ androidGradlePlugin = "7.3.1"
 assertj = "3.27.6"
 guava = "33.5.0-jre"
 junit = "6.0.1"
-protobufGradlePlugin = "0.9.5"
+protobufGradlePlugin = "0.9.6"
 
 [plugins]
 buildConfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig" }
