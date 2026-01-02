@@ -10,7 +10,6 @@ repositories {
 plugins {
     `kotlin-dsl`
     alias(libs.plugins.buildConfig)
-    alias(libs.plugins.kotlin)
     alias(libs.plugins.mavenPublish)
     alias(libs.plugins.osDetector)
     alias(libs.plugins.pluginPublish)

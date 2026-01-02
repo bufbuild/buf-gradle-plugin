@@ -22,7 +22,6 @@ protobufGradlePlugin = "0.9.6"
 
 [plugins]
 buildConfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig" }
-kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 mavenPublish = { id = "com.vanniktech.maven.publish.base", version.ref = "mavenPublish" }
 osDetector = { id = "com.google.osdetector", version.ref = "osDetector" }
 pluginPublish = { id = "com.gradle.plugin-publish", version.ref = "pluginPublish" }
