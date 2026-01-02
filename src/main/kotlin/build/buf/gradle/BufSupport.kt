@@ -47,13 +47,7 @@ internal fun Project.configureBufDependency() {
     dependencies {
         add(
             BUF_BINARY_CONFIGURATION_NAME,
-            mapOf(
-                "group" to "build.buf",
-                "name" to "buf",
-                "version" to extension.toolVersion,
-                "classifier" to "$osPart-$archPart",
-                "ext" to "exe",
-            ),
+            "build.buf:buf:${extension.toolVersion}:$osPart-$archPart@exe",
         )
     }
 }
