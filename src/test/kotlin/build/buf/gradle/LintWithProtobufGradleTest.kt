@@ -58,4 +58,9 @@ class LintWithProtobufGradleTest :
     fun `lint a file with an implementation dependency and a lint config with the protobuf-gradle-plugin v2`() {
         assertSuccess()
     }
+
+    @Test
+    fun `lint a file with an implementation dependency and the same package as an indirect protobuf dependency`() {
+        assertSuccess()
+    }
 }
