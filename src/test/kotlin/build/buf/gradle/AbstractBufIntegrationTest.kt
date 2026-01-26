@@ -64,12 +64,17 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
         fun buildAndFail() = delegate.buildAndFail().also { println(it.output) }
     }
 
-    fun gradleRunner() =
+    fun gradleRunner(version: String = GradleVersions.GRADLE_WRAPPER) =
         GradleRunner
             .create()
             .withProjectDir(projectDir)
             .withPluginClasspath()
-            .withArguments(
+            .apply {
+                // Use specific Gradle version if set, otherwise use wrapper version
+                if (version != GradleVersions.GRADLE_WRAPPER) {
+                    withGradleVersion(version)
+                }
+            }.withArguments(
                 "-PprotobufGradleVersion=$PROTOBUF_GRADLE_PLUGIN_VERSION",
                 "-PprotobufVersion=$PROTOBUF_VERSION",
                 "-PkotlinVersion=$KOTLIN_VERSION",
@@ -78,7 +83,7 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
             ).withDebug(false) // Enable for interactive debugging
             .let { WrappedRunner(it) }
 
-    override fun checkRunner() = gradleRunner().withArguments(CHECK_TASK_NAME)
+    override fun checkRunner(version: String) = gradleRunner(version).withArguments(CHECK_TASK_NAME)
 
     fun publishRunner() = gradleRunner().withArguments("publish")
 
@@ -91,7 +96,7 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
 }
 
 interface IntegrationTest {
-    fun checkRunner(): AbstractBufIntegrationTest.WrappedRunner
+    fun checkRunner(version: String = GradleVersions.GRADLE_WRAPPER): AbstractBufIntegrationTest.WrappedRunner
 }
 
 fun String.osIndependent() = replace("\n", lineSeparator)

@@ -49,6 +49,10 @@ When applied, the plugin creates the following tasks:
 - `bufBreaking` checks Protobuf schemas against a previous version for backwards-incompatible changes through [`buf breaking`](https://buf.build/docs/breaking/overview/)
 - `bufGenerate` generates Protobuf code with [`buf generate`](https://buf.build/docs/generate/overview/)
 
+### Gradle Compatibility
+
+This plugin requires **Gradle 8 or higher**.
+
 ### Examples
 
 Each [integration test](src/test/resources) in this project is an example usage.
