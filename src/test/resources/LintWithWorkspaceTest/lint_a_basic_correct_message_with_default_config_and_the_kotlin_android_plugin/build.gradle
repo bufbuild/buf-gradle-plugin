@@ -23,5 +23,6 @@ repositories {
 }
 
 android {
-  compileSdkVersion 31
+  namespace = 'build.buf.gradle.test'
+  compileSdkVersion 34
 }

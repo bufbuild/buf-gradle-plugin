@@ -14,7 +14,7 @@ protoc = "4.33.4"
 versioncompare = "1.5.0"
 
 # test
-androidGradlePlugin = "7.3.1"
+androidGradlePlugin = "8.7.3"
 assertj = "3.27.7"
 guava = "33.5.0-jre"
 junit = "6.0.2"
