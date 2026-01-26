@@ -1,6 +1,6 @@
 [versions]
 # plugins
-kotlin = "2.0.21" # Matches Gradle version: https://docs.gradle.org/8.14.3/userguide/compatibility.html#kotlin
+kotlin = "2.2.21" # Matches Gradle version: https://docs.gradle.org/9.3.0/userguide/compatibility.html#kotlin
 mavenPublish = "0.35.0"
 osDetector = "1.7.3"
 pluginPublish = "2.0.0"
