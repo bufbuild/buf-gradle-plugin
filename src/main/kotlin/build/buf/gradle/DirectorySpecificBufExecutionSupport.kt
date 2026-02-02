@@ -24,13 +24,18 @@ internal fun AbstractBufExecTask.execBufInSpecificDirectory(
     fun runWithArgs(file: File? = null) = listOf(bufCommand) + listOfNotNull(file?.let { makeMangledRelativizedPathStr(it) }) + args
 
     when {
-        hasProtobufGradlePlugin.get() ->
+        hasProtobufGradlePlugin.get() -> {
             candidateProtoDirs
                 .filter { anyProtos(it) }
                 .forEach { execBuf(runWithArgs(it), customErrorMessage) }
-        hasWorkspace.get() ->
+        }
+
+        hasWorkspace.get() -> {
             execBuf(listOf(bufCommand) + args, customErrorMessage)
-        else ->
+        }
+
+        else -> {
             execBuf(runWithArgs(), customErrorMessage)
+        }
     }
 }
