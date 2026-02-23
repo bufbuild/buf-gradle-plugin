@@ -33,21 +33,21 @@ jobs:
       - name: Build
         run: ./gradlew build --info
       - name: Publish unit test results (Ubuntu)
-        uses: EnricoMi/publish-unit-test-result-action@27d65e188ec43221b20d26de30f4892fad91df2f # v2.22.0
+        uses: EnricoMi/publish-unit-test-result-action@c950f6fb443cb5af20a377fd0dfaa78838901040 # v2.23.0
         if: always() && matrix.os == 'ubuntu-latest'
         with:
           files: "**/test-results/**/*.xml"
           comment_mode: off
           check_name: "Test Results (Ubuntu)"
       - name: Publish unit test results (Windows)
-        uses: EnricoMi/publish-unit-test-result-action/windows@27d65e188ec43221b20d26de30f4892fad91df2f # v2.22.0
+        uses: EnricoMi/publish-unit-test-result-action/windows@c950f6fb443cb5af20a377fd0dfaa78838901040 # v2.23.0
         if: always() && matrix.os == 'windows-latest'
         with:
           files: "**/test-results/**/*.xml"
           comment_mode: off
           check_name: "Test Results (Windows)"
       - name: Publish unit test results (MacOS)
-        uses: EnricoMi/publish-unit-test-result-action/macos@27d65e188ec43221b20d26de30f4892fad91df2f # v2.22.0
+        uses: EnricoMi/publish-unit-test-result-action/macos@c950f6fb443cb5af20a377fd0dfaa78838901040 # v2.23.0
         if: always() && matrix.os == 'macos-latest'
         with:
           files: "**/test-results/**/*.xml"
