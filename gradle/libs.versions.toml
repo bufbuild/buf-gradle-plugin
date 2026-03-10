@@ -5,7 +5,7 @@ mavenPublish = "0.36.0"
 osDetector = "1.7.3"
 pluginPublish = "2.0.0"
 spotless = "8.3.0"
-buildConfig = "6.0.7"
+buildConfig = "6.0.9"
 
 # runtime
 bufbuild = "1.66.0"
