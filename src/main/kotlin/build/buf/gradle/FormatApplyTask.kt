@@ -17,11 +17,16 @@ package build.buf.gradle
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputFiles
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
+import org.gradle.work.DisableCachingByDefault
 
+@DisableCachingByDefault(because = "modifies source files in-place")
 abstract class FormatApplyTask : AbstractBufExecTask() {
     /** The input files to be formatted. */
     @get:InputFiles
+    @get:PathSensitive(PathSensitivity.RELATIVE)
     internal abstract val inputFiles: ConfigurableFileCollection
 
     /** The output files that have been formatted. */

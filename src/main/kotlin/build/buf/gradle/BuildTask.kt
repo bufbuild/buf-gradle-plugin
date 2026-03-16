@@ -18,12 +18,17 @@ import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
+import org.gradle.work.DisableCachingByDefault
 import java.io.File
 
+@DisableCachingByDefault(because = "executes buf CLI which may resolve dependencies from the BSR")
 abstract class BuildTask : AbstractBufExecTask() {
     /** The input files. */
     @get:InputFiles
+    @get:PathSensitive(PathSensitivity.RELATIVE)
     internal abstract val inputFiles: ConfigurableFileCollection
 
     /** The output publication file. */

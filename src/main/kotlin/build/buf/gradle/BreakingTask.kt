@@ -18,9 +18,13 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
+import org.gradle.work.DisableCachingByDefault
 import java.io.File
 
+@DisableCachingByDefault(because = "validation task with no outputs")
 abstract class BreakingTask : AbstractBufExecTask() {
     @get:Input
     internal abstract val v1SyntaxOnly: Property<Boolean>
@@ -28,10 +32,12 @@ abstract class BreakingTask : AbstractBufExecTask() {
     /** The input publication file. */
     @get:InputFile
     @get:Optional
+    @get:PathSensitive(PathSensitivity.RELATIVE)
     internal abstract val publicationFile: Property<File>
 
     /** The input breaking config file. */
     @get:InputFile
+    @get:PathSensitive(PathSensitivity.RELATIVE)
     internal abstract val configFile: Property<File>
 
     @TaskAction

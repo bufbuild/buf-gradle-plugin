@@ -16,11 +16,16 @@ package build.buf.gradle
 
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
+import org.gradle.work.DisableCachingByDefault
 
+@DisableCachingByDefault(because = "validation task with no outputs")
 abstract class FormatCheckTask : AbstractBufExecTask() {
     /** The input files to be checked. */
     @get:InputFiles
+    @get:PathSensitive(PathSensitivity.RELATIVE)
     internal abstract val inputFiles: ConfigurableFileCollection
 
     @TaskAction
