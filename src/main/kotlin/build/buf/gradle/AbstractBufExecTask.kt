@@ -20,11 +20,13 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
+import org.gradle.work.DisableCachingByDefault
 import java.io.File
 
 /**
  * A task executing buf executable as part of its operation.
  */
+@DisableCachingByDefault(because = "buf tasks execute external CLI processes with implicit dependencies not captured in declared inputs")
 abstract class AbstractBufExecTask : AbstractBufTask() {
     /** The buf executable. */
     @get:InputFiles

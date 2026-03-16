@@ -28,12 +28,15 @@ import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.the
+import org.gradle.work.DisableCachingByDefault
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
@@ -66,6 +69,7 @@ internal fun Project.configureCreateSymLinksToModules() {
     }
 }
 
+@DisableCachingByDefault(because = "creates symlinks which are not compatible with Gradle caching")
 abstract class CreateSymLinksToModulesTask : AbstractBufTask() {
     /** Buf output directory. Should be set to [BUF_BUILD_DIR]. */
     @get:OutputDirectory
@@ -73,6 +77,7 @@ abstract class CreateSymLinksToModulesTask : AbstractBufTask() {
 
     /** Directories possibly containing input .proto files. */
     @get:InputFiles
+    @get:PathSensitive(PathSensitivity.RELATIVE)
     internal abstract val candidateProtoDirs: ConfigurableFileCollection
 
     @TaskAction
@@ -109,6 +114,7 @@ internal fun Project.configureWriteWorkspaceYaml() {
     }
 }
 
+@DisableCachingByDefault(because = "lightweight workspace file generation not worth caching")
 abstract class WriteWorkspaceYamlTask : AbstractBufTask() {
     @get:Input
     internal abstract val v1SyntaxOnly: Property<Boolean>
@@ -116,11 +122,13 @@ abstract class WriteWorkspaceYamlTask : AbstractBufTask() {
     /** Directories possibly containing input .proto files. */
     @get:InputFiles
     @get:Optional
+    @get:PathSensitive(PathSensitivity.RELATIVE)
     internal abstract val candidateProtoDirs: ConfigurableFileCollection
 
     /** The input buf configuration file. */
     @get:InputFile
     @get:Optional
+    @get:PathSensitive(PathSensitivity.RELATIVE)
     internal abstract val bufConfigFile: Property<File>
 
     /** Output yaml file. */

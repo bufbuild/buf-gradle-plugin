@@ -21,9 +21,13 @@ import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
+import org.gradle.work.DisableCachingByDefault
 import java.io.File
 
+@DisableCachingByDefault(because = "executes buf CLI which may use remote plugins")
 abstract class GenerateTask : AbstractBufExecTask() {
     /** Whether to include imports. */
     @get:Input
@@ -32,10 +36,12 @@ abstract class GenerateTask : AbstractBufExecTask() {
     /** Template file. */
     @get:InputFile
     @get:Optional
+    @get:PathSensitive(PathSensitivity.RELATIVE)
     internal abstract val templateFile: Property<File>
 
     /** The input proto files. */
     @get:InputFiles
+    @get:PathSensitive(PathSensitivity.RELATIVE)
     internal abstract val inputFiles: ConfigurableFileCollection
 
     /** The directory to output generated files. */
