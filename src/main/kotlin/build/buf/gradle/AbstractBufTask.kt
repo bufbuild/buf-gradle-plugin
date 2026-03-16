@@ -16,8 +16,8 @@ package build.buf.gradle
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.Property
-import org.gradle.work.DisableCachingByDefault
 import org.gradle.api.tasks.Input
+import org.gradle.work.DisableCachingByDefault
 import java.io.File
 
 @DisableCachingByDefault(because = "buf tasks execute external CLI processes with implicit dependencies not captured in declared inputs")
