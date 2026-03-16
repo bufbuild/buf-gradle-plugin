@@ -16,9 +16,11 @@ package build.buf.gradle
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.Property
+import org.gradle.work.DisableCachingByDefault
 import org.gradle.api.tasks.Input
 import java.io.File
 
+@DisableCachingByDefault(because = "buf tasks execute external CLI processes with implicit dependencies not captured in declared inputs")
 abstract class AbstractBufTask : DefaultTask() {
     /**
      * This property has to be set to project directory. It is only used for relativization of paths,

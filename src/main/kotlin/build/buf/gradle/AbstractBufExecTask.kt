@@ -18,6 +18,8 @@ import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
 import java.io.File
 
 /**
@@ -26,6 +28,7 @@ import java.io.File
 abstract class AbstractBufExecTask : AbstractBufTask() {
     /** The buf executable. */
     @get:InputFiles
+    @get:PathSensitive(PathSensitivity.RELATIVE)
     internal abstract val bufExecutable: ConfigurableFileCollection
 
     /**
@@ -42,6 +45,7 @@ abstract class AbstractBufExecTask : AbstractBufTask() {
 
     /** Directories possibly containing input .proto files. */
     @get:InputFiles
+    @get:PathSensitive(PathSensitivity.RELATIVE)
     internal abstract val candidateProtoDirs: ConfigurableFileCollection
 
     /** Whether the project has buf workspace or not. */
