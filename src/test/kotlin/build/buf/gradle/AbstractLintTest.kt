@@ -58,7 +58,7 @@ abstract class AbstractLintTest :
         assertThat(result.task(":$BUF_LINT_TASK_NAME")?.outcome).isEqualTo(FAILED)
         assertThat(result.output).contains(
             """
-            Execution failed for task ':bufLint'.
+            Execution failed for task ':bufLint' (registered by plugin 'build.buf').
             > Some Protobuf files had lint violations:
             """.trimIndent().osIndependent(),
         )
