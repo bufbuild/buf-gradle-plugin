@@ -73,7 +73,7 @@ abstract class AbstractBreakingTest : AbstractBufIntegrationTest() {
         assertThat(result.task(":$BUF_BREAKING_TASK_NAME")?.outcome).isEqualTo(FAILED)
         assertThat(result.output).contains(
             """
-            Execution failed for task ':bufBreaking'.
+            Execution failed for task ':bufBreaking' (registered by plugin 'build.buf').
             > Some Protobuf files had breaking changes:
             """.trimIndent().osIndependent(),
         )
