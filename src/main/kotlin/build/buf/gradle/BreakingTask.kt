@@ -44,9 +44,6 @@ abstract class BreakingTask : AbstractBufExecTask() {
     fun bufBreaking() {
         val args = mutableListOf<Any>()
         args.add("breaking")
-        // For a generated multi-module workspace, buf compares a directory input
-        // module-by-module against the baseline image and reports spurious deletions
-        // (https://github.com/bufbuild/buf/issues/3654), so compare image to image.
         if (v1SyntaxOnly.get() || hasProtobufGradlePlugin.get()) {
             args.add(publicationFile.get())
         }
