@@ -56,12 +56,8 @@ private fun Project.configureBreakingTask() {
 
         dependsOn(BUF_BUILD_TASK_NAME)
 
-        if (project.bufV1SyntaxOnly()) {
-            v1SyntaxOnly.set(true)
-            publicationFile.set(project.bufBuildPublicationFile)
-        } else {
-            v1SyntaxOnly.set(false)
-        }
+        v1SyntaxOnly.set(project.bufV1SyntaxOnly())
+        publicationFile.set(project.bufBuildPublicationFile)
         configFile.set(singleFileFromConfiguration(BUF_BREAKING_CONFIGURATION_NAME))
     }
 }
