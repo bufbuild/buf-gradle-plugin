@@ -32,6 +32,8 @@ internal fun Project.configureGenerate() {
         templateFile.set(generateOptions?.let { resolveTemplateFile(it) })
         inputFiles.setFrom(obtainDefaultProtoFileSet())
         outputDirectory.set(File(project.bufbuildDir, GENERATED_DIR))
+        bufConfigFile.set(project.bufConfigFile())
+        v1SyntaxOnly.set(bufV1SyntaxOnly())
     }
 }
 
