@@ -58,6 +58,11 @@ private fun Project.configureBreakingTask() {
 
         v1SyntaxOnly.set(project.bufV1SyntaxOnly())
         publicationFile.set(project.bufBuildPublicationFile)
-        configFile.set(singleFileFromConfiguration(BUF_BREAKING_CONFIGURATION_NAME))
+        configFile.set(
+            configurations
+                .named(BUF_BREAKING_CONFIGURATION_NAME)
+                .flatMap { it.elements }
+                .map { it.single().asFile },
+        )
     }
 }
