@@ -64,7 +64,7 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
         fun buildAndFail() = delegate.buildAndFail().also { println(it.output) }
     }
 
-    fun gradleRunner(version: String = GradleVersions.GRADLE_WRAPPER) =
+    override fun gradleRunner(version: String) =
         GradleRunner
             .create()
             .withProjectDir(projectDir)
@@ -96,6 +96,8 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
 }
 
 interface IntegrationTest {
+    fun gradleRunner(version: String = GradleVersions.GRADLE_WRAPPER): AbstractBufIntegrationTest.WrappedRunner
+
     fun checkRunner(version: String = GradleVersions.GRADLE_WRAPPER): AbstractBufIntegrationTest.WrappedRunner
 }
 

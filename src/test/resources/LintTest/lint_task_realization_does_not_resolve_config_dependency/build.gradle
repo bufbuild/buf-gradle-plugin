@@ -1,0 +1,12 @@
+plugins {
+  id 'java'
+  id 'build.buf'
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  buf 'build.buf.gradle.test:does-not-exist:1.0'
+}

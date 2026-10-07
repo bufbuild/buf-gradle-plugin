@@ -15,6 +15,7 @@
 package build.buf.gradle
 
 import org.gradle.api.Project
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Copy
 import org.gradle.kotlin.dsl.register
 import java.io.File
@@ -23,41 +24,50 @@ const val COPY_BUF_CONFIG_TASK_NAME = "copyBufConfig"
 
 internal fun Project.configureCopyBufConfig() {
     tasks.register<Copy>(COPY_BUF_CONFIG_TASK_NAME) {
-        from(listOfNotNull(bufConfigFile()))
+        from(bufConfigFile().map { listOf(it) }.orElse(emptyList()))
         into(project.bufbuildDir)
         rename { "buf.yaml" }
     }
 }
 
-internal fun Project.bufConfigFile() =
-    project.resolveConfig().let {
-        if (it != null) {
-            logger.info("Using buf config from $it")
-            it
-        } else {
-            val configFile = project.file("buf.yaml")
-            if (configFile.exists()) {
-                logger.info("Using buf config from default location (project directory)")
-                configFile
-            } else {
-                logger.info("Using default buf config")
-                null
-            }
-        }
-    }
-
-private fun Project.resolveConfig(): File? {
+internal fun Project.bufConfigFile(): Provider<File> {
     val ext = getExtension()
-    return configurations.getByName(BUF_CONFIGURATION_NAME).let {
-        if (it.dependencies.isNotEmpty()) {
+    val defaultConfigFile = file("buf.yaml")
+    val logger = logger
+    return configurations.named(BUF_CONFIGURATION_NAME).flatMap { configuration ->
+        if (configuration.dependencies.isNotEmpty()) {
             check(ext.configFileLocation == null) {
                 "Buf lint configuration specified with a config file location and a dependency; pick one."
             }
-            checkNotNull(it.files.singleOrNull()) {
-                "Buf lint configuration should have exactly one file; had ${it.files}."
+            configuration.elements.map { elements ->
+                val files = elements.map { it.asFile }
+                val configFile =
+                    checkNotNull(files.singleOrNull()) {
+                        "Buf lint configuration should have exactly one file; had $files."
+                    }
+                logger.info("Using buf config from $configFile")
+                configFile
             }
         } else {
-            ext.configFileLocation
+            providers.provider {
+                val configFileLocation = ext.configFileLocation
+                when {
+                    configFileLocation != null -> {
+                        logger.info("Using buf config from $configFileLocation")
+                        configFileLocation
+                    }
+
+                    defaultConfigFile.exists() -> {
+                        logger.info("Using buf config from default location (project directory)")
+                        defaultConfigFile
+                    }
+
+                    else -> {
+                        logger.info("Using default buf config")
+                        null
+                    }
+                }
+            }
         }
     }
 }
