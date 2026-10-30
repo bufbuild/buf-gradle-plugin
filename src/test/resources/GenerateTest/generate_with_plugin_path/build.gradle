@@ -1,0 +1,13 @@
+plugins {
+  id 'build.buf'
+}
+
+repositories {
+  mavenCentral()
+}
+
+buf {
+  generate {
+    pluginPath(file('plugins'))
+  }
+}

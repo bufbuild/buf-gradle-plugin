@@ -31,9 +31,11 @@ internal class ProcessRunner : Closeable {
     fun shell(
         workingDir: File,
         args: List<Any>,
+        environment: Map<String, String> = emptyMap(),
     ): Result {
         val processBuilder = ProcessBuilder(args.map(Any::toString))
         processBuilder.directory(workingDir)
+        processBuilder.environment().putAll(environment)
         val process = processBuilder.start()
         val out = threadStdOut.submit<ByteArray> { drain(process.inputStream, bufStdOut) }
         val err = threadStdOut.submit<ByteArray> { drain(process.errorStream, bufStdErr) }

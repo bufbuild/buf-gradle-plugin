@@ -14,7 +14,19 @@
 
 package build.buf.gradle
 
+import org.assertj.core.api.Assertions.assertThat
+import org.gradle.testkit.runner.TaskOutcome.NO_SOURCE
+import org.junit.jupiter.api.Test
+
 class LintTest :
     AbstractLintTest(),
     ConfigOverrideableLintTests,
-    NonProtobufGradlePluginLintTests
+    NonProtobufGradlePluginLintTests {
+    @Test
+    fun `lint with no proto files is skipped`() {
+        val result = checkRunner().build()
+
+        assertThat(result.task(":$BUF_LINT_TASK_NAME")?.outcome).isEqualTo(NO_SOURCE)
+        assertThat(result.task(":$BUF_FORMAT_CHECK_TASK_NAME")?.outcome).isEqualTo(NO_SOURCE)
+    }
+}

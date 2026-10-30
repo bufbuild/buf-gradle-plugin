@@ -192,11 +192,75 @@ buf {
 }
 ```
 
+#### Generating from another input
+
+By default, `bufGenerate` generates from the project directory, or from the `inputs` in the template if it declares any. To generate from a different input, such as a subdirectory or a BSR module, set `input`:
+
+``` kotlin
+// build.gradle.kts
+
+buf {
+    generate {
+        input = "buf.build/connectrpc/eliza"
+    }
+}
+```
+
+Relative paths are resolved against the directory `buf` runs in: the project directory, or `build/bufbuild` when the protobuf-gradle-plugin is applied.
+
+#### Using protoc and local plugins
+
+To use `protoc_builtin` plugins without installing protoc, set `protocVersion`. The plugin resolves protoc from Maven Central and puts it on the `PATH` for `bufGenerate`, so the template does not need `protoc_path`:
+
+``` kotlin
+// build.gradle.kts
+
+buf {
+    generate {
+        protocVersion = "<protobuf version>"
+    }
+}
+```
+
+``` yaml
+version: v2
+plugins:
+  - protoc_builtin: java
+    out: java
+```
+
+To use `local` plugins built by Gradle or stored in the repository, add the directories containing them with `pluginPath`. They are added to the front of the `PATH` for `bufGenerate`, and task dependencies carried by the paths are added to `bufGenerate`:
+
+``` kotlin
+// build.gradle.kts
+
+buf {
+    generate {
+        pluginPath(files(tasks.installDist.map { it.destinationDir.resolve("bin") }).builtBy(tasks.installDist))
+    }
+}
+
+tasks.bufGenerate {
+    inputs.files(tasks.installDist)
+}
+```
+
+``` yaml
+version: v2
+plugins:
+  - local: protoc-gen-example
+    out: example
+```
+
+`bufGenerate` only tracks the files in the `pluginPath` directories. If a plugin's code lives elsewhere, like the jars in `lib` next to an `installDist` start script, add it as an input so `bufGenerate` reruns when the plugin changes.
+
 ### `bufFormatApply` and `bufFormatCheck`
 
 `bufFormatApply` is run manually and has no configuration.
 
 `bufFormatCheck` is run automatically during the `check` task if `enforceFormat` is enabled. It has no other configuration.
+
+`bufLint`, `bufFormatCheck`, and `bufFormatApply` are skipped when the project has no `.proto` files, so the plugin can be applied to projects that only generate code from a remote input.
 
 ```kotlin
 buf {
