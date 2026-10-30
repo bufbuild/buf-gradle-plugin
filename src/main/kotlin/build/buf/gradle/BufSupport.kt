@@ -21,11 +21,31 @@ import java.nio.charset.StandardCharsets
 
 const val BUF_BINARY_CONFIGURATION_NAME = "bufTool"
 
+const val PROTOC_BINARY_CONFIGURATION_NAME = "bufProtoc"
+
 internal fun Project.createBufBinaryDependencyConfiguration() {
     configurations.create(BUF_BINARY_CONFIGURATION_NAME)
+    configurations.create(PROTOC_BINARY_CONFIGURATION_NAME)
 }
 
 internal fun Project.configureBufDependency() {
+    val extension = getExtension()
+
+    dependencies {
+        add(
+            BUF_BINARY_CONFIGURATION_NAME,
+            "build.buf:buf:${extension.toolVersion}:${platformClassifier()}@exe",
+        )
+        extension.generateOptions?.protocVersion?.let {
+            add(
+                PROTOC_BINARY_CONFIGURATION_NAME,
+                "com.google.protobuf:protoc:$it:${platformClassifier()}@exe",
+            )
+        }
+    }
+}
+
+private fun platformClassifier(): String {
     val os = System.getProperty("os.name").lowercase()
     val osPart =
         when {
@@ -42,14 +62,7 @@ internal fun Project.configureBufDependency() {
             else -> error("unsupported arch: $arch")
         }
 
-    val extension = getExtension()
-
-    dependencies {
-        add(
-            BUF_BINARY_CONFIGURATION_NAME,
-            "build.buf:buf:${extension.toolVersion}:$osPart-$archPart@exe",
-        )
-    }
+    return "$osPart-$archPart"
 }
 
 internal fun AbstractBufExecTask.execBuf(
@@ -62,6 +75,7 @@ internal fun AbstractBufExecTask.execBuf(
 internal fun AbstractBufExecTask.execBuf(
     args: Iterable<Any>,
     customErrorMessage: ((String) -> String)? = null,
+    environment: Map<String, String> = emptyMap(),
 ) {
     val executable = bufExecutable.singleFile
 
@@ -73,7 +87,7 @@ internal fun AbstractBufExecTask.execBuf(
     val workingDirValue = workingDir.get()
 
     logger.info("Running buf from $workingDirValue: `buf ${args.joinToString(" ")}`")
-    val result = ProcessRunner().use { it.shell(workingDirValue, processArgs) }
+    val result = ProcessRunner().use { it.shell(workingDirValue, processArgs, environment) }
 
     handleResult(result, customErrorMessage)
 }
