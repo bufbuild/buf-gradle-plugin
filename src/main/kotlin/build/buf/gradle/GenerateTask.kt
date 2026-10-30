@@ -48,6 +48,15 @@ abstract class GenerateTask : AbstractBufExecTask() {
     @get:OutputDirectory
     internal abstract val outputDirectory: Property<File>
 
+    /** The input buf configuration file. */
+    @get:InputFiles
+    @get:Optional
+    @get:PathSensitive(PathSensitivity.RELATIVE)
+    internal abstract val bufConfigFile: Property<File>
+
+    @get:Input
+    internal abstract val v1SyntaxOnly: Property<Boolean>
+
     @TaskAction
     fun bufGenerate() {
         val args = listOf("generate", "--output", outputDirectory.get())
@@ -67,6 +76,17 @@ abstract class GenerateTask : AbstractBufExecTask() {
                 listOf("--template", it.absolutePath)
             } ?: emptyList()
 
-        return importOptions + templateFileOption
+        val configOption =
+            if (noWorkspaceAndV1Syntax() || noWorkspaceAndNoProtobufGradlePlugin()) {
+                bufConfigFile.orNull?.let { listOf("--config", it.absolutePath) }
+            } else {
+                null
+            }.orEmpty()
+
+        return importOptions + templateFileOption + configOption
     }
+
+    private fun noWorkspaceAndV1Syntax() = !hasWorkspace.get() && v1SyntaxOnly.get()
+
+    private fun noWorkspaceAndNoProtobufGradlePlugin() = !hasWorkspace.get() && !hasProtobufGradlePlugin.get()
 }
