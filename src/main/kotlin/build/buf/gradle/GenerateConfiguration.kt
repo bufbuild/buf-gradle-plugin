@@ -42,9 +42,6 @@ private fun Project.resolveTemplateFile(generateOptions: GenerateOptions): File 
         check(specifiedTemplateFile != null) {
             "Specified templateFileLocation does not exist."
         }
-        check(defaultTemplateFile == null || specifiedTemplateFile == defaultTemplateFile) {
-            "Buf gen template file specified in the project directory as well as with templateFileLocation; pick one."
-        }
         specifiedTemplateFile
     } else {
         check(defaultTemplateFile != null) {
