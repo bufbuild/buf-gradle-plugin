@@ -32,7 +32,7 @@ allprojects {
 }
 
 val dependabotConfig = configurations.create("dependabotConfig")
-val protoc: Configuration by configurations.creating
+val protoc = configurations.create("protoc")
 
 dependencies {
     // Trigger dependabot on new releases.
