@@ -35,6 +35,8 @@ internal fun Project.configureGenerate() {
         pluginPath.setFrom(generateOptions?.pluginPath.orEmpty())
         inputFiles.setFrom(obtainDefaultProtoFileSet())
         outputDirectory.set(File(project.bufbuildDir, GENERATED_DIR))
+        bufConfigFile.set(project.bufConfigFile())
+        v1SyntaxOnly.set(bufV1SyntaxOnly())
     }
 }
 
