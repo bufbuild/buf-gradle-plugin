@@ -45,6 +45,15 @@ class GenerateTest : AbstractGenerateTest() {
         assertThat(File(projectDir, "plugin-ran")).exists()
     }
 
+    @Test
+    fun `buf generate with a file location config override`() {
+        // The override config excludes invalid/, which fails to compile under
+        // the default config.
+        gradleRunner().withArguments(BUF_GENERATE_TASK_NAME).build()
+
+        assertThat(File(projectDir, "build/bufbuild/generated/java/buf/test/v1/Test.java")).exists()
+    }
+
     private fun environmentWithPathPrefix(directory: File): Map<String, String> {
         val environment = System.getenv().toMutableMap()
         // Windows spells it "Path", and the copied map is case-sensitive.

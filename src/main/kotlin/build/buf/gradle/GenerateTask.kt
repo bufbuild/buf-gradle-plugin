@@ -64,7 +64,7 @@ abstract class GenerateTask : AbstractBufExecTask() {
     internal abstract val outputDirectory: Property<File>
 
     /** The input buf configuration file. */
-    @get:InputFiles
+    @get:InputFile
     @get:Optional
     @get:PathSensitive(PathSensitivity.RELATIVE)
     internal abstract val bufConfigFile: Property<File>

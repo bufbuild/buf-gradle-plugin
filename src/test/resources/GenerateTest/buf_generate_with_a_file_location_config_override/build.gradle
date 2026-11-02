@@ -1,0 +1,16 @@
+plugins {
+  id 'java'
+  id 'build.buf'
+}
+
+repositories {
+  mavenCentral()
+}
+
+buf {
+  configFileLocation = project.file("subdir/buf.yaml")
+
+  generate {
+    protocVersion = protobufVersion
+  }
+}
