@@ -7,6 +7,12 @@ repositories {
   mavenCentral()
 }
 
+buf {
+  generate {
+    protocVersion = protobufVersion
+  }
+}
+
 compileJava.dependsOn 'bufGenerate'
 
 sourceSets.main.java {

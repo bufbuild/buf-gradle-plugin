@@ -9,6 +9,7 @@ repositories {
 
 buf {
   generate {
+    protocVersion = protobufVersion
     //templateFileLocation = project.file("subdir/buf.gen.yaml")
   }
 }
