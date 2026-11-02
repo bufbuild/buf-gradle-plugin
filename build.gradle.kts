@@ -11,7 +11,6 @@ plugins {
     `kotlin-dsl`
     alias(libs.plugins.buildConfig)
     alias(libs.plugins.mavenPublish)
-    alias(libs.plugins.osDetector)
     alias(libs.plugins.pluginPublish)
     alias(libs.plugins.spotless)
 }
@@ -32,13 +31,13 @@ allprojects {
 }
 
 val dependabotConfig = configurations.create("dependabotConfig")
-val protoc = configurations.create("protoc")
 
 dependencies {
     // Trigger dependabot on new releases.
     dependabotConfig(libs.bufbuild)
     dependabotConfig(libs.androidGradlePlugin)
     dependabotConfig(libs.protobufGradlePlugin)
+    dependabotConfig(libs.protoc)
 
     implementation(libs.jacksonDataformatYaml)
     implementation(libs.jacksonModuleKotlin)
@@ -49,7 +48,6 @@ dependencies {
     testImplementation(libs.guava)
     testImplementation(libs.junitJupiter)
     testImplementation(libs.junitPlatformLauncher)
-    protoc("com.google.protobuf:protoc:${libs.versions.protoc.get()}:${osdetector.classifier}@exe")
 }
 
 object ProjectInfo {
@@ -122,8 +120,6 @@ tasks {
 
     withType<Test> {
         useJUnitPlatform()
-
-        systemProperty("protoc.path", protoc.asPath)
     }
 
     withType<KotlinCompile> {

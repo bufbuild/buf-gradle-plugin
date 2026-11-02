@@ -20,6 +20,12 @@ sourceSets["main"].java {
 
 val protobufVersion: String by project
 
+buf {
+    generate {
+        protocVersion = protobufVersion
+    }
+}
+
 dependencies {
     implementation("com.google.protobuf:protobuf-java:$protobufVersion")
 }

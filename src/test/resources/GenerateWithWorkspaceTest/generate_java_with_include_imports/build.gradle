@@ -9,6 +9,7 @@ repositories {
 
 buf {
   generate {
+    protocVersion = protobufVersion
     includeImports = true
   }
 }
