@@ -53,4 +53,12 @@ interface ConfigOverrideableLintTests : LintTestUtilities {
         val result = checkRunner().buildAndFail()
         assertThat(result.output).contains("config file location and a dependency; pick one")
     }
+
+    @Test
+    fun `lint task realization does not resolve config dependency`() {
+        gradleRunner().withArguments("tasks", "--all", "--offline").build()
+
+        val result = checkRunner().withArguments("--offline").buildAndFail()
+        assertThat(result.output).contains("Could not resolve all files for configuration ':$BUF_CONFIGURATION_NAME'")
+    }
 }

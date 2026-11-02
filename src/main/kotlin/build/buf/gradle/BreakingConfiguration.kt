@@ -56,12 +56,13 @@ private fun Project.configureBreakingTask() {
 
         dependsOn(BUF_BUILD_TASK_NAME)
 
-        if (project.bufV1SyntaxOnly()) {
-            v1SyntaxOnly.set(true)
-            publicationFile.set(project.bufBuildPublicationFile)
-        } else {
-            v1SyntaxOnly.set(false)
-        }
-        configFile.set(singleFileFromConfiguration(BUF_BREAKING_CONFIGURATION_NAME))
+        v1SyntaxOnly.set(project.bufV1SyntaxOnly())
+        publicationFile.set(project.bufBuildPublicationFile)
+        configFile.set(
+            configurations
+                .named(BUF_BREAKING_CONFIGURATION_NAME)
+                .flatMap { it.elements }
+                .map { it.single().asFile },
+        )
     }
 }

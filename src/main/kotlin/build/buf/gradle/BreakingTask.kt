@@ -44,7 +44,7 @@ abstract class BreakingTask : AbstractBufExecTask() {
     fun bufBreaking() {
         val args = mutableListOf<Any>()
         args.add("breaking")
-        if (v1SyntaxOnly.get()) {
+        if (v1SyntaxOnly.get() || hasProtobufGradlePlugin.get()) {
             args.add(publicationFile.get())
         }
         args.add("--against")

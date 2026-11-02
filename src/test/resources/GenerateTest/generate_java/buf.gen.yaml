@@ -1,6 +1,4 @@
 version: v1
 plugins:
   - plugin: java
-    # Replaced with full path to protoc in test setup.
-    protoc_path: PROTOC_PATH
     out: java

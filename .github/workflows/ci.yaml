@@ -17,37 +17,37 @@ jobs:
       checks: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
       - name: Set up JDK 21
-        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
+        uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
         with:
           distribution: temurin
           java-version: 21
           check-latest: true
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@50e97c2cd7a37755bbfafc9c5b7cafaece252f6e # v6.1.0
+        uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
         with:
           cache-provider: basic
       - name: Build
         run: ./gradlew build --info
       - name: Publish unit test results (Ubuntu)
-        uses: EnricoMi/publish-unit-test-result-action@c950f6fb443cb5af20a377fd0dfaa78838901040 # v2.23.0
+        uses: EnricoMi/publish-unit-test-result-action@7622c5bf3d112a72ab4fa3951c2aa5723d8ab92d # v2.25.0
         if: always() && matrix.os == 'ubuntu-latest'
         with:
           files: "**/test-results/**/*.xml"
           comment_mode: off
           check_name: "Test Results (Ubuntu)"
       - name: Publish unit test results (Windows)
-        uses: EnricoMi/publish-unit-test-result-action/windows@c950f6fb443cb5af20a377fd0dfaa78838901040 # v2.23.0
+        uses: EnricoMi/publish-unit-test-result-action/windows@7622c5bf3d112a72ab4fa3951c2aa5723d8ab92d # v2.25.0
         if: always() && matrix.os == 'windows-latest'
         with:
           files: "**/test-results/**/*.xml"
           comment_mode: off
           check_name: "Test Results (Windows)"
       - name: Publish unit test results (MacOS)
-        uses: EnricoMi/publish-unit-test-result-action/macos@c950f6fb443cb5af20a377fd0dfaa78838901040 # v2.23.0
+        uses: EnricoMi/publish-unit-test-result-action/macos@7622c5bf3d112a72ab4fa3951c2aa5723d8ab92d # v2.25.0
         if: always() && matrix.os == 'macos-latest'
         with:
           files: "**/test-results/**/*.xml"

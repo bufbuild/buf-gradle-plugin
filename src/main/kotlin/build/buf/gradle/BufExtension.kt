@@ -122,4 +122,25 @@ class GenerateOptions(
      * Specify the location of buf.gen.yaml if not using one in the project root.
      */
     var templateFileLocation: File? = null,
-)
+    /**
+     * Specify the input to generate from, such as a directory or a BSR module reference. If not set, `buf generate`
+     * uses the template's `inputs`, or the project directory if it has none.
+     */
+    var input: String? = null,
+    /**
+     * Specify a version of protoc to make available to `protoc_builtin` plugins in buf.gen.yaml. protoc is resolved
+     * from Maven Central and put on the `PATH`, so templates do not need to set `protoc_path`.
+     */
+    var protocVersion: String? = null,
+) {
+    internal val pluginPath = mutableListOf<Any>()
+
+    /**
+     * Add directories to the front of the `PATH` used by `buf generate`, so `local` plugins in buf.gen.yaml can be
+     * referenced by name. Accepts anything [org.gradle.api.Project.files] accepts; task dependencies carried by the
+     * paths are added to `bufGenerate`.
+     */
+    fun pluginPath(vararg paths: Any) {
+        pluginPath.addAll(paths)
+    }
+}

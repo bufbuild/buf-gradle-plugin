@@ -1,0 +1,15 @@
+plugins {
+  id 'java'
+  id 'build.buf'
+}
+
+repositories {
+  mavenCentral()
+}
+
+buf {
+  generate {
+    input = 'proto'
+    protocVersion = protobufVersion
+  }
+}

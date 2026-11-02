@@ -14,8 +14,18 @@
 
 package build.buf.gradle
 
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 import java.nio.file.Paths
 
 class BreakingTest : AbstractBreakingTest() {
+    @Test
+    fun `breaking task realization does not resolve schema`() {
+        gradleRunner().withArguments("tasks", "--all", "--offline").build()
+
+        val result = gradleRunner().withArguments(BUF_BREAKING_TASK_NAME, "--offline").buildAndFail()
+        assertThat(result.output).contains("Could not resolve all files for configuration ':$BUF_BREAKING_CONFIGURATION_NAME'")
+    }
+
     override fun protoFile() = Paths.get(projectDir.path, "buf", "test", "v1", "test.proto")
 }

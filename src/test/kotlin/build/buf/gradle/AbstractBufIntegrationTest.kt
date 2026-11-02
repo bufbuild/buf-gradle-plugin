@@ -59,12 +59,14 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
     ) {
         fun withArguments(vararg args: String) = WrappedRunner(delegate.withArguments(delegate.arguments + args))
 
+        fun withEnvironment(environment: Map<String, String>) = WrappedRunner(delegate.withEnvironment(environment))
+
         fun build() = delegate.build().also { println(it.output) }
 
         fun buildAndFail() = delegate.buildAndFail().also { println(it.output) }
     }
 
-    fun gradleRunner(version: String = GradleVersions.GRADLE_WRAPPER) =
+    override fun gradleRunner(version: String) =
         GradleRunner
             .create()
             .withProjectDir(projectDir)
@@ -96,6 +98,8 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
 }
 
 interface IntegrationTest {
+    fun gradleRunner(version: String = GradleVersions.GRADLE_WRAPPER): AbstractBufIntegrationTest.WrappedRunner
+
     fun checkRunner(version: String = GradleVersions.GRADLE_WRAPPER): AbstractBufIntegrationTest.WrappedRunner
 }
 
