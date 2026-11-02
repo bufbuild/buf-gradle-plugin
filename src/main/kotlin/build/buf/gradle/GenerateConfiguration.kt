@@ -30,6 +30,9 @@ internal fun Project.configureGenerate() {
         val generateOptions = project.getExtension().generateOptions
         includeImports.set(generateOptions?.includeImports ?: false)
         templateFile.set(generateOptions?.let { resolveTemplateFile(it) })
+        input.set(generateOptions?.input)
+        protocExecutable.setFrom(configurations.getByName(PROTOC_BINARY_CONFIGURATION_NAME))
+        pluginPath.setFrom(generateOptions?.pluginPath.orEmpty())
         inputFiles.setFrom(obtainDefaultProtoFileSet())
         outputDirectory.set(File(project.bufbuildDir, GENERATED_DIR))
     }

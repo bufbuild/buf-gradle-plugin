@@ -15,9 +15,11 @@
 package build.buf.gradle
 
 import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.tasks.IgnoreEmptyDirectories
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
+import org.gradle.api.tasks.SkipWhenEmpty
 import org.gradle.api.tasks.TaskAction
 import org.gradle.work.DisableCachingByDefault
 
@@ -25,6 +27,8 @@ import org.gradle.work.DisableCachingByDefault
 abstract class FormatCheckTask : AbstractBufExecTask() {
     /** The input files to be checked. */
     @get:InputFiles
+    @get:SkipWhenEmpty
+    @get:IgnoreEmptyDirectories
     @get:PathSensitive(PathSensitivity.RELATIVE)
     internal abstract val inputFiles: ConfigurableFileCollection
 

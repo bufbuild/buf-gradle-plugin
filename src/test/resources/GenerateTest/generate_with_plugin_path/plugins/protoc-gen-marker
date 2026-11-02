@@ -1,0 +1,4 @@
+#!/bin/sh
+# An empty response is a valid CodeGeneratorResponse.
+cat > /dev/null
+touch plugin-ran

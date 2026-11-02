@@ -59,6 +59,8 @@ abstract class AbstractBufIntegrationTest : IntegrationTest {
     ) {
         fun withArguments(vararg args: String) = WrappedRunner(delegate.withArguments(delegate.arguments + args))
 
+        fun withEnvironment(environment: Map<String, String>) = WrappedRunner(delegate.withEnvironment(environment))
+
         fun build() = delegate.build().also { println(it.output) }
 
         fun buildAndFail() = delegate.buildAndFail().also { println(it.output) }
